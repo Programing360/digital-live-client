@@ -5,14 +5,27 @@ import { Button, Input, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 // Flat Google Icon
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-1.14 2.77-2.4 3.61v3h3.86c2.26-2.09 3.59-5.17 3.59-8.46z"/>
-    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.46v3.12C3.43 21.35 7.47 24 12 24z"/>
-    <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.59H1.46C.53 8.41 0 10.17 0 12s.53 3.59 1.46 5.41l3.81-3.12z"/>
-    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.93 1.19 15.24 0 12 0 7.47 0 3.43 2.65 1.46 6.59l3.81 3.12c.95-2.85 3.6-4.96 6.73-4.96z"/>
+    <path
+      fill="#4285F4"
+      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-1.14 2.77-2.4 3.61v3h3.86c2.26-2.09 3.59-5.17 3.59-8.46z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.46v3.12C3.43 21.35 7.47 24 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.59H1.46C.53 8.41 0 10.17 0 12s.53 3.59 1.46 5.41l3.81-3.12z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.93 1.19 15.24 0 12 0 7.47 0 3.43 2.65 1.46 6.59l3.81 3.12c.95-2.85 3.6-4.96 6.73-4.96z"
+    />
   </svg>
 );
 
@@ -21,9 +34,9 @@ export default function RegisterPage() {
     name: "",
     email: "",
     photoUrl: "",
-    password: ""
+    password: "",
   });
-  
+
   // Toggling state variable to drive show/hide input visibility type switching
   const [isVisible, setIsVisible] = useState(false);
 
@@ -76,20 +89,43 @@ export default function RegisterPage() {
     return true;
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    Swal.fire({
-      icon: "success",
-      title: "Registration Success!",
-      text: `Welcome aboard, ${formData.name}! Your public lesson workspace is prepared.`,
-      timer: 3500,
-      showConfirmButton: false,
+    const formData = new FormData(e.currentTarget);
+    const user = Object.fromEntries(formData.entries());
+    const { data, error } = await authClient.signUp.email({
+      name: user?.name, // required
+      email: user?.email, // required
+      password: user?.password, // required
+      image: user?.photoUrl,
+    //   callbackURL: "/",
     });
+    if (data?.user) {
+      Swal.fire({
+        icon: "success",
+        title: "Registration Success!",
+        text: `Welcome aboard, ${formData.name}! Your public lesson workspace is prepared.`,
+        timer: 3500,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Registration failed!",
+        text: "Something went wrong!",
+        timer: 3500,
+        showConfirmButton: false,
+      });
+    }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+    console.log(data);
+
     Swal.fire({
       title: "Connecting Account",
       text: "Securing authentication connection to Google cloud nodes...",
@@ -100,7 +136,7 @@ export default function RegisterPage() {
         icon: "success",
         title: "Google Authentication Verified",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
     });
   };
@@ -108,12 +144,11 @@ export default function RegisterPage() {
   return (
     <main className="w-full min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 select-none font-sans">
       <div className="w-full max-w-5xl bg-white border border-slate-100/80 rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.03)] grid grid-cols-1 lg:grid-cols-12 overflow-hidden min-h-[620px]">
-        
         {/* ================= LEFT SECTION: ENTRANCE SIGN UP FORM ================= */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
+          transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1.0] }}
           className="lg:col-span-6 p-8 sm:p-12 flex flex-col justify-center"
         >
           <div className="mb-6">
@@ -145,7 +180,6 @@ export default function RegisterPage() {
               label="Email Address"
               name="email"
               placeholder="name@example.com"
-              labelPlacement="outside"
               variant="bordered"
               radius="xl"
               size="lg"
@@ -159,7 +193,6 @@ export default function RegisterPage() {
               label="Photo URL (Optional)"
               name="photoUrl"
               placeholder="https://example.com/avatar.jpg"
-              labelPlacement="outside"
               variant="bordered"
               radius="xl"
               size="lg"
@@ -174,24 +207,12 @@ export default function RegisterPage() {
               label="Account Password"
               name="password"
               placeholder="••••••••"
-              labelPlacement="outside"
               variant="bordered"
               radius="xl"
               size="lg"
               className="font-medium"
               value={formData.password}
               onChange={handleInputChange}
-              endContent={
-                <button 
-                  className="focus:outline-none transition-transform active:scale-90" 
-                  type="button" 
-                  onClick={() => setIsVisible(!isVisible)}
-                  aria-label="toggle password visibility"
-                >
-                  {!isVisible ? <Eye size={20} className="text-black" /> : <EyeOff />}
-                </button>
-              }
-              
             />
 
             <Button
@@ -206,7 +227,9 @@ export default function RegisterPage() {
 
           <div className="relative flex py-4 items-center">
             <div className="flex-grow border-t border-slate-100"></div>
-            <span className="flex-shrink mx-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">or continue with</span>
+            <span className="flex-shrink mx-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              or continue with
+            </span>
             <div className="flex-grow border-t border-slate-100"></div>
           </div>
 
@@ -223,14 +246,17 @@ export default function RegisterPage() {
 
           <p className="text-xs font-semibold text-slate-400 text-center mt-6">
             Already have an active account?{" "}
-            <Link href="/auth/login" className="text-xs font-extrabold text-indigo-600 hover:underline">
+            <Link
+              href="/auth/login"
+              className="text-xs font-extrabold text-indigo-600 hover:underline"
+            >
               Log In
             </Link>
           </p>
         </motion.div>
 
         {/* ================= RIGHT SECTION: DECORATIVE LOTTIE CONTAINER ================= */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
@@ -239,25 +265,28 @@ export default function RegisterPage() {
           <div className="absolute top-[-20%] right-[-20%] w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-[-15%] left-[-15%] w-80 h-80 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
-          <motion.div 
+          <motion.div
             animate={{ y: ["0px", "-16px", "0px"] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-full max-w-sm aspect-square bg-white/10 backdrop-blur-md rounded-[28px] border border-white/10 shadow-2xl flex flex-col items-center justify-center p-8 text-center z-10"
           >
             <div className="w-40 h-40 rounded-full bg-white/10 flex items-center justify-center border border-white/10 mb-6 relative">
               <span className="text-4xl animate-bounce">✨</span>
-              <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-spin" style={{ animationDuration: '20s' }} />
+              <div
+                className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-spin"
+                style={{ animationDuration: "20s" }}
+              />
             </div>
 
             <h3 className="text-white font-extrabold text-lg tracking-tight">
               Capture Your Reflections
             </h3>
             <p className="text-indigo-100/80 text-xs font-medium leading-relaxed mt-2 max-w-[240px]">
-              Join thousands of learners archive wisdom milestones globally daily.
+              Join thousands of learners archive wisdom milestones globally
+              daily.
             </p>
           </motion.div>
         </motion.div>
-
       </div>
     </main>
   );

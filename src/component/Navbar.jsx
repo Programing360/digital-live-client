@@ -5,8 +5,10 @@ import Link from "next/link";
 import { Button, Avatar } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Menu, Sparkles, X } from "lucide-react";
-import { useTheme } from "next-themes";
+
 import ThemeToggle from "./ThemeToggle";
+
+import { authClient } from "@/lib/auth-client";
 
 const navItems = [
   {
@@ -31,53 +33,13 @@ const navItems = [
   },
 ];
 
-// function ThemeToggle() {
-//   const { theme, setTheme } = useTheme();
-//   const [mounted, setMounted] = useState(false);
-
-//   useEffect(() => {
-//     setMounted(true);
-//   }, []);
-
-//   if (!mounted) return null;
-
-//   return (
-//     <Button
-//       isIconOnly
-//       radius="full"
-//       variant="light"
-//       onPress={() =>
-//         setTheme(theme === "dark" ? "light" : "dark")
-//       }
-//       className="border border-default-200 bg-transparent"
-//     >
-//       <motion.div
-//         key={theme}
-//         initial={{
-//           rotate: -180,
-//           scale: 0,
-//         }}
-//         animate={{
-//           rotate: 0,
-//           scale: 1,
-//         }}
-//         transition={{
-//           duration: 0.3,
-//         }}
-//       >
-//         {theme === "dark" ? (
-//           <Sun size={18} />
-//         ) : (
-//           <Moon size={18} />
-//         )}
-//       </motion.div>
-//     </Button>
-//   );
-// }
-
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("Home");
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  console.log(user);
 
   return (
     <nav className="sticky top-0 z-50 border border-white/20 bg-white/70 shadow-[0_8px_40px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-black/40">
@@ -150,13 +112,15 @@ export default function Navbar() {
             <div className="hidden items-center gap-3 lg:flex">
               <ThemeToggle />
 
-              <Button
-                variant="light"
-                radius="full"
-                className="border hover:bg-linear-to-r from-violet-500 to-cyan-500 transition-all duration-900 bg-default-soft-hover hover:text-white"
-              >
-                Sign In
-              </Button>
+              <Link href={"/auth/login"}>
+                <Button
+                  variant="light"
+                  radius="full"
+                  className="border hover:bg-linear-to-r from-violet-500 to-cyan-500 transition-all duration-900 bg-default-soft-hover hover:text-white"
+                >
+                  Sign In
+                </Button>
+              </Link>
 
               <Button
                 radius="full"
