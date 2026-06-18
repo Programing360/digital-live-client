@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 // Flat Google Icon
 const GoogleIcon = () => (
@@ -39,7 +40,7 @@ export default function RegisterPage() {
 
   // Toggling state variable to drive show/hide input visibility type switching
   const [isVisible, setIsVisible] = useState(false);
-
+  const router = useRouter()
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -99,8 +100,9 @@ export default function RegisterPage() {
       email: user?.email, // required
       password: user?.password, // required
       image: user?.photoUrl,
-    //   callbackURL: "/",
+      callbackURL: "/",
     });
+
     if (data?.user) {
       Swal.fire({
         icon: "success",
@@ -109,36 +111,42 @@ export default function RegisterPage() {
         timer: 3500,
         showConfirmButton: false,
       });
-    } else {
+      router.push('/auth/login')
+    } 
+    
+    if(error) {
       Swal.fire({
         icon: "error",
         title: "Registration failed!",
-        text: "Something went wrong!",
+        text: `${error.message}`,
         timer: 3500,
         showConfirmButton: false,
       });
     }
+
+
   };
 
   const handleGoogleLogin = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
     });
-    console.log(data);
-
-    Swal.fire({
-      title: "Connecting Account",
-      text: "Securing authentication connection to Google cloud nodes...",
-      timer: 1500,
-      didOpen: () => Swal.showLoading(),
-    }).then(() => {
+    if (data?.user) {
       Swal.fire({
-        icon: "success",
-        title: "Google Authentication Verified",
-        showConfirmButton: false,
+        title: "Connecting Account",
+        text: "Securing authentication connection to Google cloud nodes...",
         timer: 1500,
+        didOpen: () => Swal.showLoading(),
+      }).then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Google Authentication Verified",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       });
-    });
+      router.push('/')
+    }
   };
 
   return (
