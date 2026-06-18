@@ -44,7 +44,7 @@ export default function Navbar() {
           { name: "My Lessons", href: "/dashboard/my-lessons" },
         ]
       : []),
-    { name: "Public Lessons", href: "/public" },
+    { name: "Public Lessons", href: "/publicLessons" },
     ...(user && isFreePlan ? [{ name: "Upgrade", href: "/upgrade" }] : []),
   ];
 
@@ -87,15 +87,15 @@ export default function Navbar() {
 
             {/* Desktop Navigation Links */}
             <ul className="hidden items-center gap-1 lg:flex">
-              {navItems.map((item) => {
+              {navItems?.map((item) => {
                 // Determines if the nav item matches the current exact route
                 const isActive = pathname === item.href;
 
                 return (
                   <li key={item.name}>
                     <Link href={item.href}>
-                      <button
-                        className={`group relative px-4 py-2 text-sm font-medium transition-colors dynamic-active-state ${
+                      <Button
+                        className={`group relative bg-white px-4 py-2 text-sm font-medium transition-colors dark:text-white dynamic-active-state ${
                           isActive
                             ? "text-violet-600 dark:text-violet-400"
                             : "text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
@@ -111,10 +111,10 @@ export default function Navbar() {
                         <span className="relative z-10">{item.name}</span>
                         <span
                           className={`absolute bottom-0 left-1/2 h-[2px] bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-300 group-hover:left-0 group-hover:w-full ${
-                            isActive ? "left-2 w-full" : "w-0"
+                            isActive ? "left-2 w-0" : "w-0"
                           }`}
                         />
-                      </button>
+                      </Button>
                     </Link>
                   </li>
                 );
