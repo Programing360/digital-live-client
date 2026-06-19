@@ -46,10 +46,10 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
       lessonId: _id,
     };
 
-    // console.log(newFavorites, author);
-
     const data = await createFavoritesLesson(newFavorites);
-
+    if (data.message) {
+      toast.error("Already in favorites");
+    }
     if (data.insertedId) {
       toast.success("Saved Favorite Lesson❤️");
     }

@@ -126,13 +126,13 @@ export default async function MyFavoritesPage() {
                     <div className="flex justify-center gap-3">
                       <Link
                         href={`/publicLessons/${lesson.lesson._id}`}
-                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 cursor-pointer"
                       >
                         <Eye size={16} />
                         Details
                       </Link>
 
-                      <button className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100">
+                      <button className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 cursor-pointer">
                         <HeartOff size={16} />
                         Remove
                       </button>
