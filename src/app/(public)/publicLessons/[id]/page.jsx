@@ -1,16 +1,13 @@
 import LessonDetailsPage from '@/component/LessionsDetailsPage';
-import { getLessonsById } from '@/lib/api/lessons';
+import { getLessonsDetailsById } from '@/lib/api/lessons';
 import React from 'react';
 
 const lessionDetailsPage = async({params}) => {
 
     const {id} = await params
+    const lessonData = await getLessonsDetailsById(id)
 
-    console.log(id);
-
-    const lessonData = await getLessonsById(id)
-
-    console.log(lessonData);
+    // console.log(lessonData);
 
     return (
         <div>

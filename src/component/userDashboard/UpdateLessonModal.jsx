@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Label, Modal, Surface, TextField } from "@heroui/react";
 import { Edit3, Image, Key } from "lucide-react";
+import { lessonUpdate } from '@/lib/action/lessonUpdate';
+import { toast } from 'react-toastify';
 
 export function UpdateLessonModal({ 
   isOpen, 
@@ -23,14 +25,14 @@ export function UpdateLessonModal({
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log(lessonData);
+  // console.log(lessonData);
 
   useEffect(() => {
     if (lessonData) {
       setFormData({
         title: lessonData.title || "",
         category: lessonData.category || "",
-        content: lessonData.content || "",
+        description: lessonData.content || "",
         access: lessonData.access || "Free",
         userName: lessonData.author.name || "MD Limon", 
         userEmail: lessonData.author.email || "limon@example.com", 
@@ -55,9 +57,17 @@ export function UpdateLessonModal({
     setIsSubmitting(true);
 
     try {
-      // এখানে আপনার MongoDB API রাউট কল হবে (যেমন: fetch(`/api/lessons/${lessonData.id}`))
-      // স্যাম্পল সাকসেস স্টেট প্রসেস:
-      await new Promise((resolve) => setTimeout(resolve, 1000)); 
+      const updateData = {
+        ...formData,
+        image: selectedImage
+      }
+
+      // console.log(updateData);
+
+      const updateLessonData = await lessonUpdate(lessonData._id,updateData )
+      if(updateLessonData.modifiedCount){
+        toast.success('Lesson Update Successful')
+      }
       
       if (onUpdateSuccess) {
         onUpdateSuccess({ ...formData, image: selectedImage });

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import MyLessons from './MyLesson';
 import { UpdateLessonModal } from '@/component/userDashboard/UpdateLessonModal';
+import { toast } from 'react-toastify';
 
 export default function MyLessonsDashboard({lessonData}) {
 

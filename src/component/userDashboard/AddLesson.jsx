@@ -27,12 +27,11 @@ export default function AddLesson({ user }) {
     category: "",
     emotionalTone: "",
     access: "Free",
-    
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  console.log(user);
+  // console.log(user);
   // Handle local file selection and generate preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -96,38 +95,40 @@ export default function AddLesson({ user }) {
     // 2. Prepare payload for your MongoDB/Backend
     const payload = {
       ...formData,
-      imageUrl: uploadedImageUrl,// Enriched with verified cloud host destination URL
-      author:{
-        authorId:user.id,
-        name:user.name,
-        email:user.email,
-        image:user.image
-    } 
+      imageUrl: uploadedImageUrl, // Enriched with verified cloud host destination URL
+      author: {
+        authorId: user.id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
     };
 
+    console.log(payload);
+
     const result = await createLesson(payload);
-    if(result.insertedId){
-        ('Lesson Post Success')
+    if (result.insertedId) {
+      toast.success("Lesson Post Success");
     }
-    console.log("Submitting payload to database:", payload);
-    console.log(result);
+    // console.log("Submitting payload to database:", payload);
+    // console.log(result);
 
     // Simulate successful API call response
-    setTimeout(() => {
-      toast.success(
-        "Saved Successfully! Record entry registered with hosted cloud image link.",
-      );
-      // Reset Form State safely
-      setFormData({
-        title: "",
-        description: "",
-        category: "",
-        emotionalTone: "",
-        access: "Free",
-      });
-      removeImage();
-      setIsUploading(false);
-    }, 1000);
+      setTimeout(() => {
+        toast.success(
+          "Saved Successfully! Record entry registered with hosted cloud image link.",
+        );
+        // Reset Form State safely
+        setFormData({
+          title: "",
+          description: "",
+          category: "",
+          emotionalTone: "",
+          access: "Free",
+        });
+        removeImage();
+        setIsUploading(false);
+      }, 1000);
   };
 
   return (

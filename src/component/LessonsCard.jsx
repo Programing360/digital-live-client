@@ -2,17 +2,12 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  Card,
-  CardHeader,
-  div,
-  CardFooter,
-  Avatar,
-  Button,
-  Chip,
-} from "@heroui/react";
+import { Card, CardFooter, Avatar, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
 import { Lock, Calendar, Heart, Bookmark, Eye } from "lucide-react";
+import Image from "next/image";
+import { createFavoritesLesson } from "@/lib/action/favorites";
+import { toast } from "react-toastify";
 
 // Color mapping system for Emotional Tones as shown on the left sidebar of image_e3125c.jpg
 const toneColorMap = {
@@ -31,17 +26,38 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
     description,
     category,
     emotionalTone,
-    accessLevel,
+    access,
     createdAt,
-    coverImage,
-    likes = 0,
+    author,
+    imageUrl,
     bookmarks = 0,
-    creator = { name: "Anonymous", image: "" },
+    // creator = { name: "Anonymous", image: "" },
   } = lesson;
+  // console.log(lesson);
+  // const [favorites, setFavorites] = useState(0);
+  // console.log(favorites);
+  // useEffect(() => {
+  //   favoritesCounts(favorites);
+  // }, [favorites]);
+
+  const handleFavorites = async () => {
+    const newFavorites = {
+      userId: author?.authorId,
+      lessonId: _id,
+    };
+
+    // console.log(newFavorites, author);
+
+    const data = await createFavoritesLesson(newFavorites);
+
+    if (data.insertedId) {
+      toast.success("Saved Favorite Lesson❤️");
+    }
+  };
 
   // Premium lock condition validation logic
   const isLocked =
-    accessLevel?.toLowerCase() === "premium" && userPlan !== "Premium";
+    access?.toLowerCase() === "premium" && userPlan !== "Premium";
 
   return (
     <motion.div
@@ -55,16 +71,16 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
       <Card className="w-full relative overflow-hidden bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[24px] shadow-sm hover:shadow-xl transition-shadow duration-300 flex-col justify-between">
         {/* Upper Card Area: Cover Image & Floating Category Badge */}
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-zinc-800 ">
-          <img
+          <Image
             src={
-              coverImage ||
+              imageUrl ||
               "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
             }
             alt={title}
+            width={40}
+            height={40}
             className={`w-full h-full object-cover transition-transform duration-700 ${
-              isLocked
-                ? "blur-md scale-105 select-none pointer-events-none"
-                : "hover:scale-105"
+              isLocked ? "" : "hover:scale-105"
             }`}
           />
 
@@ -82,12 +98,12 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
             <Chip
               size="sm"
               color={
-                accessLevel?.toLowerCase() === "premium" ? "warning" : "default"
+                access?.toLowerCase() === "premium" ? "warning" : "default"
               }
               variant="solid"
               className="font-bold text-[10px] uppercase tracking-wider px-2"
             >
-              {accessLevel}
+              {access}
             </Chip>
           </div>
 
@@ -161,14 +177,16 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
         <CardFooter className="flex flex-col border-t  border-slate-100 dark:border-zinc-800/60  bg-slate-50/40 dark:bg-zinc-900/20">
           <div className="flex items-center justify-between gap-2 px-5 pb-2 pt-2 ">
             <div className="flex items-center gap-2 max-w-[50%] ">
-              <Avatar
-                size="sm"
-                src={creator.image || "https://i.pravatar.cc/150"}
-                name={creator.name}
-                className="w-7 h-7 border border-default-200"
-              />
+              <Avatar>
+                <Avatar.Image
+                  size="sm"
+                  src={author?.image || "https://i.pravatar.cc/150"}
+                  name={author?.name || ""}
+                  className="w-full border border-default-200"
+                />
+              </Avatar>
               <span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 truncate">
-                {creator.name}
+                {author?.name}
               </span>
             </div>
 
@@ -177,12 +195,14 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
               <div className="flex items-center gap-1 text-default-400 text-xs">
                 <Heart
                   size={13}
-                  className="hover:text-rose-500 transition-colors cursor-pointer"
+                  className="hover:text-rose-500 transition-colors cursor-pointer "
                 />
-                <span className="font-medium text-[11px]">{likes}</span>
+
+                <span className="font-medium text-[11px]">0</span>
               </div>
               <div className="flex items-center gap-1 text-default-400 text-xs">
                 <Bookmark
+                  onClick={handleFavorites}
                   size={13}
                   className="hover:text-violet-500 transition-colors cursor-pointer"
                 />
@@ -213,7 +233,6 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
                   size="sm"
                   radius="full"
                   variant="flat"
-                  
                   color="secondary"
                   className={
                     !isLocked

@@ -162,6 +162,7 @@ export default function LessonsFeed({
                   key={lesson._id}
                   lesson={lesson}
                   userPlan={userPlan}
+                  
                 />
               ))}
             </div>

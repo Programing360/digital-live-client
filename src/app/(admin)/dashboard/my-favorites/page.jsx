@@ -1,63 +1,149 @@
-"use client";
-import React, { useState } from 'react';
-import { Card, Button, Chip } from "@heroui/react";
-import { Trash2, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Eye, HeartOff, Search } from "lucide-react";
+import { favoriteDataById } from "@/lib/api/favorite";
+import { getUseSession } from "@/lib/core/session";
 
-export default function MyFavorites() {
-  const [filter, setFilter] = useState("All");
-  const [favorites, setFavorites] = useState([
-    { id: 1, title: "The Art of Stoic Time Management", category: "Productivity", tone: "Calm", author: "Sophia Lin" },
-    { id: 2, title: "Healing After Major Emotional Loss", category: "Mindset", tone: "Gratitude", author: "Marcus Brody" },
-  ]);
+export default async function MyFavoritesPage() {
+  const user = await getUseSession();
 
-  const filteredData = filter === "All" ? favorites : favorites.filter(f => f.category === filter);
+  const favorites = await favoriteDataById(user?.id);
+  // console.log(favorites);
 
   return (
-    <div className="space-y-6" data-aos="fade-up">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">My Saved Favorites</h2>
-          <p className="text-slate-500 text-sm mt-1">Review core bookmarked life insights and references saved to your account profile tier.</p>
-        </div>
-        <div className="flex gap-1.5 flex-wrap">
-          {["All", "Productivity", "Mindset"].map(cat => (
-            <Button key={cat} size="sm" variant={filter === cat ? "solid" : "flat"} color={filter === cat ? "primary" : "default"} onClick={() => setFilter(cat)} className="font-bold rounded-xl">
-              {cat}
-            </Button>
-          ))}
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm border">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">
+              My Favorites ❤️
+            </h1>
+            <p className="text-slate-500 mt-1">
+              Manage your saved life lessons
+            </p>
+          </div>
+
+          <div className="bg-indigo-50 px-5 py-3 rounded-xl">
+            <span className="text-sm text-slate-500">Total Favorites</span>
+            <h2 className="text-2xl font-bold text-indigo-600">
+              {favorites.length}
+            </h2>
+          </div>
         </div>
       </div>
 
-      <Card className="border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left border-collapse min-w-[500px]">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="p-4 pl-6">Saved Insight</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Emotional Tone</th>
-                <th className="p-4 pr-6 text-right">Action Links</th>
+      {/* Filters */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Search */}
+          <div className="relative">
+            <Search
+              size={18}
+              className="absolute left-3 top-3 text-slate-400"
+            />
+            <input
+              type="text"
+              placeholder="Search lessons..."
+              className="w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Category */}
+          <select className="border rounded-xl px-4 py-3">
+            <option>All Categories</option>
+            <option>Career</option>
+            <option>Personal Growth</option>
+            <option>Relationships</option>
+          </select>
+
+          {/* Tone */}
+          <select className="border rounded-xl px-4 py-3">
+            <option>All Tones</option>
+            <option>Motivational</option>
+            <option>Inspirational</option>
+            <option>Sad</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="px-5 py-4 text-left">Lesson</th>
+                <th className="px-5 py-4 text-left">Category</th>
+                <th className="px-5 py-4 text-left">Tone</th>
+                <th className="px-5 py-4 text-left">Saved Date</th>
+                <th className="px-5 py-4 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 text-sm text-slate-700 font-medium">
-              {filteredData.map(fav => (
-                <tr key={fav.id} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="p-4 pl-6">
-                    <p className="font-bold text-slate-900">{fav.title}</p>
-                    <p className="text-xs font-semibold text-slate-400 mt-0.5">By {fav.author}</p>
+
+            <tbody>
+              {favorites.map((lesson) => (
+                <tr
+                  key={lesson._id}
+                  className="border-t hover:bg-slate-50 transition"
+                >
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-4">
+                      <Image
+                        src={lesson.lesson.imageUrl}
+                        alt={lesson.lesson.title}
+                        width={70}
+                        height={50}
+                        className="rounded-lg object-cover"
+                      />
+                      <div>
+                        <h3 className="font-semibold">{lesson.lesson.title}</h3>
+                      </div>
+                    </div>
                   </td>
-                  <td className="p-4"><Chip size="sm" variant="flat" color="secondary" className="font-bold">{fav.category}</Chip></td>
-                  <td className="p-4"><Chip size="sm" variant="dot" color="warning" className="font-bold">{fav.tone}</Chip></td>
-                  <td className="p-4 pr-6 text-right space-x-1">
-                    <Button size="sm" variant="flat" color="primary" className="font-bold rounded-lg" endContent={<ExternalLink size={14}/>}>View</Button>
-                    <Button isIconOnly size="sm" variant="light" color="danger" onClick={() => setFavorites(favorites.filter(f => f.id !== fav.id))}><Trash2 size={16}/></Button>
+
+                  <td className="px-5 py-4">
+                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                      {lesson.lesson.category}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">
+                      {lesson.lesson.emotionalTone}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-4 text-slate-500">
+                    {new Date(lesson.saveAt).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <div className="flex justify-center gap-3">
+                      <Link
+                        href={`/publicLessons/${lesson.lesson._id}`}
+                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                      >
+                        <Eye size={16} />
+                        Details
+                      </Link>
+
+                      <button className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100">
+                        <HeartOff size={16} />
+                        Remove
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

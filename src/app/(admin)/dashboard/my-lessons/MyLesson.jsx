@@ -85,7 +85,7 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
             <tbody className="divide-y divide-slate-50 text-sm text-slate-700 font-medium">
               {lessons.map((lesson) => (
                 <tr
-                  key={lesson.id}
+                  key={lesson._id}
                   className="hover:bg-slate-50/60 transition-colors"
                 >
                   {/* Lesson Content & Created Date */}

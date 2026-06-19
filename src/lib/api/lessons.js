@@ -8,13 +8,13 @@ export const allLessons = async () => {
   return res.json();
 };
 
-// export const getLessonsById = async (lessonId) => {
-//   const res = await fetch(`${baseURL}/api/lesson/${lessonId}`);
-//   return res.json();
-// };
+export const getLessonsDetailsById = async (id) => {
+   const res = await serverFetchById(`api/lesson/${id}`)
+  return res
+};
 
-export const getLessonById = async (lessonId) => {
-  const res = await serverFetchById(`api/lessons/${lessonId}`)
+export const getLessonById = async (id) => {
+  const res = await serverFetchById(`api/lessons/${id}`)
   return res
 };
 
