@@ -25,9 +25,9 @@ export const auth = betterAuth({
         type: "string",
         defaultValue: "user",
       },
-      plan: {
-        type: "string",
-        defaultValue: "free",
+      isPremium: {
+        type: "boolean",
+        defaultValue: true,
       },
     },
   },
