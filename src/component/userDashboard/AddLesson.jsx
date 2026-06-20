@@ -8,7 +8,6 @@ import {
   ListBox,
   Label,
   Tooltip,
-  toast,
 } from "@heroui/react";
 import {
   Sparkles,
@@ -19,6 +18,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { createLesson } from "@/lib/action/lessonAdd";
+import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function AddLesson({ user }) {
   const [formData, setFormData] = useState({
@@ -106,25 +107,28 @@ export default function AddLesson({ user }) {
 
     const result = await createLesson(payload);
     if (result.insertedId) {
-      toast.success("Lesson Post Success");
-    }
-
-    // Simulate successful API call response
-    setTimeout(() => {
-      toast.success(
-        "Saved Successfully! Record entry registered with hosted cloud image link.",
-      );
-      // Reset Form State safely
-      setFormData({
-        title: "",
-        description: "",
-        category: "",
-        emotionalTone: "",
-        access: "Free",
-      });
+      toast.success("Saved Successfully!");
       removeImage();
       setIsUploading(false);
-    }, 1000);
+    }
+
+    // console.log(result);
+
+    // Simulate successful API call response
+  //   setTimeout(() => {
+  //     toast.success(
+  //       "Saved Successfully! Record entry registered with hosted cloud image link.",
+  //     );
+  //     // Reset Form State safely
+  //     setFormData({
+  //       title: "",
+  //       description: "",
+  //       category: "",
+  //       emotionalTone: "",
+  //       access: "Free",
+  //     });
+      
+  //   }, 1000);
   };
 
   return (
@@ -263,9 +267,11 @@ export default function AddLesson({ user }) {
                 </label>
               ) : (
                 <div className="relative border border-slate-200 rounded-2xl overflow-hidden group aspect-video bg-slate-900 flex items-center justify-center">
-                  <img
+                  <Image
                     src={imagePreview}
                     alt="Upload Preview"
+                    width={40}
+                    height={40}
                     className="w-full h-full object-contain"
                   />
                   <Button

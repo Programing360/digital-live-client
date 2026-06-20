@@ -6,16 +6,25 @@ import React from "react";
 
 const page = async () => {
   const user = await getUseSession();
-   const allLesson = await allLessons()
+  const allLesson = await allLessons();
   const lessonData = await getLessonById(user?.id);
-   const favorites = await favoriteDataById(user?.id);
-  
+  const favorites = await favoriteDataById(user?.id);
 
-  console.log(allLesson);
+  const myLesson = allLesson.filter(lesson => lesson.author.authorId === user?.id)
+
+
+  const totalLikes = myLesson.reduce((sum, num) => sum + num.likesCount, 0);
+
+  // console.log(myLesson);
 
   return (
     <div>
-      <DashboardHome user={user} lessonData={lessonData} favorites={favorites}></DashboardHome>
+      <DashboardHome
+        user={user}
+        lessonData={lessonData}
+        favorites={favorites}
+        totalLikes={totalLikes}
+      ></DashboardHome>
     </div>
   );
 };

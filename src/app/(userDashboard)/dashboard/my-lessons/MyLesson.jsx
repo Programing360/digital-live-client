@@ -14,6 +14,8 @@ import {
 import { lessonUpdate } from "@/lib/action/lessonUpdate";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { deleteLesson } from "@/lib/action/favorites";
+import { useRouter } from "next/navigation";
 
 export default function MyLessons({
   lessonsData = [],
@@ -22,6 +24,8 @@ export default function MyLessons({
 }) {
   const [lessons, setLessons] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
+
+  const router = useRouter()
 
   useEffect(() => {
     if (lessonsData) {
@@ -52,12 +56,16 @@ export default function MyLessons({
 
     const res = await lessonUpdate(id, updateVisibility);
     console.log(res);
+    if(res.ok){
+      toast.success('Update Successful')
+    }
+
   };
 
   // Access Level toggle handler (Premium users only check)
   const toggleAccessLevel = async (id) => {
     if (!isPremiumUser) {
-      alert("Only premium users can toggle access levels!");
+      toast.error("Only premium users can toggle access levels!");
       return;
     }
 
@@ -78,9 +86,15 @@ export default function MyLessons({
     }
   };
 
-  const handleDelete = () => {
-    setLessons(lessons.filter((l) => l.id !== deleteId));
-    setDeleteId(null);
+  const handleDelete = async (id) => {
+    const res = await deleteLesson(id)
+
+    if(res.deletedCount){
+      toast.success('Lesson Delete Success')
+      router.refresh()
+
+    }
+   
   };
 
   return (
@@ -236,7 +250,7 @@ export default function MyLessons({
                       size="sm"
                       variant="light"
                       color="danger"
-                      onClick={() => setDeleteId(lesson.id)}
+                      onClick={() => handleDelete(lesson._id)}
                       title="Delete Lesson"
                     >
                       <Trash2 size={16} />

@@ -3,7 +3,7 @@ import React from "react";
 import { Card, Button, Avatar, Chip } from "@heroui/react";
 import { BookOpen, Heart, Eye, ArrowUpRight, TrendingUp } from "lucide-react";
 
-export default function DashboardHome({ user, setActiveTab, lessonData, favorites }) {
+export default function DashboardHome({ user, setActiveTab, lessonData, favorites,totalLikes }) {
   const stats = [
     {
       title: "My Lessons",
@@ -25,7 +25,7 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
     },
     {
       title: "Total Likes",
-      val: "348",
+      val: `${totalLikes}`,
       icon: <Heart size={20} />,
       bg: "bg-rose-50 text-rose-600",
     },

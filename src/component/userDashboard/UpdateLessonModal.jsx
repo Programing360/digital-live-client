@@ -61,7 +61,7 @@ export function UpdateLessonModal({
         image: selectedImage
       }
       
-      const updateLessonData = await lessonUpdate(lessonData._id,updateData )
+      const updateLessonData = await lessonUpdate(lessonData._id, updateData )
       if(updateLessonData.modifiedCount){
         toast.success('Lesson Update Successful')
       }
