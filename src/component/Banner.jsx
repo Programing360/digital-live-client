@@ -2,10 +2,15 @@
 
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 // Clean UI Design System Icons
 const SparkleIcon = () => (
-  <svg className="w-4 h-4 text-[#6366F1]" fill="currentColor" viewBox="0 0 24 24">
+  <svg
+    className="w-4 h-4 text-[#6366F1]"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
     <path d="M12 2l2.4 7.2L22 11.6l-6.4 4.8L18 24l-6-4.8L6 24l2.4-7.6L2 11.6l7.6-2.4L12 2z" />
   </svg>
 );
@@ -17,8 +22,18 @@ const HeartIcon = () => (
 );
 
 const BookmarkIcon = () => (
-  <svg className="w-4 h-4 text-default-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+  <svg
+    className="w-4 h-4 text-default-400"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+    />
   </svg>
 );
 
@@ -31,7 +46,11 @@ export default function HeroSection() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 100, damping: 15 },
+    },
   };
 
   // Premium continuous infinite smooth float configuration
@@ -47,23 +66,21 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-tr from-white via-slate-50 to-purple-50/40 py-16 px-6 md:px-12 lg:px-16">
-      
       {/* Background Decorative Gradient Radial Bloom */}
       <div className="absolute right-[-10%] top-[5%] w-[65%] h-[85%] opacity-70 pointer-events-none z-0 hidden md:block">
         <div className="w-full h-full bg-gradient-to-br from-purple-200/40 via-indigo-100/50 to-transparent blur-[130px] rounded-full" />
       </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full z-10">
-        
         {/* Left Column: Context Branding Titles */}
-        <motion.div 
+        <motion.div
           className="md:col-span-6 flex flex-col items-start gap-6 text-left"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Tag Wrapper Pill */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="flex items-center gap-2 bg-[#F1F5F9] border border-slate-200 px-3 py-1.5 rounded-full shadow-sm"
           >
@@ -74,7 +91,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Core App Heading */}
-          <motion.h1 
+          <motion.h1
             variants={itemVariants}
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.12]"
           >
@@ -85,24 +102,28 @@ export default function HeroSection() {
           </motion.h1>
 
           {/* Description Paragraph */}
-          <motion.p 
+          <motion.p
             variants={itemVariants}
             className="text-base sm:text-lg text-slate-600 font-medium max-w-md leading-relaxed"
           >
-            Capture your life lessons, inspire others, and grow together as a community.
+            Capture your life lessons, inspire others, and grow together as a
+            community.
           </motion.p>
 
           {/* Hero Action Trigger Buttons */}
-          <motion.div variants={itemVariants} className="flex items-center gap-4 w-full sm:w-auto pt-2">
-            <Button 
-              size="lg" 
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center gap-4 w-full sm:w-auto pt-2"
+          >
+            <Button
+              size="lg"
               className="bg-gradient-to-r from-[#5850EC] to-[#6366F1] text-white font-semibold px-8 shadow-lg shadow-indigo-100 hover:opacity-95 transition-opacity"
               radius="full"
             >
               Start Sharing
             </Button>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="bordered"
               className="border-slate-200 bg-white hover:bg-slate-50 font-semibold px-8 text-slate-700 shadow-sm"
               radius="full"
@@ -112,46 +133,67 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Platform Performance Metrics Block */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="w-full bg-white/70 backdrop-blur-md border border-slate-100 rounded-2xl p-5 shadow-xl shadow-slate-200/40 grid grid-cols-4 gap-2 mt-8 text-center"
           >
             <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">12K+</h3>
-              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">Lessons Shared</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">
+                12K+
+              </h3>
+              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                Lessons Shared
+              </p>
             </div>
             <div className="border-l border-slate-100">
-              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">2.5K+</h3>
-              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">Contributors</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">
+                2.5K+
+              </h3>
+              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                Contributors
+              </p>
             </div>
             <div className="border-l border-slate-100">
-              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">25K+</h3>
-              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">Lessons Saved</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">
+                25K+
+              </h3>
+              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                Lessons Saved
+              </p>
             </div>
             <div className="border-l border-slate-100">
-              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">95%</h3>
-              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">Positive Impact</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#5850EC]">
+                95%
+              </h3>
+              <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                Positive Impact
+              </p>
             </div>
           </motion.div>
         </motion.div>
 
         {/* Right Column: Interactive Staggered Floating Cards Workspace */}
         <div className="md:col-span-6 relative flex items-center justify-center h-[450px] sm:h-[520px] w-full mt-8 md:mt-0">
-          
           {/* Card Module 1: Sarah Ahmed Quote Card */}
           <motion.div
             animate={floatAnimation(0)}
             className="absolute top-6 left-4 sm:left-10 w-[250px] sm:w-[285px] bg-white rounded-2xl p-4 shadow-xl shadow-indigo-100/50 border border-slate-100/80 z-20"
           >
             <div className="flex items-center gap-2.5 mb-3">
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" 
-                alt="Sarah Ahmed profile photo illustration asset" 
+              <Image
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+                alt="Sarah Ahmed profile photo illustration asset"
+                width={40}
+                height={40}
                 className="w-9 h-9 rounded-full object-cover border border-slate-50"
               />
               <div>
-                <h4 className="text-xs font-bold text-slate-800">Sarah Ahmed</h4>
-                <p className="text-[10px] text-slate-400 font-semibold">2 hours ago</p>
+                <h4 className="text-xs font-bold text-slate-800">
+                  Sarah Ahmed
+                </h4>
+                <p className="text-[10px] text-slate-400 font-semibold">
+                  2 hours ago
+                </p>
               </div>
             </div>
             <p className="text-sm font-bold text-slate-800 leading-snug">
@@ -160,7 +202,9 @@ export default function HeroSection() {
             <div className="flex items-center justify-between mt-4 pt-1">
               <div className="flex items-center gap-1">
                 <HeartIcon />
-                <span className="text-[11px] font-bold text-slate-500">342</span>
+                <span className="text-[11px] font-bold text-slate-500">
+                  342
+                </span>
               </div>
               <BookmarkIcon />
             </div>
@@ -172,14 +216,18 @@ export default function HeroSection() {
             className="absolute bottom-6 right-2 sm:right-6 w-[250px] sm:w-[285px] bg-white rounded-2xl p-4 shadow-xl shadow-indigo-100/50 border border-slate-100/80 z-20"
           >
             <div className="flex items-center gap-2.5 mb-3">
-              <img 
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80" 
-                alt="Riad Hasan profile photo illustration asset" 
+              <Image
+                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"
+                alt="Riad Hasan profile photo illustration asset"
+                width={40}
+                height={40}
                 className="w-9 h-9 rounded-full object-cover border border-slate-50"
               />
               <div>
                 <h4 className="text-xs font-bold text-slate-800">Riad Hasan</h4>
-                <p className="text-[10px] text-slate-400 font-semibold">1 day ago</p>
+                <p className="text-[10px] text-slate-400 font-semibold">
+                  1 day ago
+                </p>
               </div>
             </div>
             <p className="text-sm font-bold text-slate-800 leading-snug">
@@ -188,7 +236,9 @@ export default function HeroSection() {
             <div className="flex items-center justify-between mt-4 pt-1">
               <div className="flex items-center gap-1">
                 <HeartIcon />
-                <span className="text-[11px] font-bold text-slate-500">521</span>
+                <span className="text-[11px] font-bold text-slate-500">
+                  521
+                </span>
               </div>
               <BookmarkIcon />
             </div>
@@ -199,9 +249,11 @@ export default function HeroSection() {
             animate={floatAnimation(0.9)}
             className="absolute top-[28%] right-4 sm:right-12 w-[170px] sm:w-[200px] aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-4 border-white z-10 hidden sm:block"
           >
-            <img 
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&auto=format&fit=crop&q=80" 
-              alt="Mountain nature background view scenery" 
+            <Image
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&auto=format&fit=crop&q=80"
+              alt="Mountain nature background view scenery"
+              width={40}
+              height={40}
               className="w-full h-full object-cover"
             />
           </motion.div>
@@ -212,19 +264,32 @@ export default function HeroSection() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="absolute left-[-1%] top-[46%] bg-[#5850EC] text-white p-2.5 rounded-full shadow-xl z-30"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
             </svg>
           </motion.div>
 
           {/* Decorative Vector Sparkle Star */}
           <div className="absolute right-[24%] bottom-[26%] text-purple-300 opacity-50 pointer-events-none hidden sm:block">
-            <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-8 h-8 animate-pulse"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path d="M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3z" />
             </svg>
           </div>
         </div>
-
       </div>
     </section>
   );

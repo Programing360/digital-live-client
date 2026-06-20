@@ -1,10 +1,10 @@
-import { serverFetchById } from "../core/server";
+import { serverFetchById, serverUpdate } from "../core/server";
 
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 
-export const allLessons = async () => {
-  const res = await fetch(`${baseURL}/api/lessons`);
+export const allLessons = async (userId) => {
+  const res = await fetch(`${baseURL}/api/lessons?userId=${userId}`);
   return res.json();
 };
 
@@ -18,3 +18,7 @@ export const getLessonById = async (id) => {
   return res
 };
 
+export const lessonLikes = async(count) => {
+  const res = await serverUpdate(`api/likes`, count)
+  return res
+}

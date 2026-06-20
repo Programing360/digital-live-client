@@ -217,14 +217,14 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu Button */}
-            <button
+            <Button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-slate-700 dark:text-zinc-300 focus:outline-none"
+              className="lg:hidden text-slate-700 dark:text-zinc-300 focus:outline-none bg-white"
             >
               <motion.div animate={{ rotate: menuOpen ? 180 : 0 }}>
                 {menuOpen ? <X size={24} /> : <Menu size={24} />}
               </motion.div>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

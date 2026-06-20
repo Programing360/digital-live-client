@@ -1,19 +1,34 @@
-import LessonDetailsPage from '@/component/LessionsDetailsPage';
-import { getLessonsDetailsById } from '@/lib/api/lessons';
-import React from 'react';
+import LessonDetails from "@/component/LessionsDetailsPage";
+import OwnerGuard from "@/component/OwnerGuard";
+import { getLessonsDetailsById, lessonLikes } from "@/lib/api/lessons";
+import { getUseSession, requiredRole } from "@/lib/core/session";
+import { notFound } from "next/navigation";
+import React from "react";
 
-const lessionDetailsPage = async({params}) => {
+const LessonDetailsPage = async ({ params }) => {
+  const { id } = await params;
 
-    const {id} = await params
-    const lessonData = await getLessonsDetailsById(id)
+  const lessonData = await getLessonsDetailsById(id);
 
-    // console.log(lessonData);
+  if (!lessonData) {
+    return notFound();
+  }
 
-    return (
-        <div>
-            <LessonDetailsPage lessonData={lessonData}></LessonDetailsPage>
-        </div>
-    );
+  const user = await getUseSession();
+
+  if (
+    lessonData.visibility === "Private" &&
+    lessonData.author.authorId !== user?.id
+  ) {
+    return <OwnerGuard ownerId={user?.id} user={user?.id}></OwnerGuard>;
+  }
+
+  return (
+    <LessonDetails
+      lessonData={lessonData}
+      user={user}
+    />
+  );
 };
 
-export default lessionDetailsPage;
+export default LessonDetailsPage;

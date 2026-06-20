@@ -1,14 +1,25 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, HeartOff, Search } from "lucide-react";
-import { favoriteDataById } from "@/lib/api/favorite";
-import { getUseSession } from "@/lib/core/session";
+import { deleteFavoritesLesson } from "@/lib/action/favorites";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-export default async function MyFavoritesPage() {
-  const user = await getUseSession();
+export default function MyFavorites({user, favorites}) {
 
-  const favorites = await favoriteDataById(user?.id);
-  // console.log(favorites);
+  const router = useRouter()
+
+  const handleFavDelete = async (id) => {
+    const res = await deleteFavoritesLesson(id);
+
+    if(res.deletedCount > 0){
+      toast.success('Delete Successful')
+      router.refresh()
+    }
+
+    // console.log(res);
+  };
 
   return (
     <div className="space-y-6">
@@ -132,7 +143,10 @@ export default async function MyFavoritesPage() {
                         Details
                       </Link>
 
-                      <button className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 cursor-pointer">
+                      <button
+                        onClick={() => handleFavDelete(lesson.lesson._id)}
+                        className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 cursor-pointer"
+                      >
                         <HeartOff size={16} />
                         Remove
                       </button>

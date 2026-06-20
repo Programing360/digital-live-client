@@ -75,9 +75,6 @@ export default function LoginPage() {
       });
       return;
     }
-    console.log(email, password);
-    // const formData = new FormData(e.currentTarget);
-    // const user = Object.fromEntries(formData.entries());
 
     const { data, error } = await authClient.signIn.email({
       email: email,
@@ -86,7 +83,6 @@ export default function LoginPage() {
       callbackURL: "/",
     });
     // Success Simulation Response Layer
-    console.log(error);
     if (data?.user) {
       Swal.fire({
         icon: "success",

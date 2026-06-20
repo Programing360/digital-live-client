@@ -23,6 +23,7 @@ const categoriesList = [
 export default function LessonsFeed({
   initialLessons = [],
   userPlan = "Free",
+  favorites
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -162,7 +163,7 @@ export default function LessonsFeed({
                   key={lesson._id}
                   lesson={lesson}
                   userPlan={userPlan}
-                  
+                  favorites={favorites}
                 />
               ))}
             </div>

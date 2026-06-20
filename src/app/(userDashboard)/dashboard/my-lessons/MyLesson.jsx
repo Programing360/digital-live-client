@@ -11,45 +11,71 @@ import {
   Bookmark,
   Calendar,
 } from "lucide-react";
+import { lessonUpdate } from "@/lib/action/lessonUpdate";
+import { toast } from "react-toastify";
+import Link from "next/link";
 
-
-export default function MyLessons({ lessonsData = [], isPremiumUser = false, onEditAction }) {
+export default function MyLessons({
+  lessonsData = [],
+  isPremiumUser = false,
+  onEditAction,
+}) {
   const [lessons, setLessons] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
-  console.log(lessonsData);
+
   useEffect(() => {
     if (lessonsData) {
       setLessons(lessonsData);
     }
   }, [lessonsData]);
 
+  // console.log(lessonsData);
+
   // Visibility toggle handler
-  const toggleVisibility = (id) => {
-    setLessons(
-      lessons.map((l) =>
-        l.id === id
+  const toggleVisibility = async (id) => {
+    const lesson = lessons.find((l) => l._id === id);
+
+    const newVisibility = lesson.visibility === "Public" ? "Private" : "Public";
+
+    setLessons((prev) =>
+      prev.map((l) =>
+        l._id === id
           ? {
               ...l,
-              visibility: l.visibility === "Public" ? "Private" : "Public",
+              visibility: newVisibility,
             }
           : l,
       ),
     );
+
+    const updateVisibility = { visibility: newVisibility };
+
+    const res = await lessonUpdate(id, updateVisibility);
+    console.log(res);
   };
 
   // Access Level toggle handler (Premium users only check)
-  const toggleAccessLevel = (id) => {
+  const toggleAccessLevel = async (id) => {
     if (!isPremiumUser) {
-      alert("Only premium users can toggle access levels to Premium!");
+      alert("Only premium users can toggle access levels!");
       return;
     }
-    setLessons(
-      lessons.map((l) =>
-        l.id === id
-          ? { ...l, access: l.access === "Premium" ? "Free" : "Premium" }
-          : l,
-      ),
+
+    const lesson = lessons.find((l) => l._id === id);
+
+    const newAccess = lesson.access === "Premium" ? "Free" : "Premium";
+
+    // Optimistic UI Update
+    setLessons((prev) =>
+      prev.map((l) => (l._id === id ? { ...l, access: newAccess } : l)),
     );
+
+    const updateAccess = { access: newAccess };
+
+    const res = await lessonUpdate(id, updateAccess);
+    if (res.modifiedCount) {
+      toast.success("Access level Update");
+    }
   };
 
   const handleDelete = () => {
@@ -95,7 +121,14 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
                     </p>
                     <div className="flex items-center gap-1 text-xs font-semibold text-slate-400 mt-1">
                       <Calendar size={12} />
-                      <span>Created: {lesson.date}</span>
+                      <span>
+                        Created:{" "}
+                        {new Date(lesson.createAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
                     </div>
                   </td>
 
@@ -116,7 +149,7 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
                     <div className="flex items-center gap-3 text-xs font-semibold text-slate-500">
                       <span className="flex items-center gap-1 text-rose-500 bg-rose-50 px-2 py-1 rounded-md">
                         <Heart size={12} className="fill-rose-500" />{" "}
-                        {lesson.reactions || 0}
+                        {lesson.likesCount || 0}
                       </span>
                       <span className="flex items-center gap-1 text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
                         <Bookmark size={12} className="fill-amber-500" />{" "}
@@ -128,7 +161,7 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
                   {/* Access Level Toggle (Free / Premium - Premium user restriction) */}
                   <td className="p-4">
                     <button
-                      onClick={() => toggleAccessLevel(lesson.id)}
+                      onClick={() => toggleAccessLevel(lesson._id)}
                       className="focus:outline-none transition-transform active:scale-95"
                       title={
                         !isPremiumUser
@@ -157,7 +190,7 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
                       color={
                         lesson.visibility === "Public" ? "success" : "default"
                       }
-                      onClick={() => toggleVisibility(lesson.id)}
+                      onClick={() => toggleVisibility(lesson._id)}
                       className="font-bold rounded-lg"
                     >
                       {lesson.visibility === "Public" ? (
@@ -172,15 +205,17 @@ export default function MyLessons({ lessonsData = [], isPremiumUser = false, onE
                   {/* Action Buttons */}
                   <td className="p-4 pr-6 text-right space-x-1 whitespace-nowrap">
                     {/* Lesson Details Button */}
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="light"
-                      className="text-slate-400 hover:text-slate-600"
-                      title="Lesson Details"
-                    >
-                      <Eye size={16} />
-                    </Button>
+                    <Link href={`/publicLessons/${lesson._id}`}>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        className="text-slate-400 hover:text-slate-600"
+                        title="Lesson Details"
+                      >
+                        <Eye size={16} />
+                      </Button>
+                    </Link>
 
                     {/* Update Lesson Button */}
                     <Button

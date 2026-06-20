@@ -2,21 +2,23 @@ import React from "react";
 
 import LessonsFeed from "@/component/LessonsFeed";
 import { allLessons } from "@/lib/api/lessons";
-import { createFavoritesLesson } from "@/lib/action/favorites";
-
-export const favoritesCounts = async (count) => {
- const data = await createFavoritesLesson(count);
- console.log(data);
-};
+import { getUseSession } from "@/lib/core/session";
+import { favoriteDataById } from "@/lib/api/favorite";
 
 const page = async () => {
+  const user = await getUseSession();
   const lessonsData = await allLessons();
-  //   console.log(lessonsData);
 
+  const favorites = await favoriteDataById(user?.id);
+  // console.log(favorites,user);
   return (
     // Inside your main feed layout wrapper:
     <div className=" container mx-auto">
-      <LessonsFeed initialLessons={lessonsData} isUserPremium="Free" />
+      <LessonsFeed
+        initialLessons={lessonsData}
+        isUserPremium="Free"
+        favorites={favorites}
+      />
     </div>
   );
 };

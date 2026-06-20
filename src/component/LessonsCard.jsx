@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Card, CardFooter, Avatar, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -8,6 +8,9 @@ import { Lock, Calendar, Heart, Bookmark, Eye } from "lucide-react";
 import Image from "next/image";
 import { createFavoritesLesson } from "@/lib/action/favorites";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
+import { lessonLikes } from "@/lib/api/lessons";
+import { useRouter } from "next/navigation";
 
 // Color mapping system for Emotional Tones as shown on the left sidebar of image_e3125c.jpg
 const toneColorMap = {
@@ -19,7 +22,7 @@ const toneColorMap = {
   Neutral: "bg-neutral-400",
 };
 
-export default function LessonCard({ lesson, userPlan = "Free" }) {
+export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
   const {
     _id,
     title,
@@ -31,27 +34,50 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
     author,
     imageUrl,
     bookmarks = 0,
-    // creator = { name: "Anonymous", image: "" },
+    likesCount = 0,
+    likes = [],
+    favoritesCount,
   } = lesson;
-  // console.log(lesson);
-  // const [favorites, setFavorites] = useState(0);
-  // console.log(favorites);
-  // useEffect(() => {
-  //   favoritesCounts(favorites);
-  // }, [favorites]);
+
+  const { data: sesson } = authClient.useSession();
+  const user = sesson?.user;
+  const router = useRouter();
+
+  const isLike = likes?.includes(user?.id)
+
+  // console.log(favoritesCount);
 
   const handleFavorites = async () => {
     const newFavorites = {
-      userId: author?.authorId,
+      userId: user?.id,
+      userName: user?.name,
       lessonId: _id,
     };
 
     const data = await createFavoritesLesson(newFavorites);
+
     if (data.message) {
-      toast.error("Already in favorites");
+      toast.success(`${data.message}`);
     }
-    if (data.insertedId) {
-      toast.success("Saved Favorite Lesson❤️");
+  };
+
+  const handleLikeBtn = async (id) => {
+    if (!user) {
+      return toast.warn("Please log in to like");
+    }
+    const newLikes = {
+      lessonId: id,
+      userId: user?.id,
+    };
+
+    const likeCount = await lessonLikes(newLikes);
+
+    if (likeCount.liked === false) {
+      router.refresh();
+    }
+
+    if (likeCount.liked === true) {
+      router.refresh();
     }
   };
 
@@ -194,11 +220,17 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-default-400 text-xs">
                 <Heart
-                  size={13}
-                  className="hover:text-rose-500 transition-colors cursor-pointer "
+                  onClick={() => handleLikeBtn(_id)}
+                  size={16}
+                  fill={isLike ? "currentColor" : "none"}
+                  className={`cursor-pointer transition-colors ${
+                    isLike
+                      ? "text-red-500"
+                      : "text-default-400 hover:text-red-500"
+                  }`}
                 />
 
-                <span className="font-medium text-[11px]">0</span>
+                <span className="font-medium text-[11px]">{likesCount}</span>
               </div>
               <div className="flex items-center gap-1 text-default-400 text-xs">
                 <Bookmark

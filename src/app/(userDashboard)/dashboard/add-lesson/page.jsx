@@ -5,7 +5,6 @@ import React from 'react';
 const LessonAddPage = async() => {
 
   const user = await getUseSession()
-  // console.log(user);
 
   return (
     <div>

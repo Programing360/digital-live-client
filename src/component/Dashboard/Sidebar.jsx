@@ -8,23 +8,25 @@ import {
   Heart,
   User,
   Users,
-  FolderHeart,
-  Settings,
   LogOut,
-  X,
+  ShieldAlert,
+  UserCog,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-export default function Sidebar({
-  isMobileMenuOpen,
-  setIsMobileMenuOpen,
-}) {
+export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   const pathname = usePathname();
 
+  const { data: session, isPending, error } = authClient.useSession();
+
+  const user = session?.user;
+
+  // console.log(user);
+
   // আপনার ফোল্ডার স্ট্রাকচার ইমেজ অনুযায়ী সঠিক Href পাথসমূহ
-  const menuItems = [
+  const userItem = [
     {
       id: "dashboard",
       label: "Dashboard",
@@ -57,19 +59,45 @@ export default function Sidebar({
     },
   ];
 
-  const adminItems = [
-    { id: "manage-users", label: "Manage Users", icon: <Users size={20} /> },
+  const adminMenuItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard Home",
+      href: "/dashboard/admin",
+      icon: <LayoutDashboard></LayoutDashboard>,
+    },
+    {
+      id: "manage-users",
+      label: "Manage Users",
+      href: "/dashboard/admin/manage-users",
+      icon: <Users></Users>,
+    },
     {
       id: "manage-lessons",
       label: "Manage Lessons",
-      icon: <FolderHeart size={20} />,
+      href: "/dashboard/admin/manage-lessons",
+      icon: <BookOpen />,
     },
-    { id: "settings", label: "Settings", icon: <Settings size={20} /> },
+    {
+      id: "reported-lessons",
+      label: "Reported Lessons",
+      href: "/dashboard/admin/reported-lessons",
+      icon: <ShieldAlert />,
+    },
+    {
+      id: "profile",
+      label: "Admin Profile",
+      href: "/dashboard/admin/profile",
+      icon: <UserCog />,
+    },
   ];
 
-  const { data: session, isPending, error } = authClient.useSession();
-  const user = session?.user;
-//   console.log(session,error);
+  const navItems = {
+    user: userItem,
+    admin: adminMenuItems,
+  };
+  const isAdmin = user?.role === "admin";
+  const menuItems = navItems[user?.role] || userItem;
 
   return (
     <aside
@@ -96,40 +124,76 @@ export default function Sidebar({
 
         {/* Navigation links */}
         <nav className="px-3 space-y-1">
+          {/* ================= ADMIN MENU ================= */}
+          {isAdmin && (
+            <>
+              <div className="pt-2 pb-2 px-4 text-[11px] font-bold text-indigo-400 tracking-widest uppercase">
+                Admin Panel
+              </div>
+
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href;
+
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
+            ${
+              isActive
+                ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
+                : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
+            }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </>
+          )}
+
+          {/* ================= USER MENU ================= */}
+          <div className="pt-6 pb-2 px-4 text-[11px] font-bold text-slate-500 tracking-widest uppercase">
+            User Panel
+          </div>
+
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
 
+            // Admin এর জন্য User Menu disabled
+            if (isAdmin) {
+              return (
+                <button
+                  key={item.id}
+                  disabled
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 opacity-50 cursor-not-allowed"
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              );
+            }
+
+            // Normal User
             return (
               <Link
                 key={item.id}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
-                  ${
-                    isActive
-                      ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
-                      : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
-                  }`}
+        ${
+          isActive
+            ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
+            : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
+        }`}
               >
-                {item.icon} {item.label}
+                {item.icon}
+                {item.label}
               </Link>
             );
           })}
-
-          {/* Admin Block Divider */}
-          <div className="pt-6 pb-2 px-4 text-[11px] font-bold text-slate-500 tracking-widest uppercase">
-            Admin
-          </div>
-
-          {adminItems.map((item) => (
-            <button
-              key={item.id}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed opacity-60"
-              disabled
-            >
-              {item.icon} {item.label}
-            </button>
-          ))}
         </nav>
       </div>
 
@@ -138,13 +202,15 @@ export default function Sidebar({
         <div className="flex items-center gap-3 px-3 py-2">
           <Avatar>
             <Avatar.Image
-            src={user?.image || ''}
-            size="sm"
-            className="ring-2 ring-indigo-500/30"
-          />
+              src={user?.image || ""}
+              size="sm"
+              className="ring-2 ring-indigo-500/30"
+            />
           </Avatar>
           <div className="flex-1 min-w-0 hidden lg:block">
-            <p className="text-xs font-bold text-white truncate">{user?.name}</p>
+            <p className="text-xs font-bold text-white truncate">
+              {user?.name}
+            </p>
             <p className="text-[10px] font-medium text-slate-400 truncate">
               {user?.email}
             </p>

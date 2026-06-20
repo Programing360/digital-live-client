@@ -13,7 +13,7 @@ export function UpdateLessonModal({
   isPremiumUser = false, 
   onUpdateSuccess 
 }) {
-  // ফর্ম ফিল্ডগুলোর স্টেট ম্যানেজমেন্ট
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -25,7 +25,6 @@ export function UpdateLessonModal({
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // console.log(lessonData);
 
   useEffect(() => {
     if (lessonData) {
@@ -61,9 +60,7 @@ export function UpdateLessonModal({
         ...formData,
         image: selectedImage
       }
-
-      // console.log(updateData);
-
+      
       const updateLessonData = await lessonUpdate(lessonData._id,updateData )
       if(updateLessonData.modifiedCount){
         toast.success('Lesson Update Successful')
