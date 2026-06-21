@@ -98,6 +98,8 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   };
   const isAdmin = user?.role === "admin";
   const menuItems = navItems[user?.role] || userItem;
+  const clientItem = navItems[user?.role === 'admin' && 'user'] || userItem;
+
 
   return (
     <aside
@@ -159,7 +161,7 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
             User Panel
           </div>
 
-          {menuItems.map((item) => {
+          {clientItem.map((item) => {
             const isActive = pathname === item.href;
 
             // Admin এর জন্য User Menu disabled

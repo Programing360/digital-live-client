@@ -1,7 +1,7 @@
 import DashboardHome from "@/component/userDashboard/DashboardHome";
 import { favoriteDataById } from "@/lib/api/favorite";
 import { allLessons, getLessonById } from "@/lib/api/lessons";
-import { getUseSession } from "@/lib/core/session";
+import { getUseSession, requiredRole } from "@/lib/core/session";
 import React from "react";
 
 const page = async () => {
@@ -10,12 +10,13 @@ const page = async () => {
   const lessonData = await getLessonById(user?.id);
   const favorites = await favoriteDataById(user?.id);
 
-  const myLesson = allLesson.filter(lesson => lesson.author.authorId === user?.id)
-
+  const myLesson = allLesson.filter(
+    (lesson) => lesson.author.authorId === user?.id,
+  );
 
   const totalLikes = myLesson.reduce((sum, num) => sum + num.likesCount, 0);
 
-  // console.log(myLesson);
+  
 
   return (
     <div>

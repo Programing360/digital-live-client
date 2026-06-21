@@ -44,14 +44,17 @@ const Sparkline = ({ points, colorClass }) => (
   </svg>
 );
 
-export default function AdminDashboardHome() {
+export default function AdminDashboardHome({allLesson, userCount, newLessons}) {
   
-  // Dynamic top analytics metrics definition
+  const publicLessonCount = allLesson.filter(lesson => lesson?.visibility?.toLowerCase() === 'public')
+
+
+  // Dynamic top analytics metrics definition 
   const statCards = [
-    { title: "Total Users", value: "3,842", change: "+12.5%", icon: <Users size={22} />, color: "text-blue-500 bg-blue-500/10", points: "0,25 20,20 40,15 60,22 80,10 100,5" },
-    { title: "Public Lessons", value: "1,249", change: "+8.2%", icon: <BookOpen size={22} />, color: "text-violet-500 bg-violet-500/10", points: "0,28 20,22 40,25 60,15 80,8 100,2" },
+    { title: "Total Users", value: `${userCount.length}`, change: "+12.5%", icon: <Users size={22} />, color: "text-blue-500 bg-blue-500/10", points: "0,25 20,20 40,15 60,22 80,10 100,5" },
+    { title: "Public Lessons", value: `${publicLessonCount.length}`, change: "+8.2%", icon: <BookOpen size={22} />, color: "text-violet-500 bg-violet-500/10", points: "0,28 20,22 40,25 60,15 80,8 100,2" },
     { title: "Flagged Lessons", value: "14", change: "-4.1%", icon: <AlertTriangle size={22} />, color: "text-rose-500 bg-rose-500/10", points: "0,5 20,12 40,8 60,18 80,22 100,25" },
-    { title: "Today's Lessons", value: "28", change: "New Today", icon: <Sparkles size={22} />, color: "text-amber-500 bg-amber-500/10", points: "0,20 20,18 40,22 60,12 80,5 100,1" },
+    { title: "Today's Lessons", value: `${newLessons}`, change: "New Today", icon: <Sparkles size={22} />, color: "text-amber-500 bg-amber-500/10", points: "0,20 20,18 40,22 60,12 80,5 100,1" },
   ];
 
   return (

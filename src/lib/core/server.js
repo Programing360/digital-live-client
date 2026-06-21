@@ -1,11 +1,16 @@
-'use server'
+"use server";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const serverFetchById = async(apiUrl) =>{
-  const res = await fetch(`${baseURL}/${apiUrl}`)
+export const serverFetch = async (apiUrl) => {
+  const res = await fetch(`${baseURL}/${apiUrl}`);
+  return res.json();
+};
 
-  return res.json()
-}
+export const serverFetchById = async (apiUrl) => {
+  const res = await fetch(`${baseURL}/${apiUrl}`);
+
+  return res.json();
+};
 
 export const serverMutation = async (apiUrl, data) => {
   const res = await fetch(`${baseURL}/${apiUrl}`, {
@@ -32,8 +37,8 @@ export const serverUpdate = async (apiUrl, UpdateData) => {
   return res.json();
 };
 
-export const serverDelete = async(apiUrl) => {
-const res = await fetch(`${baseURL}/${apiUrl}`, {
+export const serverDelete = async (apiUrl) => {
+  const res = await fetch(`${baseURL}/${apiUrl}`, {
     method: "DELETE",
     headers: {
       "content-Type": "application/json",
@@ -41,5 +46,4 @@ const res = await fetch(`${baseURL}/${apiUrl}`, {
     // body: JSON.stringify(UpdateData),
   });
   return res.json();
-}
-
+};

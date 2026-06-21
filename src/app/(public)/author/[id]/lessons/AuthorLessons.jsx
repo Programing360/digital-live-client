@@ -13,29 +13,28 @@ import {
   CalendarDays,
   Rocket,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AuthorLessons({ totalLessons = [], params }) {
   // Extract author meta fields safely from dataset references if available
   const currentAuthor = totalLessons[0]?.author;
   const authorName = currentAuthor?.name || "Creator";
-
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-default-50/30 dark:bg-zinc-950 py-12 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* TOP INTERACTIVE NAVIGATION HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-default-100 dark:border-zinc-800/60 pb-5">
           <div className="space-y-1">
-            <Link href="-1">
-              {" "}
-              {/* Or back to previous author view wrapper */}
-              <Button
-                size="sm"
-                variant="light"
-                className="p-0 h-auto text-xs font-bold text-default-400 hover:text-indigo-500 gap-1 min-w-0 bg-transparent transition-colors mb-1 dark:text-white"
-              >
-                <ArrowLeft size={12} /> Back to profile
-              </Button>
-            </Link>
+            <Button
+              size="sm"
+              variant="light"
+              onPress={() => router.back()}
+              className="p-0 h-auto text-xs font-bold text-default-400 hover:text-indigo-500 gap-1 min-w-0 bg-transparent transition-colors mb-1 dark:text-white"
+            >
+              <ArrowLeft size={12} />
+              Back to profile
+            </Button>
             <h1 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
               <BookOpen size={20} className="text-indigo-500" />
               <span>{authorName} Publications</span>
@@ -125,9 +124,7 @@ export default function AuthorLessons({ totalLessons = [], params }) {
                             <Modal.Heading>{lesson.title}</Modal.Heading>
                           </Modal.Header>
                           <Modal.Body>
-                            <p>
-                              {lesson.description}
-                            </p>
+                            <p>{lesson.description}</p>
                           </Modal.Body>
                           <Modal.Footer>
                             <Button className="w-full" slot="close">
