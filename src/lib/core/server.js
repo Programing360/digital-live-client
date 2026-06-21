@@ -25,7 +25,6 @@ export const serverMutation = async (apiUrl, data) => {
 };
 
 export const serverUpdate = async (apiUrl, UpdateData) => {
-  console.log(UpdateData);
   const res = await fetch(`${baseURL}/${apiUrl}`, {
     method: "PATCH",
     headers: {
@@ -33,7 +32,6 @@ export const serverUpdate = async (apiUrl, UpdateData) => {
     },
     body: JSON.stringify(UpdateData),
   });
-  console.log(res);
   return res.json();
 };
 
