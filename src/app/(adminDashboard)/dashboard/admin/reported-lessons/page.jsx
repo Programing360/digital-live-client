@@ -230,7 +230,7 @@ export default function ReportedLessonsPage() {
                     <FileText size={16} className="text-indigo-500" /> Report Logs Breakdown
                   </h3>
                   <p className="text-[11px] text-default-400 font-medium line-clamp-1">
-                    Lesson Target: "{activeLessonDetails.title}"
+                    Lesson Target: {activeLessonDetails.title}
                   </p>
                 </div>
                 <Button isIconOnly size="sm" variant="light" className="rounded-xl text-default-400 min-w-8 w-8 h-8" onPress={() => setActiveLessonDetails(null)}>
@@ -295,9 +295,9 @@ export default function ReportedLessonsPage() {
                   </h3>
                   <p className="text-xs text-default-400 leading-relaxed">
                     {actionConfirmation.type === "delete" ? (
-                      <>You are completely purging <strong className="text-slate-700 dark:text-zinc-200">"{actionConfirmation.lesson.title}"</strong> from the index. This choice is final.</>
+                      <>You are completely purging <strong className="text-slate-700 dark:text-zinc-200">{actionConfirmation.lesson.title}</strong> from the index. This choice is final.</>
                     ) : (
-                      <>This action drops all community complaints for <strong className="text-slate-700 dark:text-zinc-200">"{actionConfirmation.lesson.title}"</strong> and marks it verified clean.</>
+                      <>This action drops all community complaints for <strong className="text-slate-700 dark:text-zinc-200">{actionConfirmation.lesson.title}</strong> and marks it verified clean.</>
                     )}
                   </p>
                 </div>

@@ -32,6 +32,9 @@ export default function Navbar() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
+  // admin role handle 
+  const isAdmin = user?.role === 'admin' || 'user'
+
   // Conditional plan evaluation logic
   const isFreePlan = !user || user?.plan === "Free" || true;
 
@@ -146,10 +149,10 @@ export default function Navbar() {
                     <Dropdown.Menu className="w-60" aria-label="User Profile Actions">
                       <Dropdown.Item key="profile-summary" className="h-14 gap-2 opacity-100 pointer-events-none">
                         <Label className="font-extrabold text-slate-900 dark:text-white block">
-                          {user.name}
+                          {user?.name}
                         </Label>
                         <Description className="text-xs text-default-400 font-medium block truncate">
-                          {user.email}
+                          {user?.email}
                         </Description>
                       </Dropdown.Item>
 
@@ -163,7 +166,7 @@ export default function Navbar() {
                       </Dropdown.Item>
 
                       {/* Dashboard Route Option */}
-                      <Dropdown.Item key="dashboard" as={Link} href="/dashboard" startContent={<LayoutDashboard size={16} className="text-default-500" />}>
+                      <Dropdown.Item key="dashboard" as={Link} href={isAdmin ? "/dashboard/admin" : "/dashboard"} startContent={<LayoutDashboard size={16} className="text-default-500" />}>
                         <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
                           Dashboard
                         </Label>

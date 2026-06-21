@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { createFavoritesLesson } from "@/lib/action/favorites";
 import { toast } from "react-toastify";
 
-export default function LessonDetails({ lessonData, user = null }) {
+export default function LessonDetails({ lessonData, user = null, total }) {
   const {
     _id,
     title,
@@ -28,9 +28,10 @@ export default function LessonDetails({ lessonData, user = null }) {
     author,
     createAt,
     updatedAt,
+    likes,
     likesCount = 0,
+    favorites,
     favoritesCount = 0,
-    totalLessons = 0,
   } = lessonData;
 
   const views = 100;
@@ -38,6 +39,10 @@ export default function LessonDetails({ lessonData, user = null }) {
   const readingTime = Math.ceil((description?.split(" ").length || 0) / 200);
   const router = useRouter();
   // console.log(lessonData);
+
+  const isFav = favorites.includes(user?.id)
+  const isLike = likes.includes(user?.id)
+  console.log(isFav);
 
   const handleLikeBtn = async () => {
     if (!user) {
@@ -69,7 +74,7 @@ export default function LessonDetails({ lessonData, user = null }) {
     };
 
     const fav = await createFavoritesLesson(FavoriteItem);
-    console.log(fav);
+    // console.log(fav);
     
     if (fav.insertedId) {
       toast.success("Favorites Lesson Added");
@@ -124,12 +129,12 @@ export default function LessonDetails({ lessonData, user = null }) {
         {/* Stats */}
         <div className="flex flex-wrap gap-6 mt-6 text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            <Heart size={18} />
+            <Heart fill={isLike ? "currentColor" : "none"} size={18} />
             <span>{likesCount} Likes</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <Bookmark size={18} />
+            <Bookmark fill={isFav ? "currentColor" : "none"} size={18} />
             <span>{favoritesCount} Favorites</span>
           </div>
 
@@ -209,13 +214,13 @@ export default function LessonDetails({ lessonData, user = null }) {
                 </h4>
 
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {totalLessons} Lessons Published
+                  {total.length} Lessons Published
                 </p>
               </div>
             </div>
 
             <Link
-              href={`/author/${author?.authorId}`}
+              href={`/author/${_id}`}
               className="inline-block mt-6"
             >
               <button className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium transition">
@@ -236,7 +241,7 @@ export default function LessonDetails({ lessonData, user = null }) {
               onClick={handleLikeBtn}
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 font-medium cursor-pointer"
             >
-              <Heart size={18} />
+              <Heart fill={isLike ? "currentColor" : "none"} size={18} />
               Like <span>{likesCount}</span>
             </button>
 
@@ -244,7 +249,7 @@ export default function LessonDetails({ lessonData, user = null }) {
               onClick={handleFavoritesBtn}
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 font-medium"
             >
-              <Bookmark size={18} />
+              <Bookmark fill={isFav ? "currentColor" : "none"} size={18} />
               Save Favorite
             </button>
 

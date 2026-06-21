@@ -3,6 +3,7 @@
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 // Inline Icons matching image_3735a3.png
 const SectionStarIcon = () => (
@@ -124,13 +125,15 @@ export default function FeaturedLifeLessons() {
           </div>
         </div>
         
-        <Button
+        <Link href={'/publicLessons'}>
+          <Button
           variant="bordered"
           className="border-purple-200 border shadow-2xl text-purple-600 font-semibold hover:bg-purple-50/50 self-start sm:self-auto transition-all px-5 h-9 active:scale-95"
           radius="md"
         >
           View All
         </Button>
+        </Link>
       </motion.div>
 
       {/* Staggered Cards Workspace Container */}
