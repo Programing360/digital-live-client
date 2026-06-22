@@ -3,6 +3,7 @@
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 // Clean UI Design System Icons
 const SparkleIcon = () => (
@@ -116,20 +117,20 @@ export default function HeroSection() {
             className="flex items-center gap-4 w-full sm:w-auto pt-2"
           >
             <Button
-              size="lg"
               className="bg-gradient-to-r from-[#5850EC] to-[#6366F1] text-white font-semibold px-8 shadow-lg shadow-indigo-100 hover:opacity-95 transition-opacity"
               radius="full"
             >
               Start Sharing
             </Button>
-            <Button
-              size="lg"
-              variant="bordered"
-              className="border-slate-200 bg-white hover:bg-slate-50 font-semibold px-8 text-slate-700 shadow-sm"
-              radius="full"
-            >
-              Explore Lessons
-            </Button>
+            <Link href={'/publicLessons'}>
+              <Button
+                variant="bordered"
+                className="border-slate-200 bg-white hover:bg-slate-50 font-semibold md:px-8 text-slate-700 shadow-sm"
+                radius="full"
+              >
+                Explore Lessons
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Platform Performance Metrics Block */}

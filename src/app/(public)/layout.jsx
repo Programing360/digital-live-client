@@ -5,7 +5,7 @@ import React from "react";
 const layoutPage = ({ children }) => {
   return (
     <div>
-      <header>
+      <header className="sticky top-0 z-50">
         <Navbar></Navbar>
       </header>
       <main>{children}</main>

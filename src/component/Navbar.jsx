@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation"; // Imported Next.js active route tracker
+
+import { usePathname } from "next/navigation";
 import {
   Button,
   Avatar,
@@ -21,24 +21,27 @@ import {
   User,
   LayoutDashboard,
   Settings,
+  Crown,
 } from "lucide-react";
 
 import ThemeToggle from "./ThemeToggle";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 export default function Navbar() {
-  const pathname = usePathname(); // Holds the string of the current path (e.g., "/public")
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  console.log(user);
+  // Admin role check
+  const isAdmin = user?.role === "admin";
 
-  // admin role handle 
-  const isAdmin = user?.role === 'admin'
-  console.log(isAdmin);
-  // Conditional plan evaluation logic
-  const isFreePlan = !user || user?.plan === "Free" || true;
-
-  // Dynamic items list matching your architecture specifications
+  // Real Plan Evaluation based on User Object (Implicit condition corrected)
+  const isPremiumUser = user?.isPlan === "premium";
+  const isFreePlan = !user || user?.isPlan === "free";
+  console.log(isFreePlan, isPremiumUser);
+  // Dynamic navigation mapping configuration
   const navItems = [
     { name: "Home", href: "/" },
     ...(user
@@ -48,6 +51,7 @@ export default function Navbar() {
         ]
       : []),
     { name: "Public Lessons", href: "/publicLessons" },
+    // Upgrade link will ONLY show if the user is logged in AND on a Free Plan
     ...(user && isFreePlan ? [{ name: "Upgrade", href: "/upgrade" }] : []),
   ];
 
@@ -56,33 +60,36 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border border-white/20 bg-white/70 shadow-[0_8px_40px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-black/40">
-      <div className="mx-auto w-[95%] max-w-7xl">
+    <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-zinc-800/60 bg-white/70 dark:bg-zinc-950/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-2xl transition-colors duration-300">
+      <div className="mx-auto container">
         <div>
           <div className="flex h-20 items-center justify-between px-5 lg:px-8">
-            
-            {/* Logo */}
+            {/* Brand Logo Identity */}
             <Link href="/" className="flex items-center gap-3">
               <motion.div
-                whileHover={{ scale: 1.1, rotate: 8 }}
+                whileHover={{ scale: 1.06, rotate: 4 }}
                 animate={{
                   boxShadow: [
-                    "0 0 0px rgba(139,92,246,.2)",
-                    "0 0 20px rgba(139,92,246,.5)",
-                    "0 0 0px rgba(139,92,246,.2)",
+                    "0 0 0px rgba(139,92,246,.1)",
+                    "0 0 24px rgba(139,92,246,.4)",
+                    "0 0 0px rgba(139,92,246,.1)",
                   ],
                 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 via-indigo-500 to-cyan-500 text-white"
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 via-indigo-500 to-cyan-500 text-white"
               >
-                <BookOpen size={22} />
+                <BookOpen size={20} />
               </motion.div>
 
               <div>
-                <h2 className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-lg font-extrabold text-transparent">
+                <h2 className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-base font-black tracking-tight text-transparent dark:from-violet-400 dark:via-indigo-400 dark:to-cyan-400">
                   Digital Life Lessons
                 </h2>
-                <p className="text-[11px] text-default-500">
+                <p className="text-[10px] font-bold text-default-400 dark:text-zinc-500 tracking-wider uppercase">
                   Capture Wisdom • Inspire Growth
                 </p>
               </div>
@@ -91,32 +98,39 @@ export default function Navbar() {
             {/* Desktop Navigation Links */}
             <ul className="hidden items-center gap-1 lg:flex">
               {navItems?.map((item) => {
-                // Determines if the nav item matches the current exact route
                 const isActive = pathname === item.href;
 
                 return (
                   <li key={item.name}>
                     <Link href={item.href}>
                       <Button
-                        className={`group relative bg-white px-4 py-2 text-sm font-medium transition-colors dark:text-white dynamic-active-state ${
+                        variant="light"
+                        className={`group relative px-4 py-2 text-xs font-bold transition-all rounded-xl h-9 bg-transparent ${
                           isActive
-                            ? "text-violet-600 dark:text-violet-400"
-                            : "text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
+                            ? "text-indigo-600 dark:text-violet-400"
+                            : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
                         {isActive && (
                           <motion.div
                             layoutId="active-nav"
-                            transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                            className="absolute inset-0 rounded-full bg-violet-100 dark:bg-violet-500/15"
+                            transition={{
+                              type: "spring",
+                              stiffness: 380,
+                              damping: 30,
+                            }}
+                            className="absolute inset-0 rounded-xl bg-indigo-50 dark:bg-violet-500/10 border border-indigo-500/10 dark:border-violet-500/10"
                           />
                         )}
-                        <span className="relative z-10">{item.name}</span>
-                        <span
-                          className={`absolute bottom-0 left-1/2 h-[2px] bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-300 group-hover:left-0 group-hover:w-full ${
-                            isActive ? "left-2 w-0" : "w-0"
-                          }`}
-                        />
+                        <span className="relative z-10 flex items-center gap-1">
+                          {item.name === "Upgrade" && (
+                            <Sparkles
+                              size={12}
+                              className="text-amber-500 animate-pulse"
+                            />
+                          )}
+                          {item.name}
+                        </span>
                       </Button>
                     </Link>
                   </li>
@@ -126,65 +140,116 @@ export default function Navbar() {
 
             {/* Right Desktop Control Panel Elements */}
             <div className="hidden items-center gap-3 lg:flex">
+              
+
               <ThemeToggle />
 
               {user ? (
                 <Dropdown placement="bottom-end">
                   <Dropdown.Trigger>
-                    <button className="focus:outline-none transition-transform active:scale-95">
+                    <button className="focus:outline-none transition-transform active:scale-95 relative rounded-full p-0.5 border border-default-200 dark:border-zinc-800">
                       <Avatar>
                         <Avatar.Image
                           size="sm"
                           src={user?.image || "https://i.pravatar.cc/150?u=1"}
                           name={user?.name}
-                          className="ring-2 ring-violet-500/30 cursor-pointer"
+                          className="cursor-pointer rounded-full"
                         />
-                        <Avatar.Fallback>
+                        <Avatar.Fallback className="bg-indigo-50 dark:bg-zinc-800 font-bold text-xs text-indigo-600 dark:text-zinc-300">
                           {user.name?.slice(0, 2).toUpperCase()}
                         </Avatar.Fallback>
                       </Avatar>
+
+                      {/* Floating Micro Premium Dot Badge */}
+                      {isPremiumUser && (
+                        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-zinc-950">
+                          <Crown size={8} className="text-white font-black" />
+                        </span>
+                      )}
                     </button>
                   </Dropdown.Trigger>
                   <Dropdown.Popover>
-                    <Dropdown.Menu className="w-60" aria-label="User Profile Actions">
-                      <Dropdown.Item key="profile-summary" className="h-14 gap-2 opacity-100 pointer-events-none">
-                        <Label className="font-extrabold text-slate-900 dark:text-white block">
-                          {user?.name}
-                        </Label>
-                        <Description className="text-xs text-default-400 font-medium block truncate">
+                    <Dropdown.Menu
+                      className="w-64 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-2xl"
+                      aria-label="User Profile Actions"
+                    >
+                      {/* Premium Aware Summary Card */}
+                      <Dropdown.Item
+                        key="profile-summary"
+                        className="h-16 gap-2 opacity-100 pointer-events-none px-3"
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <Label className="font-black text-xs text-slate-800 dark:text-white truncate max-w-[140px]">
+                            {user?.name}
+                          </Label>
+
+                          {/* DYNAMIC PREMIUM USER BADGE COMPONENT */}
+                          {isPremiumUser ? (
+                            <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-md shadow-sm shadow-orange-500/20">
+                              <Crown size={9} /> Premium
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold uppercase tracking-wider bg-default-100 dark:bg-zinc-800 text-default-500 px-2 py-0.5 rounded-md">
+                              Free Tier
+                            </span>
+                          )}
+                        </div>
+                        <Description className="text-[11px] text-default-400 dark:text-zinc-500 font-medium block truncate mt-0.5">
                           {user?.email}
                         </Description>
                       </Dropdown.Item>
 
-                      <Separator />
+                      <Separator className="bg-default-100 dark:bg-zinc-800" />
 
-                      {/* Profile Route Option */}
-                      <Dropdown.Item key="profile" as={Link} href="/profile" startContent={<User size={16} className="text-default-500" />}>
+                      <Dropdown.Item
+                        key="profile"
+                        as={Link}
+                        href="/profile"
+                        startContent={
+                          <User size={15} className="text-default-400" />
+                        }
+                      >
                         <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
                           Profile
                         </Label>
                       </Dropdown.Item>
 
-                      {/* Dashboard Route Option */}
-                      <Dropdown.Item key="dashboard" as={Link} href={isAdmin ? "/dashboard/admin" : "/dashboard"} startContent={<LayoutDashboard size={16} className="text-default-500" />}>
+                      <Dropdown.Item
+                        key="dashboard"
+                        as={Link}
+                        href={isAdmin ? "/dashboard/admin" : "/dashboard"}
+                        startContent={
+                          <LayoutDashboard
+                            size={15}
+                            className="text-default-400"
+                          />
+                        }
+                      >
                         <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
                           Dashboard
                         </Label>
                       </Dropdown.Item>
 
-                      <Dropdown.Item key="settings" as={Link} href="/settings" startContent={<Settings size={16} className="text-default-500" />}>
+                      <Dropdown.Item
+                        key="settings"
+                        as={Link}
+                        href="/settings"
+                        startContent={
+                          <Settings size={15} className="text-default-400" />
+                        }
+                      >
                         <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
                           Account Settings
                         </Label>
                       </Dropdown.Item>
 
-                      <Separator />
+                      <Separator className="bg-default-100 dark:bg-zinc-800" />
 
-                      <Dropdown.Item 
-                        key="logout" 
-                        className="text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                      <Dropdown.Item
+                        key="logout"
+                        className="text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20"
                         onClick={handleSignOut}
-                        startContent={<LogOut size={16} />}
+                        startContent={<LogOut size={15} />}
                       >
                         <Label className="font-bold text-xs text-rose-500">
                           Sign Out
@@ -194,12 +259,11 @@ export default function Navbar() {
                   </Dropdown.Popover>
                 </Dropdown>
               ) : (
-                <>
+                <div className="flex items-center gap-2">
                   <Link href="/auth/login">
                     <Button
                       variant="light"
-                      radius="full"
-                      className="border border-default-200 dark:border-zinc-800 hover:bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-500 bg-default-soft-hover hover:text-white font-medium text-xs h-9 px-4"
+                      className="border border-slate-200 dark:border-zinc-800 hover:bg-default-100 dark:hover:bg-zinc-800 font-bold text-xs h-9 px-4 rounded-xl text-slate-700 dark:text-zinc-300"
                     >
                       Sign In
                     </Button>
@@ -207,85 +271,131 @@ export default function Navbar() {
 
                   <Link href="/auth/register">
                     <Button
-                      radius="full"
                       size="sm"
-                      startContent={<Sparkles size={14} />}
-                      className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 font-bold text-white shadow-md transition-all duration-300 hover:scale-105 h-9 px-4"
+                      startContent={<Sparkles size={13} />}
+                      className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 font-extrabold text-white shadow-md shadow-indigo-600/10 transition-transform duration-300 hover:scale-[1.02] h-9 px-4 rounded-xl"
                     >
                       Sign Up
                     </Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Action Trigger Button */}
             <Button
+              isIconOnly
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-slate-700 dark:text-zinc-300 focus:outline-none bg-white"
+              className="lg:hidden text-slate-700 dark:text-zinc-300 bg-default-100 dark:bg-zinc-900 border border-default-200/50 dark:border-zinc-800/60 rounded-xl h-9 w-9 min-w-0"
             >
-              <motion.div animate={{ rotate: menuOpen ? 180 : 0 }}>
-                {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              <motion.div animate={{ rotate: menuOpen ? 90 : 0 }}>
+                {menuOpen ? <X size={20} /> : <Menu size={20} />}
               </motion.div>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Sidebar Layer Panels */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t border-default-200 dark:border-default-100/10 lg:hidden"
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden border-t border-default-200 dark:border-zinc-800 lg:hidden bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl"
           >
-            <div className="space-y-3 p-5 bg-white/90 dark:bg-black/90 backdrop-blur-xl">
-              <div className="flex items-center justify-between gap-3 border-b border-default-200 pb-4 dark:border-default-100/10">
+            <div className="space-y-4 p-5">
+              <div className="flex items-center justify-between gap-3 border-b border-default-100 dark:border-zinc-800/60 pb-4">
                 <ThemeToggle />
 
                 {user ? (
-                  <div className="flex items-center gap-2.5">
-                    <Avatar size="sm" src={user?.image || "https://i.pravatar.cc/150?u=1"} />
-                    <Button size="sm" variant="flat" color="danger" radius="xl" className="font-bold text-xs" onClick={handleSignOut}>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        size="sm"
+                        src={user?.image || "https://i.pravatar.cc/150?u=1"}
+                      />
+                      <div className="flex flex-col text-left">
+                        <span className="text-xs font-black text-slate-800 dark:text-zinc-200 max-w-[100px] truncate">
+                          {user.name}
+                        </span>
+                        {isPremiumUser && (
+                          <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-0.5">
+                            🏆 Premium
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      color="danger"
+                      radius="xl"
+                      className="font-extrabold text-[11px] h-8"
+                      onClick={handleSignOut}
+                    >
                       Sign Out
                     </Button>
                   </div>
                 ) : (
-                  <div className="flex gap-2 w-full">
-                    <Link href="/auth/login" className="flex-1" onClick={() => setMenuOpen(false)}>
-                      <Button variant="light" className="w-full font-bold text-xs">Login</Button>
+                  <div className="flex gap-2 w-full max-w-[200px]">
+                    <Link
+                      href="/auth/login"
+                      className="flex-1"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <Button
+                        variant="flat"
+                        className="w-full font-bold text-xs rounded-xl h-8 text-slate-700 dark:text-zinc-300"
+                      >
+                        Login
+                      </Button>
                     </Link>
-                    <Link href="/auth/register" className="flex-1" onClick={() => setMenuOpen(false)}>
-                      <Button className="w-full font-bold text-xs bg-slate-900 text-white">Signup</Button>
+                    <Link
+                      href="/auth/register"
+                      className="flex-1"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <Button className="w-full font-black text-xs bg-slate-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded-xl h-8">
+                        Signup
+                      </Button>
                     </Link>
                   </div>
                 )}
               </div>
 
-              <div className="flex flex-col gap-2">
+              {/* Navigation Items Map inside Mobile Panel */}
+              <div className="flex flex-col gap-1.5 pb-2">
                 {navItems.map((item, index) => {
                   const isMobileActive = pathname === item.href;
 
                   return (
                     <motion.div
                       key={item.name}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: index * 0.04 }}
                     >
                       <Link
                         href={item.href}
                         onClick={() => setMenuOpen(false)}
-                        className={`block rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                        className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition-all ${
                           isMobileActive
-                            ? "bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400"
-                            : "hover:bg-default-100 dark:hover:bg-white/5 text-slate-700 dark:text-zinc-300"
+                            ? "bg-indigo-50 text-indigo-600 dark:bg-violet-500/10 dark:text-violet-400 border-l-4 border-indigo-500"
+                            : "hover:bg-default-50 dark:hover:bg-zinc-900 text-slate-600 dark:text-zinc-400"
                         }`}
                       >
-                        {item.name}
+                        <span className="flex items-center gap-1.5">
+                          {item.name === "Upgrade" && (
+                            <Sparkles
+                              size={12}
+                              className="text-amber-500 animate-pulse"
+                            />
+                          )}
+                          {item.name}
+                        </span>
                       </Link>
                     </motion.div>
                   );

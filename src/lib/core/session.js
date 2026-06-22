@@ -6,8 +6,6 @@ export const getUseSession = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
-  // console.log(session);
   return session?.user || null;
 };
 

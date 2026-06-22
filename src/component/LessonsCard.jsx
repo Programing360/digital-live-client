@@ -36,14 +36,13 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
     bookmarks = 0,
     likesCount = 0,
     likes = [],
-    favoritesCount,
   } = lesson;
 
   const { data: sesson } = authClient.useSession();
   const user = sesson?.user;
   const router = useRouter();
-  console.log(user, imageUrl);
-  const isLike = likes?.includes(user?.id)
+  // console.log(user, imageUrl);
+  const isLike = likes?.includes(user?.id);
 
   // console.log(favoritesCount);
 
@@ -80,10 +79,15 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
       router.refresh();
     }
   };
+  const isLoggedIn = !!user;
 
-  // Premium lock condition validation logic
-  const isLocked =
-    access?.toLowerCase() === "premium" && userPlan !== "Premium";
+  const isPremiumUser = user?.isPlan?.toLowerCase() === "premium";
+
+  const isPremiumLesson = access?.toLowerCase() === "premium";
+
+  const canAccess = !isPremiumLesson || isPremiumUser;
+
+  const isLocked = !canAccess;
 
   return (
     <motion.div
@@ -96,19 +100,20 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
     >
       <Card className="w-full relative overflow-hidden bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[24px] shadow-sm hover:shadow-xl transition-shadow duration-300 flex-col justify-between">
         {/* Upper Card Area: Cover Image & Floating Category Badge */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-zinc-800 ">
+        <div className="relative aspect-[4/3] w-full overflow-hidden  dark:bg-zinc-800 ">
           <Image
             src={
               imageUrl ||
               "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
             }
             alt={title}
-            width={40}
-            height={40}
+            width={400}
+            height={400}
             className={`w-full h-full object-cover transition-transform duration-700 ${
-              isLocked ? "" : "hover:scale-105"
+              !isLocked ? "" : "hover:scale-105"
             }`}
           />
+          
 
           {/* Top Floating Utility Elements */}
           <div className="absolute top-4 left-4 z-10 flex gap-2">
@@ -134,7 +139,7 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
           </div>
 
           {/* ⭐ OPAQUE PREMIUM LOCK OVERLAY LAYER ⭐ */}
-          {isLocked && (
+          {!isLocked && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -151,19 +156,27 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
               >
                 <Lock size={28} strokeWidth={2.5} />
               </motion.div>
-              <h4 className="text-white font-extrabold text-base tracking-tight px-2">
-                Premium Lesson
+
+              <h4 className="text-white font-extrabold text-base">
+                {!isLoggedIn ? "Login Required" : "Premium Lesson"}
               </h4>
-              <p className="text-white/80 text-xs mt-1 mb-5 max-w-[200px] leading-relaxed">
-                Upgrade to view and unlock this shared wisdom.
+
+              <p className="text-white/80 text-xs mt-2 mb-5">
+                {!isLoggedIn
+                  ? "Please login to view this lesson."
+                  : "Upgrade to Premium to unlock this lesson."}
               </p>
-              <Link href="/upgrade" className="w-full px-4 max-w-[190px]">
+
+              <Link
+                href={!isLoggedIn ? "/auth/login" : "/upgrade"}
+                className="w-full max-w-[190px]"
+              >
                 <Button
                   size="sm"
                   radius="full"
-                  className="w-full bg-white text-slate-900 font-bold text-xs shadow-md border border-white hover:bg-slate-50 active:scale-95 transition-all"
+                  className="w-full bg-white text-slate-900 font-bold"
                 >
-                  Upgrade to Premium
+                  {!isLoggedIn ? "Login Now" : "Upgrade to Premium"}
                 </Button>
               </Link>
             </motion.div>
@@ -242,23 +255,18 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
               </div>
             </div>
           </div>
-          <div className="w-full ">
-            {!!isLocked ? (
-              <Button
-                size="sm"
-                radius="full"
-                variant="flat"
-                isDisabled={true}
-                color="secondary"
-                className={
-                  !isLocked
-                    ? "font-bold text-xs px-3 h-8  border w-full bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 shadow-md disabled:opacity-50"
-                    : "font-bold text-xs px-3 h-8  border w-full bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 shadow-md"
-                }
-                endContent={<Eye size={13} />}
-              >
-                See Details
-              </Button>
+          <div className="w-full">
+            {isLocked ? (
+              <Link href={!isLoggedIn ? "/auth/login" : "/upgrade"}>
+                <Button
+                  size="sm"
+                  radius="full"
+                  color="warning"
+                  className="w-full font-bold"
+                >
+                  {!isLoggedIn ? "Login to Continue" : "Upgrade to Premium"}
+                </Button>
+              </Link>
             ) : (
               <Link href={`/publicLessons/${_id}`}>
                 <Button
@@ -266,11 +274,7 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
                   radius="full"
                   variant="flat"
                   color="secondary"
-                  className={
-                    !isLocked
-                      ? "font-bold text-xs px-3 h-8  border w-full bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 shadow-md disabled:opacity-50"
-                      : "font-bold text-xs px-3 h-8  border w-full bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 shadow-md"
-                  }
+                  className="w-full font-bold bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400"
                   endContent={<Eye size={13} />}
                 >
                   See Details

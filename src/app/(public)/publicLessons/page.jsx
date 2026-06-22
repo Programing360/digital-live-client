@@ -8,8 +8,8 @@ import { favoriteDataById } from "@/lib/api/favorite";
 const page = async () => {
   const user = await getUseSession();
   const lessonsData = await allLessons();
-
   const favorites = await favoriteDataById(user?.id);
+
   // console.log(favorites,user);
   return (
     // Inside your main feed layout wrapper:

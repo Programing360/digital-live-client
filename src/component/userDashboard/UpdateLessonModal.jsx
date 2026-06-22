@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Label, Modal, Surface, TextField } from "@heroui/react";
-import { Edit3, Image, Key } from "lucide-react";
+import { Edit3, Image, Key, Lock, Sparkles, Check, ChevronDown } from "lucide-react";
 import { lessonUpdate } from '@/lib/action/lessonUpdate';
 import { toast } from 'react-toastify';
 
@@ -14,27 +14,27 @@ export function UpdateLessonModal({
   onUpdateSuccess 
 }) {
 
+  // আপনার দেওয়া ডেটা অবজেক্ট স্কিমা অনুযায়ী স্টেট স্ট্রাকচার
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    content: "",
+    description: "", // অবজেক্টে মূল কন্টেন্ট ফিল্ড হলো 'description'
     access: "Free",
-    userName: "", // Read-only
-    userEmail: "", // Read-only
+    userName: "", 
+    userEmail: "", 
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   useEffect(() => {
     if (lessonData) {
       setFormData({
         title: lessonData.title || "",
         category: lessonData.category || "",
-        description: lessonData.content || "",
+        description: lessonData.description || "", // ডেটা অবজেক্টের 'description' ফিল্ডটি ম্যাপ করা হয়েছে
         access: lessonData.access || "Free",
-        userName: lessonData.author.name || "MD Limon", 
-        userEmail: lessonData.author.email || "limon@example.com", 
+        userName: lessonData.author?.name || lessonData.userName || "MD Limon", 
+        userEmail: lessonData.author?.email || lessonData.userEmail || "limon@example.com", 
       });
       setSelectedImage(null);
     }
@@ -59,11 +59,13 @@ export function UpdateLessonModal({
       const updateData = {
         ...formData,
         image: selectedImage
-      }
+      };
       
-      const updateLessonData = await lessonUpdate(lessonData._id, updateData )
-      if(updateLessonData.modifiedCount){
-        toast.success('Lesson Update Successful')
+      // আপনার অ্যাকশন ফাইলে আইডি এবং কাস্টমাইজড অবজেক্ট পাঠানো হচ্ছে
+      const updateLessonData = await lessonUpdate(lessonData._id?.$oid || lessonData._id, updateData);
+      
+      if (updateLessonData?.modifiedCount || updateLessonData) {
+        toast.success('Lesson Update Successful');
       }
       
       if (onUpdateSuccess) {
@@ -72,6 +74,7 @@ export function UpdateLessonModal({
       onClose();
     } catch (error) {
       console.error("Failed to update lesson in MongoDB", error);
+      toast.error("Failed to persist upstream updates.");
     } finally {
       setIsSubmitting(false);
     }
@@ -81,89 +84,112 @@ export function UpdateLessonModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Backdrop className="bg-black/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in">
         <Modal.Container placement="auto" className="transition-all duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4">
-          <Modal.Dialog className="sm:max-w-lg overflow-hidden">
+          <Modal.Dialog className="sm:max-w-lg rounded-[28px] border border-slate-100 dark:border-zinc-900/80 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
             <Modal.CloseTrigger onClick={onClose} />
             
-            <Modal.Header>
-              <Modal.Icon className="bg-indigo-50 text-indigo-600 rounded-xl p-2">
-                <Edit3 className="size-5" />
-              </Modal.Icon>
-              <Modal.Heading className="text-xl font-bold text-slate-900 mt-2">Update Lesson Parameters</Modal.Heading>
-              <p className="mt-1 text-xs leading-5 text-slate-400">
-                Modify your existing collection node. Server-side persistence updates directly to MongoDB stack.
-              </p>
+            <Modal.Header className="px-6 pt-6">
+              <div className="flex gap-3 items-start">
+                <Modal.Icon className="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl p-2 shrink-0">
+                  <Edit3 className="size-5" />
+                </Modal.Icon>
+                <div>
+                  <Modal.Heading className="text-base font-black text-slate-800 dark:text-white tracking-tight">
+                    Update Lesson Parameters
+                  </Modal.Heading>
+                  <p className="mt-0.5 text-[11px] font-medium leading-relaxed text-default-400">
+                    Modify your asset node instance. Changes sync back to your MongoDB cluster pipelines.
+                  </p>
+                </div>
+              </div>
             </Modal.Header>
 
-            <Modal.Body className="p-5 max-h-[70vh] overflow-y-auto">
+            <Modal.Body className="px-6 py-4 max-h-[65vh] overflow-y-auto space-y-4">
               <Surface variant="default" className="border-0 p-0 shadow-none bg-transparent">
                 <form id="update-lesson-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                   
-                  {/* User Name (Read-Only) */}
-                  <TextField className="w-full opacity-70" name="userName" variant="secondary">
-                    <Label className="flex items-center gap-1.5 text-slate-400"><Key size={12}/> Owner Name (Locked)</Label>
-                    <Input value={formData.userName} readOnly className="bg-slate-50 cursor-not-allowed select-none font-semibold text-slate-500" />
-                  </TextField>
+                  {/* Read-Only Owner Segment Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 opacity-75">
+                    <TextField className="w-full" name="userName" variant="secondary">
+                      <Label className="flex items-center gap-1 text-[11px] font-bold text-default-400"><Key size={11}/> Creator</Label>
+                      <Input value={formData.userName} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500" />
+                    </TextField>
 
-                  {/* User Email (Read-Only) */}
-                  <TextField className="w-full opacity-70" name="userEmail" variant="secondary">
-                    <Label className="flex items-center gap-1.5 text-slate-400"><Key size={12}/> Owner Email (Locked)</Label>
-                    <Input value={formData.userEmail} readOnly className="bg-slate-50 cursor-not-allowed select-none font-semibold text-slate-500" />
-                  </TextField>
+                    <TextField className="w-full" name="userEmail" variant="secondary">
+                      <Label className="flex items-center gap-1 text-[11px] font-bold text-default-400"><Key size={11}/> Security Scope</Label>
+                      <Input value={formData.userEmail} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500" />
+                    </TextField>
+                  </div>
 
-                  {/* Lesson Title (Editable) */}
+                  {/* Lesson Title */}
                   <TextField className="w-full" name="title" variant="secondary">
-                    <Label className="text-slate-700 font-bold">Lesson Title</Label>
-                    <Input value={formData.title} onChange={handleInputChange} placeholder="Enter dynamic asset title" required />
+                    <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Lesson Title</Label>
+                    <Input name="title" value={formData.title} onChange={handleInputChange} placeholder="Enter dynamic asset title" className="text-xs h-10 rounded-xl font-medium" required />
                   </TextField>
 
-                  {/* Category (Editable) */}
+                  {/* Category */}
                   <TextField className="w-full" name="category" variant="secondary">
-                    <Label className="text-slate-700 font-bold">Category</Label>
-                    <Input value={formData.category} onChange={handleInputChange} placeholder="e.g. Next.js, MERN Stack" required />
+                    <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Category Identity</Label>
+                    <Input name="category" value={formData.category} onChange={handleInputChange} placeholder="e.g. Next.js, MERN Stack" className="text-xs h-10 rounded-xl font-medium" required />
                   </TextField>
 
-                  {/* Content (Editable) */}
-                  <TextField className="w-full" name="content" variant="secondary">
-                    <Label className="text-slate-700 font-bold">Lesson Content / Brief</Label>
-                    <Input value={formData.content} onChange={handleInputChange} placeholder="Update documentation overview..." />
+                  {/* Description / Content Textfield */}
+                  <TextField className="w-full" name="description" variant="secondary">
+                    <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Lesson Description</Label>
+                    <Input name="description" value={formData.description} onChange={handleInputChange} placeholder="Update documentation details..." className="text-xs h-10 rounded-xl font-medium" />
                   </TextField>
 
-                  {/* Access Level Selector (Premium Subscription Guarded) */}
+                  {/* Access Level Controller (Interactive drop-down logic based on subscription level) */}
                   <div className="flex flex-col gap-1.5">
-                    <Label className="text-slate-700 font-bold">Access Level Control</Label>
-                    <select 
-                      name="access"
-                      value={formData.access}
-                      onChange={(e) => {
-                        if (e.target.value === "Premium" && !isPremiumUser) {
-                          alert("Action Denied: Changing to Premium requires an active Premium subscription!");
-                          return;
-                        }
-                        handleInputChange(e);
-                      }}
-                      className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500 transition-colors"
-                    >
-                      <option value="Free">Free (Standard Client Base)</option>
-                      <option value="Premium">Premium (Paid Tier Only)</option>
-                    </select>
+                    <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs flex items-center gap-1.5">
+                      Clearance Target Access
+                    </Label>
+                    
+                    {isPremiumUser ? (
+                      <div className="relative">
+                        <select 
+                          name="access"
+                          value={formData.access}
+                          onChange={handleInputChange}
+                          className="w-full h-10 pl-3 pr-10 rounded-xl border border-default-200 dark:border-zinc-800 bg-default-50 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="Free">🟢 Free (Public Access Level)</option>
+                          <option value="Premium">✨ Premium (Subscription Tier Lock)</option>
+                        </select>
+                        <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-default-400" />
+                      </div>
+                    ) : (
+                      <div className="relative flex items-center">
+                        <Input 
+                          value="Free (Standard Base Client)" 
+                          readOnly 
+                          className="w-full bg-default-100 dark:bg-zinc-800/80 cursor-not-allowed select-none font-bold text-xs h-10 rounded-xl text-slate-500 dark:text-zinc-400 pl-3 border border-transparent"
+                        />
+                        <div className="absolute right-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 p-1 rounded-lg border border-amber-500/10">
+                          <Lock size={12} strokeWidth={2.5} />
+                        </div>
+                      </div>
+                    )}
+
                     {!isPremiumUser && (
-                      <span className="text-[11px] text-amber-600 font-semibold mt-0.5 bg-amber-50 px-2 py-0.5 rounded-md w-fit">
-                        🔒 Premium access switch locked. Upgrade subscription to enable.
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 bg-amber-500/10 border border-amber-500/10 px-2.5 py-1 rounded-lg w-fit flex items-center gap-1">
+                        <Sparkles size={11} className="animate-pulse" /> Access state mutation locked. Upgrade profile to broadcast Premium items.
                       </span>
                     )}
                   </div>
 
-                  {/* Optional Image Re-upload */}
-                  <div className="flex flex-col gap-2 border border-dashed border-slate-200 rounded-xl p-4 bg-slate-50/50">
-                    <Label className="text-slate-700 font-bold flex items-center gap-1"><Image size={14}/> Cover Image (Optional)</Label>
+                  {/* Optional Image Upload Dropzone */}
+                  <div className="flex flex-col gap-2 border border-dashed border-default-200 dark:border-zinc-800 rounded-xl p-4 bg-default-50/40">
+                    <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs flex items-center gap-1"><Image size={13}/> Cover Image Attachment</Label>
                     <input 
                       type="file" 
                       accept="image/*" 
                       onChange={handleImageChange}
-                      className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 cursor-pointer"
+                      className="text-xs text-default-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 dark:file:bg-indigo-950/40 file:text-indigo-600 dark:file:text-indigo-400 hover:file:opacity-80 cursor-pointer"
                     />
                     {selectedImage && (
-                      <p className="text-xs text-emerald-600 font-bold mt-1">✓ New target file staged: {selectedImage.name}</p>
+                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 flex items-center gap-1">
+                        <Check size={12} /> Staged file payload: {selectedImage.name}
+                      </p>
                     )}
                   </div>
 
@@ -171,17 +197,22 @@ export function UpdateLessonModal({
               </Surface>
             </Modal.Body>
 
-            <Modal.Footer className="border-t border-slate-50 p-4 flex justify-end gap-2 bg-slate-50/40">
-              <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
+            <Modal.Footer className="border-t border-default-100 dark:border-zinc-800/60 p-4 flex justify-end gap-2 bg-default-50/30">
+              <Button 
+                variant="flat" 
+                onClick={onClose} 
+                disabled={isSubmitting}
+                className="font-bold text-xs h-9 bg-default-100 text-default-600 dark:bg-zinc-800 dark:text-zinc-300 rounded-xl"
+              >
                 Cancel
               </Button>
               <Button 
                 type="submit" 
                 form="update-lesson-form" 
                 disabled={isSubmitting}
-                className="bg-indigo-600 text-white font-bold shadow-sm hover:bg-indigo-700"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs h-9 rounded-xl shadow-sm shadow-indigo-600/10"
               >
-                {isSubmitting ? "Saving to MongoDB..." : "Update Asset"}
+                {isSubmitting ? "Syncing Workspace..." : "Update Asset"}
               </Button>
             </Modal.Footer>
           </Modal.Dialog>

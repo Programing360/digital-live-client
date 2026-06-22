@@ -27,6 +27,7 @@ export default function LessonDetails({ lessonData, user = null, total }) {
     imageUrl,
     access,
     author,
+    visibility,
     createAt,
     updatedAt,
     likes,
@@ -41,8 +42,8 @@ export default function LessonDetails({ lessonData, user = null, total }) {
   const router = useRouter();
   // console.log(lessonData);
 
-  const isFav = favorites.includes(user?.id)
-  const isLike = likes.includes(user?.id)
+  const isFav = favorites.includes(user?.id);
+  const isLike = likes.includes(user?.id);
   // console.log(isFav);
 
   const handleLikeBtn = async () => {
@@ -70,13 +71,13 @@ export default function LessonDetails({ lessonData, user = null, total }) {
   const handleFavoritesBtn = async () => {
     const FavoriteItem = {
       userId: user?.id,
-      userName:user?.name,
+      userName: user?.name,
       lessonId: _id,
     };
 
     const fav = await createFavoritesLesson(FavoriteItem);
     // console.log(fav);
-    
+
     if (fav.insertedId) {
       toast.success("Favorites Lesson Added");
     }
@@ -184,7 +185,7 @@ export default function LessonDetails({ lessonData, user = null, total }) {
 
               <div className="flex items-center gap-3">
                 <User size={18} />
-                <span>Visibility: Public</span>
+                <span>Visibility: {visibility}</span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -220,10 +221,7 @@ export default function LessonDetails({ lessonData, user = null, total }) {
               </div>
             </div>
 
-            <Link
-              href={`/author/${_id}`}
-              className="inline-block mt-6"
-            >
+            <Link href={`/author/${_id}`} className="inline-block mt-6">
               <button className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium transition">
                 View All Lessons
               </button>
@@ -258,7 +256,11 @@ export default function LessonDetails({ lessonData, user = null, total }) {
               <Flag size={18} />
               Report Lesson
             </button> */}
-            <ReportLessonButton lessonId={_id} currentUserEmail={user} lessonData={lessonData}></ReportLessonButton>
+            <ReportLessonButton
+              lessonId={_id}
+              currentUserEmail={user}
+              lessonData={lessonData}
+            ></ReportLessonButton>
           </div>
         </div>
 
