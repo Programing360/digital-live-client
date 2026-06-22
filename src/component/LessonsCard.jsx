@@ -22,7 +22,7 @@ const toneColorMap = {
   Neutral: "bg-neutral-400",
 };
 
-export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
+export default function LessonCard({ lesson, userPlan = "Free"}) {
   const {
     _id,
     title,
@@ -33,9 +33,10 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
     createdAt,
     author,
     imageUrl,
-    bookmarks = 0,
     likesCount = 0,
     likes = [],
+    favorites = [],
+    favoritesCount
   } = lesson;
 
   const { data: sesson } = authClient.useSession();
@@ -43,8 +44,9 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
   const router = useRouter();
   // console.log(user, imageUrl);
   const isLike = likes?.includes(user?.id);
+  const isFavorites = favorites.includes(user?.id)
 
-  // console.log(favoritesCount);
+  // console.log(isFavorites);
 
   const handleFavorites = async () => {
     const newFavorites = {
@@ -57,6 +59,7 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
 
     if (data.message) {
       toast.success(`${data.message}`);
+      router.refresh()
     }
   };
 
@@ -73,10 +76,12 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
 
     if (likeCount.liked === false) {
       router.refresh();
+      toast.success(`${likeCount.message}`);
     }
 
     if (likeCount.liked === true) {
       router.refresh();
+      toast.success(`${likeCount.message}`);
     }
   };
   const isLoggedIn = !!user;
@@ -103,8 +108,8 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
         <div className="relative aspect-[4/3] w-full overflow-hidden  dark:bg-zinc-800 ">
           <Image
             src={
-              imageUrl ||
-              "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+              imageUrl
+           
             }
             alt={title}
             width={400}
@@ -139,7 +144,7 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
           </div>
 
           {/* ⭐ OPAQUE PREMIUM LOCK OVERLAY LAYER ⭐ */}
-          {!isLocked && (
+          {isLocked && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -246,12 +251,14 @@ export default function LessonCard({ lesson, userPlan = "Free", favorites }) {
                 <span className="font-medium text-[11px]">{likesCount}</span>
               </div>
               <div className="flex items-center gap-1 text-default-400 text-xs">
+                {/* {isFavorites ? : } */}
                 <Bookmark
                   onClick={handleFavorites}
+                  fill={isFavorites ? "currentColor" : "none"}
                   size={13}
                   className="hover:text-violet-500 transition-colors cursor-pointer"
                 />
-                <span className="font-medium text-[11px]">{bookmarks}</span>
+                <span className="font-medium text-[11px]">{favoritesCount}</span>
               </div>
             </div>
           </div>

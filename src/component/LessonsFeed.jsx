@@ -30,6 +30,9 @@ export default function LessonsFeed({
   const [isOpen, setIsOpen] = useState(false);
 
   const handleCategoryChange = (category) => {
+
+    
+
     if (category === "All Lessons") {
       setSelectedCategories([]);
       return;
