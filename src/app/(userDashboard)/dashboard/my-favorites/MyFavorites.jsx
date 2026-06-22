@@ -18,7 +18,7 @@ export default function MyFavorites({user, favorites}) {
       router.refresh()
     }
 
-    // console.log(res);
+
   };
 
   return (

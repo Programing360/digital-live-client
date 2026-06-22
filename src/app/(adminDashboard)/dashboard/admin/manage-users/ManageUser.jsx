@@ -38,8 +38,6 @@ export default function ManageUsersPage({ allLessons, allUser }) {
   // 1. ACTION: Promote a standard user to an Administrator
   const handlePromote = async (userInfo) => {
     const role = userInfo.role === "user" ? "admin" : "user";
-    console.log(role);
-
     const userRoles = {
       role: role,
       userId: userInfo._id,
@@ -55,12 +53,11 @@ export default function ManageUsersPage({ allLessons, allUser }) {
   // 2. ACTION: Remove user profile context
   const handleDelete = async(userId) => {
     const res = await userDelete(userId)
-     console.log(res);
+
     if(res.deletedCount > 0){
         toast.success('User Delete Successful')
         router.refresh()
     }
-    // console.log(res);
 
 
   };

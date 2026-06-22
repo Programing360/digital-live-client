@@ -40,11 +40,10 @@ export default function LessonDetails({ lessonData, user = null, total }) {
 
   const readingTime = Math.ceil((description?.split(" ").length || 0) / 200);
   const router = useRouter();
-  // console.log(lessonData);
 
   const isFav = favorites.includes(user?.id);
   const isLike = likes.includes(user?.id);
-  // console.log(isFav);
+ 
 
   const handleLikeBtn = async () => {
     if (!user) {
@@ -76,7 +75,6 @@ export default function LessonDetails({ lessonData, user = null, total }) {
     };
 
     const fav = await createFavoritesLesson(FavoriteItem);
-    // console.log(fav);
 
     if (fav.insertedId) {
       toast.success("Favorites Lesson Added");

@@ -42,11 +42,10 @@ export default function LessonCard({ lesson, userPlan = "Free"}) {
   const { data: sesson } = authClient.useSession();
   const user = sesson?.user;
   const router = useRouter();
-  // console.log(user, imageUrl);
+
   const isLike = likes?.includes(user?.id);
   const isFavorites = favorites.includes(user?.id)
 
-  // console.log(isFavorites);
 
   const handleFavorites = async () => {
     const newFavorites = {

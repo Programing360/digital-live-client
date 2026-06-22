@@ -33,7 +33,7 @@ export default function ReportLessonButton({
 
   const handleReportSubmit = async () => {
     if (!reason) return;
-    // console.log(currentUserEmail);
+
     setIsSubmitting(true);
 
     try {
@@ -57,17 +57,6 @@ export default function ReportLessonButton({
       if (res.insertedId) {
         toast.success("Report Successful");
       }
-
-      console.log(
-        "Creating entry in lessonsReports collection:",
-        reportPayload,
-      );
-
-      // আপনার API কলটি এখানে রিপ্লেস করবেন:
-      // await fetch('/api/reports', { method: 'POST', body: JSON.stringify(reportPayload) });
-
-      // Fake delay targeting simulated database mutation response
-      //   await new Promise((resolve) => setTimeout(resolve, 1400));
 
       setIsSuccess(true);
     } catch (error) {

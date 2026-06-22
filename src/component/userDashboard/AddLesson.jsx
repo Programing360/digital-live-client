@@ -112,7 +112,7 @@ export default function AddLesson({ user }) {
       setIsUploading(false);
     }
 
-    // console.log(result);
+
 
     // Simulate successful API call response
   //   setTimeout(() => {

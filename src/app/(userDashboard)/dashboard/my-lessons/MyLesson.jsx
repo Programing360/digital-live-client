@@ -33,7 +33,6 @@ export default function MyLessons({
     }
   }, [lessonsData]);
 
-  // console.log(lessonsData);
 
   // Visibility toggle handler
   const toggleVisibility = async (id) => {
@@ -55,7 +54,7 @@ export default function MyLessons({
     const updateVisibility = { visibility: newVisibility };
 
     const res = await lessonUpdate(id, updateVisibility);
-    console.log(res);
+   
     if(res.ok){
       toast.success('Update Successful')
     }

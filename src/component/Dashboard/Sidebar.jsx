@@ -23,9 +23,6 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
 
   const user = session?.user;
 
-  // console.log(user);
-
-  // আপনার ফোল্ডার স্ট্রাকচার ইমেজ অনুযায়ী সঠিক Href পাথসমূহ
   const userItem = [
     {
       id: "dashboard",

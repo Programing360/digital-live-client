@@ -11,8 +11,6 @@ const AuthorPage = async ({ params }) => {
     (lesson) => lesson.author.authorId === lessonData.author.authorId,
   );
 
-  console.log(lessonData);
-
   return (
     <div>
       <AuthorDashboardPage lessonData={lessonData} totalLessons={totalLessons}></AuthorDashboardPage>

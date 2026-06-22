@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import { Input, Button } from "@heroui/react";
 import {
   SearchIcon,
-  SlidersHorizontal,
   ChevronDown,
   Funnel,
 } from "lucide-react";
@@ -31,7 +30,7 @@ export default function LessonsFeed({
 
   const handleCategoryChange = (category) => {
 
-    
+
 
     if (category === "All Lessons") {
       setSelectedCategories([]);

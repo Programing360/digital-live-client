@@ -40,7 +40,7 @@ export default async function Success({ searchParams }) {
     };
 
     const premiumUser = await userSubscription(subsInfo);
-    console.log(premiumUser);
+  
 
     return (
       <div className="min-h-[calc(100vh-80px)] bg-default-50/40 dark:bg-zinc-950 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">

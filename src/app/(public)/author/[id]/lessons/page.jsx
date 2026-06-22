@@ -10,10 +10,6 @@ const AuthorLessonPages = async({params}) => {
 
     const totalLessons = allLesson.filter(lesson => lesson.author.authorId === author.authorId)
 
-    //   console.log(data);
-
-    
-    // console.log(id);
 
     return (
         <div>

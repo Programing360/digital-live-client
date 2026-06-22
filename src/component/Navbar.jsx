@@ -33,14 +33,14 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const user = session?.user;
-  console.log(user);
+
   // Admin role check
   const isAdmin = user?.role === "admin";
 
   // Real Plan Evaluation based on User Object (Implicit condition corrected)
   const isPremiumUser = user?.isPlan === "premium";
   const isFreePlan = !user || user?.isPlan === "free";
-  console.log(isFreePlan, isPremiumUser);
+
   // Dynamic navigation mapping configuration
   const navItems = [
     { name: "Home", href: "/" },

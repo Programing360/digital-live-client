@@ -10,7 +10,6 @@ const page = async () => {
   const lessonsData = await allLessons();
   const favorites = await favoriteDataById(user?.id);
 
-  // console.log(favorites,user);
   return (
     // Inside your main feed layout wrapper:
     <div className=" container mx-auto">

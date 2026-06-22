@@ -5,7 +5,6 @@ import { getAllReport } from '@/lib/api/manageReport';
 const reportPage = async () => {
 
   const allReport = await getAllReport()
-  console.log(allReport);
 
   return (
     <div>
