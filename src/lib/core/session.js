@@ -7,14 +7,22 @@ export const getUseSession = async () => {
     headers: await headers(),
   });
 
+  // console.log(session);
   return session?.user || null;
+};
+
+export const getUserToken = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  return session.session.token;
 };
 
 export const requiredRole = async (role) => {
   const user = await getUseSession();
 
-  if(!user){
-    redirect('/auth/login')
+  if (!user) {
+    redirect("/auth/login");
   }
 
   if (user?.role !== role) {

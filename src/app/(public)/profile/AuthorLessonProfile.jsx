@@ -85,7 +85,7 @@ const toneColorMap = {
   Neutral: "bg-neutral-500/10 text-default-500 border-default-500/20",
 };
 
-export default function AuthorProfile({ user: author, lessonData }) {
+export default function AuthorProfile({ user: author, lessonData=[] }) {
  
   function getInitials(name = "") {
     return name

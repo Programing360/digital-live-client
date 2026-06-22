@@ -95,7 +95,7 @@ export default function LoginPage() {
     if (error) {
       Swal.fire({
         icon: "error",
-        title: "Registration failed!",
+        title: "Login failed!",
         text: `${error.message}`,
         timer: 3500,
         showConfirmButton: false,

@@ -18,7 +18,7 @@ const LessonDetailsPage = async ({ params }) => {
   if (!lessonData) {
     return notFound();
   }
-  console.log(totalLessons);
+  // console.log(totalLessons);
 
   if (
     lessonData.visibility === "Private" &&

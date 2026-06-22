@@ -15,6 +15,7 @@ import { lessonLikes } from "@/lib/api/lessons";
 import { useRouter } from "next/navigation";
 import { createFavoritesLesson } from "@/lib/action/favorites";
 import { toast } from "react-toastify";
+import ReportLessonButton from "./ReportLessonButton";
 
 export default function LessonDetails({ lessonData, user = null, total }) {
   const {
@@ -42,7 +43,7 @@ export default function LessonDetails({ lessonData, user = null, total }) {
 
   const isFav = favorites.includes(user?.id)
   const isLike = likes.includes(user?.id)
-  console.log(isFav);
+  // console.log(isFav);
 
   const handleLikeBtn = async () => {
     if (!user) {
@@ -253,10 +254,11 @@ export default function LessonDetails({ lessonData, user = null, total }) {
               Save Favorite
             </button>
 
-            <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400 font-medium">
+            {/* <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400 font-medium">
               <Flag size={18} />
               Report Lesson
-            </button>
+            </button> */}
+            <ReportLessonButton lessonId={_id} currentUserEmail={user} lessonData={lessonData}></ReportLessonButton>
           </div>
         </div>
 

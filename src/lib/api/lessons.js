@@ -9,9 +9,7 @@ export const allLessons = async () => {
 };
 
 export const getLessonsDetailsById = async (id) => {
-  console.log(id);
    const res = await serverFetchById(`api/lesson/${id}`)
-   console.log(res);
   return res
 };
 

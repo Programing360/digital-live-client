@@ -12,7 +12,7 @@ import {
   BookOpen,
   AlertCircle,
 } from "lucide-react";
-import { userRoleUpdate } from "@/lib/api/user";
+import { userDelete, userRoleUpdate } from "@/lib/api/user";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -53,8 +53,16 @@ export default function ManageUsersPage({ allLessons, allUser }) {
   };
 
   // 2. ACTION: Remove user profile context
-  const handleDelete = (userId) => {
-    setUsers((prev) => prev.filter((u) => u.id !== userId));
+  const handleDelete = async(userId) => {
+    const res = await userDelete(userId)
+     console.log(res);
+    if(res.deletedCount > 0){
+        toast.success('User Delete Successful')
+        router.refresh()
+    }
+    // console.log(res);
+
+
   };
 
   // 3. LOGIC: Search filter implementation
@@ -285,7 +293,7 @@ export default function ManageUsersPage({ allLessons, allUser }) {
                                 variant="flat"
                                 color="danger"
                                 className="h-8 w-8 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-lg"
-                                onPress={() => handleDelete(user.id)}
+                                onPress={() => handleDelete(user._id)}
                               >
                                 <Trash2 size={16} strokeWidth={2.2} />
                               </Button>

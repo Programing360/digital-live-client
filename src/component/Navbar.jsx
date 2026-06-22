@@ -33,8 +33,8 @@ export default function Navbar() {
   const user = session?.user;
 
   // admin role handle 
-  const isAdmin = user?.role === 'admin' || 'user'
-
+  const isAdmin = user?.role === 'admin'
+  console.log(isAdmin);
   // Conditional plan evaluation logic
   const isFreePlan = !user || user?.plan === "Free" || true;
 
@@ -135,8 +135,8 @@ export default function Navbar() {
                       <Avatar>
                         <Avatar.Image
                           size="sm"
-                          src={user.image || "https://i.pravatar.cc/150?u=1"}
-                          name={user.name}
+                          src={user?.image || "https://i.pravatar.cc/150?u=1"}
+                          name={user?.name}
                           className="ring-2 ring-violet-500/30 cursor-pointer"
                         />
                         <Avatar.Fallback>
@@ -248,7 +248,7 @@ export default function Navbar() {
 
                 {user ? (
                   <div className="flex items-center gap-2.5">
-                    <Avatar size="sm" src={user.image || "https://i.pravatar.cc/150?u=1"} />
+                    <Avatar size="sm" src={user?.image || "https://i.pravatar.cc/150?u=1"} />
                     <Button size="sm" variant="flat" color="danger" radius="xl" className="font-bold text-xs" onClick={handleSignOut}>
                       Sign Out
                     </Button>
