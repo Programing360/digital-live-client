@@ -26,7 +26,6 @@ import {
 import ThemeToggle from "./ThemeToggle";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -60,7 +59,7 @@ export default function Navbar() {
   };
 
   return (
-    // image_09bd6c.jpg এর সাথে ম্যাচিং গভীর বেগুনি ব্যাকগ্রাউন্ড ও বর্ডার শেড
+  
     <nav className="sticky top-0 z-50 border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#21094a]/85 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_32px_rgba(18,3,46,0.5)] backdrop-blur-2xl transition-colors duration-500">
       <div className="mx-auto container">
         <div>
@@ -81,14 +80,14 @@ export default function Navbar() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                // লোগো ব্যাকগ্রাউন্ডে ইমেজের কালার গ্রাডিয়েন্ট যুক্ত করা হয়েছে
+                
                 className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8b5cf6] via-[#31106a] to-[#00e5b4] text-white"
               >
                 <BookOpen size={20} />
               </motion.div>
 
               <div>
-                {/* টেক্সটে নিয়ন সায়ান এবং পার্পল টেক্সট ইফেক্ট */}
+            
                 <h2 className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-base font-black tracking-tight text-transparent dark:from-[#b992ff] dark:via-purple-400 dark:to-[#00e5b4]">
                   Digital Life Lessons
                 </h2>
@@ -114,7 +113,7 @@ export default function Navbar() {
                             : "text-slate-600 dark:text-purple-200/70 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
-                        {/* একটিভ এলিমেন্টের ব্যাকগ্রাউন্ড ও বর্ডারে ইমেজের থিম টাচ */}
+                      
                         {isActive && (
                           <motion.div
                             layoutId="active-nav"
@@ -288,7 +287,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link href="/auth/register">
-                    {/* Sign Up বাটনে ইমেজের মূল আকর্ষণ Neon Teal গ্রাডিয়েন্ট ব্যবহার করা হয়েছে */}
+                  
                     <Button
                       size="sm"
                       startContent={<Sparkles size={13} />}

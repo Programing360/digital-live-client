@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Sidebar from "@/component/Dashboard/Sidebar";
 
-// নতুন তৈরি করা সাইডবার কম্পোনেন্টটি ইমপোর্ট করুন
+
 
 export default function DashboardLayout({ children, user }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,14 +41,14 @@ export default function DashboardLayout({ children, user }) {
         </Button>
       </div>
 
-      {/* কাস্টম সাইডবার কম্পোনেন্ট ইনজেকশন */}
+     
       <Sidebar
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         user={user}
       />
 
-      {/* VIEWPORT CANVAS CONTAINER */}
+    
       <main className="flex-1 lg:ml-64 p-4 sm:p-8 lg:p-10 pt-24 lg:pt-10 transition-all duration-300 max-w-7xl mx-auto w-full">
         {children}
       </main>

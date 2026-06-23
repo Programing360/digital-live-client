@@ -14,11 +14,11 @@ export function UpdateLessonModal({
   onUpdateSuccess 
 }) {
 
-  // আপনার দেওয়া ডেটা অবজেক্ট স্কিমা অনুযায়ী স্টেট স্ট্রাকচার
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    description: "", // অবজেক্টে মূল কন্টেন্ট ফিল্ড হলো 'description'
+    description: "", 
     access: "Free",
     userName: "", 
     userEmail: "", 
@@ -31,7 +31,7 @@ export function UpdateLessonModal({
       setFormData({
         title: lessonData.title || "",
         category: lessonData.category || "",
-        description: lessonData.description || "", // ডেটা অবজেক্টের 'description' ফিল্ডটি ম্যাপ করা হয়েছে
+        description: lessonData.description || "", 
         access: lessonData.access || "Free",
         userName: lessonData.author?.name || lessonData.userName || "MD Limon", 
         userEmail: lessonData.author?.email || lessonData.userEmail || "limon@example.com", 
@@ -61,7 +61,6 @@ export function UpdateLessonModal({
         image: selectedImage
       };
       
-      // আপনার অ্যাকশন ফাইলে আইডি এবং কাস্টমাইজড অবজেক্ট পাঠানো হচ্ছে
       const updateLessonData = await lessonUpdate(lessonData._id?.$oid || lessonData._id, updateData);
       
       if (updateLessonData?.modifiedCount || updateLessonData) {

@@ -1,6 +1,5 @@
-import { serverFetch } from "../core/server"
 
-export const getFeatured = async() => {
-    const res = await serverFetch('api/featured')
-    return res
-}
+export const getFeatured = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/featured`);
+  return res.json();
+};

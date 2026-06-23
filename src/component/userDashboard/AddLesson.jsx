@@ -103,6 +103,14 @@ export default function AddLesson({ user }) {
         email: user.email,
         image: user.image,
       },
+      likes: [],
+      likesCount: 0,
+      visibility: "Public",
+      favorites: [],
+      favoritesCount: 1,
+      image: user.image,
+      userEmail: user.name,
+      userName: user.email,
     };
 
     const result = await createLesson(payload);
@@ -112,23 +120,21 @@ export default function AddLesson({ user }) {
       setIsUploading(false);
     }
 
-
-
     // Simulate successful API call response
-  //   setTimeout(() => {
-  //     toast.success(
-  //       "Saved Successfully! Record entry registered with hosted cloud image link.",
-  //     );
-  //     // Reset Form State safely
-  //     setFormData({
-  //       title: "",
-  //       description: "",
-  //       category: "",
-  //       emotionalTone: "",
-  //       access: "Free",
-  //     });
-      
-  //   }, 1000);
+    //   setTimeout(() => {
+    //     toast.success(
+    //       "Saved Successfully! Record entry registered with hosted cloud image link.",
+    //     );
+    //     // Reset Form State safely
+    //     setFormData({
+    //       title: "",
+    //       description: "",
+    //       category: "",
+    //       emotionalTone: "",
+    //       access: "Free",
+    //     });
+
+    //   }, 1000);
   };
 
   return (

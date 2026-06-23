@@ -124,7 +124,7 @@ export default function HeroSection() {
   const slide = digitalLessons[currentIndex];
 
   return (
-    // image_09bd6c.jpg এর কালার প্যালেট ভিত্তিক লাইট ও ডার্ক মোড ডিজাইন
+
     <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#31106a] dark:via-[#21094a] dark:to-[#12032e] text-slate-900 dark:text-white py-12 px-6 md:px-12 lg:px-16 select-none transition-colors duration-700">
       
       {/* Background Subtle Radial Glow (Dark Mode Only) */}
@@ -277,7 +277,7 @@ export default function HeroSection() {
 
       </div>
 
-      {/* ─── BOTTOM DECORATIVE WAVY LINES (image_09bd6c.jpg এর নিচের পার্ট ম্যাচিং) ─── */}
+    
       <div className="absolute bottom-0 left-0 w-full opacity-10 dark:opacity-20 pointer-events-none select-none">
         <svg className="w-full h-auto" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,96C120,85.3,240,64,360,58.7C480,53,600,64,720,74.7C840,85,960,96,1080,90.7C1200,85,1320,64,1380,53.3L1440,43V120H1380C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,0,120Z" fill="url(#wave-gradient)"/>

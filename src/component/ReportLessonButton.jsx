@@ -85,7 +85,7 @@ export default function ReportLessonButton({
         className="flex items-center gap-2 px-5 py-4 tracking-wide rounded-xl bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400 font-medium"
       >
         <Flag size={12} className="shrink-0" />
-        <span>Report</span>
+        Report
       </Button>
       {/* <Button
         variant="light"

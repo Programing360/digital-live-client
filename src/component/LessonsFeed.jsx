@@ -75,7 +75,7 @@ export default function LessonsFeed({
   }, [searchQuery, selectedCategories, initialLessons]);
 
   return (
-    // ডার্ক মোডে ইমেজের সাথে ম্যাচিং ডিপ বেগুনি ক্যানভাস ব্যাকগ্রাউন্ড
+
     <div className="max-w-7xl mx-auto px-4 py-8 bg-default-50/30 dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#12032e] min-h-screen transition-colors duration-500">
       
       {/* Header */}
@@ -172,7 +172,7 @@ export default function LessonsFeed({
                     }
                   `}
                 >
-                  {/* একটিভ ক্যাটাগরির পাশে সুন্দর ডট ইন্ডিকেটর */}
+       
                   {isSelected && (
                     <motion.span 
                       layoutId="activeDot"

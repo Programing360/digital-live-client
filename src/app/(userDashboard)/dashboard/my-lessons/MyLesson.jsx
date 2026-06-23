@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, Button, Modal, Chip } from "@heroui/react";
+
 import {
   Eye,
   Edit3,
@@ -12,10 +12,12 @@ import {
   Calendar,
 } from "lucide-react";
 import { lessonUpdate } from "@/lib/action/lessonUpdate";
-import { toast } from "react-toastify";
+
 import Link from "next/link";
 import { deleteLesson } from "@/lib/action/favorites";
 import { useRouter } from "next/navigation";
+import { Button, Card, Chip, Modal } from "@heroui/react";
+import { toast } from "react-toastify";
 
 export default function MyLessons({
   lessonsData = [],
@@ -25,14 +27,13 @@ export default function MyLessons({
   const [lessons, setLessons] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (lessonsData) {
       setLessons(lessonsData);
     }
   }, [lessonsData]);
-
 
   // Visibility toggle handler
   const toggleVisibility = async (id) => {
@@ -54,11 +55,10 @@ export default function MyLessons({
     const updateVisibility = { visibility: newVisibility };
 
     const res = await lessonUpdate(id, updateVisibility);
-   
-    if(res.ok){
-      toast.success('Update Successful')
-    }
 
+    if (res.ok) {
+      toast.success("Update Successful");
+    }
   };
 
   // Access Level toggle handler (Premium users only check)
@@ -86,14 +86,12 @@ export default function MyLessons({
   };
 
   const handleDelete = async (id) => {
-    const res = await deleteLesson(id)
+    const res = await deleteLesson(id);
 
-    if(res.deletedCount){
-      toast.success('Lesson Delete Success')
-      router.refresh()
-
+    if (res.deletedCount) {
+      toast.success("Lesson Delete Success");
+      router.refresh();
     }
-   
   };
 
   return (

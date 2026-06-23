@@ -20,15 +20,15 @@ const SectionStarIcon = () => (
 export default function FeaturedLifeLessons({ allFeatured, user }) {
   const router = useRouter();
 
-  // ১. অল ফিচারড লেসনের জন্য লোকাল স্টেট ম্যানেজমেন্ট
+  
   const [lessons, setLessons] = useState(allFeatured);
 
-  // প্রপস আপডেট হলে স্টেট সিঙ্ক করার জন্য
+
   useEffect(() => {
     setLessons(allFeatured);
   }, [allFeatured]);
 
-  // Framer Motion Variants
+
   const fadeInUpVariant = {
     hidden: { opacity: 0, y: 25 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
@@ -44,17 +44,15 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 15 } },
   };
 
-  // ২. বুকমার্ক/ফেভারিট অপ্টিমিস্টিক হ্যান্ডলার
   const handleFavorites = async (lessonId) => {
     if (!user) {
       return toast.warn("Please login to favorites!");
     }
 
     const userId = user.id;
-    // পূর্ববর্তী স্টেটের ব্যাকআপ (Rollback এর জন্য)
+
     const previousLessons = [...lessons];
 
-    // ইনস্ট্যান্ট ইউআই আপডেট (Optimistic Update)
     setLessons((prev) =>
       prev.map((l) => {
         if (l._id === lessonId) {
@@ -77,13 +75,12 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
         router.refresh();
       }
     } catch (error) {
-      // রিকোয়েস্ট ফেইল করলে আগের ইউআই ফিরিয়ে আনা
+
       setLessons(previousLessons);
       toast.error("Something went wrong with favorites!");
     }
   };
 
-  // ৩. লাইক বাটন অপ্টিমিস্টিক হ্যান্ডলার
   const handleLikeBtn = async (lessonId) => {
     if (!user) {
       return toast.warn("Please login to like");
@@ -92,7 +89,7 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
     const userId = user.id;
     const previousLessons = [...lessons];
 
-    // ক্লিক করার সাথে সাথে ইউআইতে লাইক ও কাউন্ট আপডেট (Optimistic Update)
+  
     setLessons((prev) =>
       prev.map((l) => {
         if (l._id === lessonId) {
@@ -116,7 +113,7 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
       }
       router.refresh();
     } catch (error) {
-      // নেটওয়ার্ক বা সার্ভার এরর হলে আগের স্টেট রোলব্যাক করা
+
       setLessons(previousLessons);
       toast.error("Failed to update like. Please try again.");
     }
@@ -162,7 +159,7 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
         viewport={{ once: true, margin: "-8px" }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        {/* ৪. অল ফিচারড ম্যাপ করার জায়গায় স্টেট 'lessons' ব্যবহার করা হয়েছে */}
+    
         {lessons.map((lesson) => (
           <motion.div
             key={lesson._id}

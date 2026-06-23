@@ -1,5 +1,6 @@
 import LessonDetails from "@/component/LessionsDetailsPage";
 import OwnerGuard from "@/component/OwnerGuard";
+import { getComment } from "@/lib/api/comment";
 import {
   allLessons,
   getLessonsDetailsById,
@@ -12,10 +13,11 @@ import React from "react";
 const LessonDetailsPage = async ({ params }) => {
   const { id } = await params;
   const user = await getUseSession();
-
   if (!user) {
     return redirect("/privateDashboard");
   }
+  const getUserComment = await getComment(user?.id);
+  console.log(getUserComment);
   const allLesson = await allLessons();
   const lessonData = await getLessonsDetailsById(id);
 
@@ -34,7 +36,7 @@ const LessonDetailsPage = async ({ params }) => {
     return <OwnerGuard ownerId={user?.id} user={user?.id}></OwnerGuard>;
   }
   return (
-    <LessonDetails lessonData={lessonData} user={user} total={totalLessons} />
+    <LessonDetails lessonData={lessonData} user={user} total={totalLessons} getUserComment={getUserComment} />
   );
 };
 
