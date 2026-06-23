@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Card, CardFooter, Avatar, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -12,7 +12,7 @@ import { authClient } from "@/lib/auth-client";
 import { lessonLikes } from "@/lib/api/lessons";
 import { useRouter } from "next/navigation";
 
-// আপনার ডার্ক গ্লো থিমের সাথে সামঞ্জস্য রেখে ইমোশনাল টোন কালার প্যালেট
+
 const toneColorMap = {
   Motivational: "bg-blue-500 shadow-sm shadow-blue-500/50",
   Grateful: "bg-[#00e5b4] shadow-sm shadow-[#00e5b4]/50", // Neon Teal
@@ -22,7 +22,7 @@ const toneColorMap = {
   Neutral: "bg-slate-400 shadow-sm shadow-slate-400/50",
 };
 
-export default function LessonCard({ lesson, userPlan = "Free" }) {
+export default function LessonCard({ lesson }) {
   const {
     _id,
     title,
@@ -43,6 +43,9 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
   const user = session?.user;
   const router = useRouter();
 
+  // const [lessons, setLessons] = useState()
+  // const [like, setLike] = useState(likesCount);
+
   const isLike = likes?.includes(user?.id);
   const isFavorites = favorites.includes(user?.id);
 
@@ -55,6 +58,7 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
     if (!user) {
       return toast.warn("Please login to favorites!");
     }
+
     const data = await createFavoritesLesson(newFavorites);
 
     if (data.message) {
@@ -72,10 +76,18 @@ export default function LessonCard({ lesson, userPlan = "Free" }) {
       userId: user?.id,
     };
 
+    // console.log(like);
+    // setLike((prev) => prev + 1, 0);
+    
     const likeCount = await lessonLikes(newLikes);
-    router.refresh();
-    if (likeCount.message) {
+    // console.log(likeCount);
+    if (likeCount.liked) {
       toast.success(`${likeCount.message}`);
+      router.refresh();
+    }
+    if (!likeCount.liked) {
+      toast.success(`${likeCount.message}`);
+      router.refresh();
     }
   };
 
