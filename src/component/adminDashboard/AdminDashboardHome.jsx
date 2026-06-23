@@ -98,7 +98,7 @@ const Sparkline = ({ points, colorClass }) => (
 export default function AdminDashboardHome({
   allLesson,
   userCount,
-  newLessons,
+  newLessons = 0,
   allReport,
   allGrowth,
 }) {

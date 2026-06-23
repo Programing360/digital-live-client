@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
+if (!baseURL) {
+  throw new Error("NEXT_PUBLIC_BASE_URL is missing");
+}
 export const authHeaders = async () => {
   const token = await getUserToken();
   const header = token
@@ -17,22 +20,26 @@ export const authHeaders = async () => {
 };
 // Protected Fetch----------------------------------------------
 export const protectedFetch = async (apiUrl) => {
-  const res = await fetch(`${baseURL}/${apiUrl}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`, {
     headers: await authHeaders(),
   });
+
+  
   return handleProtectedStatus(res);
 };
 
 export const serverFetch = async (apiUrl) => {
-  return protectedFetch(apiUrl);
+  return await protectedFetch(apiUrl);
 };
+
+
 
 export const serverFetchById = async (apiUrl) => {
   return await protectedFetch(apiUrl);
 };
 
 export const serverMutation = async (apiUrl, data) => {
-  const res = await fetch(`${baseURL}/${apiUrl}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`, {
     method: "POST",
     headers: {
       "content-Type": "application/json",
@@ -45,7 +52,7 @@ export const serverMutation = async (apiUrl, data) => {
 };
 
 export const serverUpdate = async (apiUrl, UpdateData) => {
-  const res = await fetch(`${baseURL}/${apiUrl}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
@@ -57,7 +64,7 @@ export const serverUpdate = async (apiUrl, UpdateData) => {
 };
 
 export const serverDelete = async (apiUrl) => {
-  const res = await fetch(`${baseURL}/${apiUrl}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`, {
     method: "DELETE",
     headers: {
       "content-Type": "application/json",
@@ -70,6 +77,7 @@ export const serverDelete = async (apiUrl) => {
 
 // handle user authentication -------------------------------------------
 export const handleProtectedStatus = async (res) => {
+  
   if (res.status === 401) {
     redirect("/auth/login");
   } else if (res.status === 403) {

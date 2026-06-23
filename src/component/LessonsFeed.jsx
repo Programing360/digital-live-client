@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Input, Button } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   SearchIcon,
   ChevronDown,
@@ -19,6 +20,20 @@ const categoriesList = [
   "Health",
 ];
 
+// Framer Motion Variants for Layout Animations
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+};
+
 export default function LessonsFeed({
   initialLessons = [],
   userPlan = "Free",
@@ -29,9 +44,6 @@ export default function LessonsFeed({
   const [isOpen, setIsOpen] = useState(false);
 
   const handleCategoryChange = (category) => {
-
-
-
     if (category === "All Lessons") {
       setSelectedCategories([]);
       return;
@@ -63,18 +75,24 @@ export default function LessonsFeed({
   }, [searchQuery, selectedCategories, initialLessons]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-default-50/30 min-h-screen">
+    // ডার্ক মোডে ইমেজের সাথে ম্যাচিং ডিপ বেগুনি ক্যানভাস ব্যাকগ্রাউন্ড
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-default-50/30 dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#12032e] min-h-screen transition-colors duration-500">
+      
       {/* Header */}
-      <div className="mb-6">
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="mb-8"
+      >
         <h1 className="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
           Public Lessons
         </h1>
-        <p className="text-sm text-default-400 mt-1">
+        <p className="text-sm text-default-400 dark:text-purple-300/50 mt-1">
           Discover wisdom from our community
         </p>
-      </div>
+      </motion.div>
 
-      {/* Search */}
+      {/* Search & Filter Bar */}
       <div className="flex gap-3 mb-8 w-full items-center">
         <Input
           type="text"
@@ -82,54 +100,59 @@ export default function LessonsFeed({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           startContent={
-            <SearchIcon className="text-default-400" size={18} />
+            <SearchIcon className="text-default-400 dark:text-purple-300/40 " size={18} />
           }
           radius="lg"
           variant="bordered"
-          className="w-full"
+          className="w-full dark:text-white"
           isClearable
           onClear={() => setSearchQuery("")}
+          classNames={{
+            inputWrapper: "dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-purple-500/50 focus-within:!border-purple-500",
+            input: "dark:text-purple-100 placeholder:dark:text-purple-300/30 "
+          }}
         />
 
+        {/* Filters Button with Neon Teal Hover Aspect */}
         <Button
-          className="bg-indigo-600 text-white font-bold h-10 px-5 rounded-xl hidden sm:flex gap-2"
-        //   startContent={<SlidersHorizontal size={16} />}
+          className="bg-indigo-600 dark:bg-[#00e5b4] text-white dark:text-slate-950 font-bold h-10 px-5 rounded-xl hidden sm:flex gap-2 transition-all shadow-md shadow-indigo-600/10 dark:shadow-[#00e5b4]/10 hover:opacity-90"
         >
-         <Funnel /> Filters 
+          <Funnel size={16} /> Filters 
         </Button>
       </div>
 
       {/* Layout */}
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
-        <div className="w-full md:w-64 shrink-0 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[24px] p-6 h-fit shadow-sm">
+        
+        {/* Sidebar Categories Box */}
+        <div className="w-full md:w-64 shrink-0 bg-white dark:bg-[#1a093c]/90 border border-slate-100 dark:border-white/[0.08] backdrop-blur-xl rounded-[24px] p-6 h-fit shadow-sm transition-all">
+          
           {/* Mobile Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden w-full flex items-center justify-between"
           >
-            <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100 uppercase tracking-wider">
+            <h3 className="font-bold text-sm text-slate-800 dark:text-purple-100 uppercase tracking-wider">
               Categories
             </h3>
-
             <ChevronDown
               size={18}
-              className={`transition-transform duration-300 ${
+              className={`transition-transform duration-300 dark:text-purple-300 ${
                 isOpen ? "rotate-180" : ""
               }`}
             />
           </button>
 
           {/* Desktop Title */}
-          <h3 className="hidden md:block font-bold text-sm text-slate-800 dark:text-zinc-100 uppercase tracking-wider mb-4">
+          <h3 className="hidden md:block font-bold text-sm text-slate-800 dark:text-purple-200/80 uppercase tracking-wider mb-4">
             Categories
           </h3>
 
-          {/* Categories */}
+          {/* Categories Buttons List */}
           <div
             className={`${
               isOpen ? "flex" : "hidden"
-            } md:flex flex-col gap-3 mt-4 md:mt-0`}
+            } md:flex flex-col gap-2.5 mt-4 md:mt-0`}
           >
             {categoriesList.map((category) => {
               const isSelected =
@@ -141,14 +164,21 @@ export default function LessonsFeed({
                 <button
                   key={category}
                   onClick={() => handleCategoryChange(category)}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 border dark:text-white
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 border relative
                     ${
                       isSelected
-                        ? "bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400 shadow-md"
-                        : "bg-transparent border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800"
+                        ? "bg-violet-100 text-violet-600 dark:bg-white/[0.04] dark:text-[#00e5b4] border-violet-200 dark:border-white/[0.1] shadow-sm"
+                        : "bg-transparent text-slate-600 dark:text-purple-200/60 border-slate-200 dark:border-white/[0.04] hover:bg-slate-100 dark:hover:bg-white/[0.02]"
                     }
                   `}
                 >
+                  {/* একটিভ ক্যাটাগরির পাশে সুন্দর ডট ইন্ডিকেটর */}
+                  {isSelected && (
+                    <motion.span 
+                      layoutId="activeDot"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-violet-600 dark:bg-[#00e5b4]"
+                    />
+                  )}
                   {category}
                 </button>
               );
@@ -156,42 +186,60 @@ export default function LessonsFeed({
           </div>
         </div>
 
-        {/* Lessons Grid */}
+        {/* Lessons Content Grid Area */}
         <div className="flex-1">
-          {filteredLessons.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredLessons.map((lesson) => (
-                <LessonCard
-                  key={lesson._id}
-                  lesson={lesson}
-                  userPlan={userPlan}
-                  favorites={favorites}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[24px]">
-              <p className="text-default-400 text-sm font-medium">
-                No life lessons found matching your filters.
-              </p>
-
-              <Button
-                size="sm"
-                variant="flat"
-                color="secondary"
-                className="mt-4 font-bold"
-                onPress={() => {
-                  setSearchQuery("");
-                  setSelectedCategories([]);
-                }}
+          <AnimatePresence mode="wait">
+            {filteredLessons.length > 0 ? (
+              <motion.div 
+                key="grid"
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
               >
-                Reset Filters
-              </Button>
-            </div>
-          )}
+                {filteredLessons.map((lesson) => (
+                  <motion.div 
+                    key={lesson._id} 
+                    variants={itemVariants}
+                    layout
+                  >
+                    <LessonCard
+                      lesson={lesson}
+                      userPlan={userPlan}
+                      favorites={favorites}
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              /* empty state animated element */
+              <motion.div 
+                key="empty"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="text-center py-20 bg-white dark:bg-[#1a093c]/50 border border-slate-100 dark:border-white/[0.06] rounded-[24px]"
+              >
+                <p className="text-default-400 dark:text-purple-300/40 text-sm font-medium">
+                  No life lessons found matching your filters.
+                </p>
+
+                <Button
+                  size="sm"
+                  variant="flat"
+                  className="mt-4 font-bold bg-violet-50 dark:bg-white/[0.04] text-violet-600 dark:text-[#00e5b4]"
+                  onPress={() => {
+                    setSearchQuery("");
+                    setSelectedCategories([]);
+                  }}
+                >
+                  Reset Filters
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
   );
 }
-

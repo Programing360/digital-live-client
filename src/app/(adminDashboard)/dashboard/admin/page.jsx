@@ -4,21 +4,21 @@ import { allLessons, newLesson } from "@/lib/api/lessons";
 import { getReport } from "@/lib/api/report";
 import { getAllUser } from "@/lib/api/user";
 import React from "react";
+export const dynamic = "force-dynamic";
 
 const AdminPage = async () => {
-  const allLesson = await allLessons();
+  const allLessonData = await allLessons();
   const userCount = await getAllUser();
-  const newLessons = await newLesson();
+  const newLessonCount =await newLesson()
   const allReport = await getReport();
   const allGrowth = await getGrowthData()
-// console.log(allGrowth);
 
   return (
     <div>
       <AdminDashboardHome
-        allLesson={allLesson}
+        allLesson={allLessonData}
         userCount={userCount}
-        newLessons={newLessons}
+        newLessons={newLessonCount.count}
         allReport={allReport}
         allGrowth={allGrowth}
       ></AdminDashboardHome>

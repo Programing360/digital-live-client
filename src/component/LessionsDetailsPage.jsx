@@ -43,7 +43,6 @@ export default function LessonDetails({ lessonData, user = null, total }) {
 
   const isFav = favorites.includes(user?.id);
   const isLike = likes.includes(user?.id);
- 
 
   const handleLikeBtn = async () => {
     if (!user) {
@@ -73,7 +72,7 @@ export default function LessonDetails({ lessonData, user = null, total }) {
       userName: user?.name,
       lessonId: _id,
     };
-
+    console.log("object");
     const fav = await createFavoritesLesson(FavoriteItem);
 
     if (fav.insertedId) {

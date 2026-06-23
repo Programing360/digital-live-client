@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import { usePathname } from "next/navigation";
 import {
   Button,
@@ -27,6 +26,7 @@ import {
 import ThemeToggle from "./ThemeToggle";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -37,7 +37,7 @@ export default function Navbar() {
   // Admin role check
   const isAdmin = user?.role === "admin";
 
-  // Real Plan Evaluation based on User Object (Implicit condition corrected)
+  // Real Plan Evaluation based on User Object
   const isPremiumUser = user?.isPlan === "premium";
   const isFreePlan = !user || user?.isPlan === "free";
 
@@ -48,10 +48,10 @@ export default function Navbar() {
       ? [
           { name: "Add Lesson", href: "/dashboard/add-lesson" },
           { name: "My Lessons", href: "/dashboard/my-lessons" },
+          { name: "My Favorite", href: "/dashboard/my-favorites" },
         ]
       : []),
     { name: "Public Lessons", href: "/publicLessons" },
-    // Upgrade link will ONLY show if the user is logged in AND on a Free Plan
     ...(user && isFreePlan ? [{ name: "Upgrade", href: "/upgrade" }] : []),
   ];
 
@@ -60,19 +60,20 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-zinc-800/60 bg-white/70 dark:bg-zinc-950/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-2xl transition-colors duration-300">
+    // image_09bd6c.jpg এর সাথে ম্যাচিং গভীর বেগুনি ব্যাকগ্রাউন্ড ও বর্ডার শেড
+    <nav className="sticky top-0 z-50 border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#21094a]/85 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_32px_rgba(18,3,46,0.5)] backdrop-blur-2xl transition-colors duration-500">
       <div className="mx-auto container">
         <div>
           <div className="flex h-20 items-center justify-between px-5 lg:px-8">
-            {/* Brand Logo Identity */}
+            {/* ─── BRAND LOGO IDENTITY ─── */}
             <Link href="/" className="flex items-center gap-3">
               <motion.div
                 whileHover={{ scale: 1.06, rotate: 4 }}
                 animate={{
                   boxShadow: [
-                    "0 0 0px rgba(139,92,246,.1)",
-                    "0 0 24px rgba(139,92,246,.4)",
-                    "0 0 0px rgba(139,92,246,.1)",
+                    "0 0 0px rgba(0,229,180,0)",
+                    "0 0 20px rgba(0,229,180,0.4)",
+                    "0 0 0px rgba(0,229,180,0)",
                   ],
                 }}
                 transition={{
@@ -80,22 +81,24 @@ export default function Navbar() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 via-indigo-500 to-cyan-500 text-white"
+                // লোগো ব্যাকগ্রাউন্ডে ইমেজের কালার গ্রাডিয়েন্ট যুক্ত করা হয়েছে
+                className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8b5cf6] via-[#31106a] to-[#00e5b4] text-white"
               >
                 <BookOpen size={20} />
               </motion.div>
 
               <div>
-                <h2 className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-base font-black tracking-tight text-transparent dark:from-violet-400 dark:via-indigo-400 dark:to-cyan-400">
+                {/* টেক্সটে নিয়ন সায়ান এবং পার্পল টেক্সট ইফেক্ট */}
+                <h2 className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-base font-black tracking-tight text-transparent dark:from-[#b992ff] dark:via-purple-400 dark:to-[#00e5b4]">
                   Digital Life Lessons
                 </h2>
-                <p className="text-[10px] font-bold text-default-400 dark:text-zinc-500 tracking-wider uppercase">
+                <p className="text-[10px] font-bold text-default-400 dark:text-purple-300/50 tracking-wider uppercase">
                   Capture Wisdom • Inspire Growth
                 </p>
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
+            {/* ─── DESKTOP NAVIGATION LINKS ─── */}
             <ul className="hidden items-center gap-1 lg:flex">
               {navItems?.map((item) => {
                 const isActive = pathname === item.href;
@@ -107,10 +110,11 @@ export default function Navbar() {
                         variant="light"
                         className={`group relative px-4 py-2 text-xs font-bold transition-all rounded-xl h-9 bg-transparent ${
                           isActive
-                            ? "text-indigo-600 dark:text-violet-400"
-                            : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+                            ? "text-indigo-600 dark:text-[#00e5b4]"
+                            : "text-slate-600 dark:text-purple-200/70 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
+                        {/* একটিভ এলিমেন্টের ব্যাকগ্রাউন্ড ও বর্ডারে ইমেজের থিম টাচ */}
                         {isActive && (
                           <motion.div
                             layoutId="active-nav"
@@ -119,7 +123,7 @@ export default function Navbar() {
                               stiffness: 380,
                               damping: 30,
                             }}
-                            className="absolute inset-0 rounded-xl bg-indigo-50 dark:bg-violet-500/10 border border-indigo-500/10 dark:border-violet-500/10"
+                            className="absolute inset-0 rounded-xl bg-indigo-50 dark:bg-white/[0.04] border border-indigo-500/10 dark:border-white/[0.08]"
                           />
                         )}
                         <span className="relative z-10 flex items-center gap-1">
@@ -138,16 +142,14 @@ export default function Navbar() {
               })}
             </ul>
 
-            {/* Right Desktop Control Panel Elements */}
+            {/* ─── RIGHT DESKTOP CONTROL PANEL ELEMENTS ─── */}
             <div className="hidden items-center gap-3 lg:flex">
-              
-
               <ThemeToggle />
 
               {user ? (
                 <Dropdown placement="bottom-end">
                   <Dropdown.Trigger>
-                    <button className="focus:outline-none transition-transform active:scale-95 relative rounded-full p-0.5 border border-default-200 dark:border-zinc-800">
+                    <button className="focus:outline-none transition-transform active:scale-95 relative rounded-full p-0.5 border border-default-200 dark:border-white/[0.1]">
                       <Avatar>
                         <Avatar.Image
                           size="sm"
@@ -155,14 +157,14 @@ export default function Navbar() {
                           name={user?.name}
                           className="cursor-pointer rounded-full"
                         />
-                        <Avatar.Fallback className="bg-indigo-50 dark:bg-zinc-800 font-bold text-xs text-indigo-600 dark:text-zinc-300">
+                        <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
                           {user.name?.slice(0, 2).toUpperCase()}
                         </Avatar.Fallback>
                       </Avatar>
 
                       {/* Floating Micro Premium Dot Badge */}
                       {isPremiumUser && (
-                        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-zinc-950">
+                        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-[#21094a]">
                           <Crown size={8} className="text-white font-black" />
                         </span>
                       )}
@@ -170,7 +172,7 @@ export default function Navbar() {
                   </Dropdown.Trigger>
                   <Dropdown.Popover>
                     <Dropdown.Menu
-                      className="w-64 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-2xl"
+                      className="w-64 bg-white dark:bg-[#1a093c] border border-slate-100 dark:border-white/[0.08] rounded-2xl"
                       aria-label="User Profile Actions"
                     >
                       {/* Premium Aware Summary Card */}
@@ -178,38 +180,51 @@ export default function Navbar() {
                         key="profile-summary"
                         className="h-16 gap-2 opacity-100 pointer-events-none px-3"
                       >
-                        <div className="flex items-center justify-between w-full">
-                          <Label className="font-black text-xs text-slate-800 dark:text-white truncate max-w-[140px]">
-                            {user?.name}
-                          </Label>
+                        <div className="flex gap-2">
+                          <Avatar className="mx-auto">
+                            <Avatar.Image
+                              alt="John Doe"
+                              src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                            />
+                            <Avatar.Fallback>JD</Avatar.Fallback>
+                          </Avatar>
+                          <div>
+                            <div className="flex w-full">
+                              <Label className="font-black text-xs text-slate-800 dark:text-purple-100 truncate max-w-[140px]">
+                                {user?.name}
+                              </Label>
 
-                          {/* DYNAMIC PREMIUM USER BADGE COMPONENT */}
-                          {isPremiumUser ? (
-                            <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-md shadow-sm shadow-orange-500/20">
-                              <Crown size={9} /> Premium
-                            </span>
-                          ) : (
-                            <span className="text-[9px] font-bold uppercase tracking-wider bg-default-100 dark:bg-zinc-800 text-default-500 px-2 py-0.5 rounded-md">
-                              Free Tier
-                            </span>
-                          )}
-                        </div>
-                        <Description className="text-[11px] text-default-400 dark:text-zinc-500 font-medium block truncate mt-0.5">
+                              {isPremiumUser ? (
+                                <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-md shadow-sm shadow-orange-500/20">
+                                  <Crown size={9} /> Premium
+                                </span>
+                              ) : (
+                                <span className="text-[9px] font-bold text-pink-400 uppercase tracking-wider bg-default-100 dark:bg-white/[0.05] text-default-500 dark:text-purple-300/70 px-2 py-0.5 rounded-md">
+                                  Free Tier
+                                </span>
+                              )}
+                            </div>
+                            <Description className="text-[11px] text-default-400 dark:text-purple-300/50 font-medium block truncate mt-0.5">
                           {user?.email}
                         </Description>
+                          </div>
+                        </div>
                       </Dropdown.Item>
 
-                      <Separator className="bg-default-100 dark:bg-zinc-800" />
+                      <Separator className="bg-default-100 dark:bg-white/[0.06]" />
 
                       <Dropdown.Item
                         key="profile"
                         as={Link}
                         href="/profile"
                         startContent={
-                          <User size={15} className="text-default-400" />
+                          <User
+                            size={15}
+                            className="text-default-400 dark:text-purple-300/60"
+                          />
                         }
                       >
-                        <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
+                        <Label className="font-semibold text-xs text-slate-700 dark:text-purple-200">
                           Profile
                         </Label>
                       </Dropdown.Item>
@@ -221,11 +236,11 @@ export default function Navbar() {
                         startContent={
                           <LayoutDashboard
                             size={15}
-                            className="text-default-400"
+                            className="text-default-400 dark:text-purple-300/60"
                           />
                         }
                       >
-                        <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
+                        <Label className="font-semibold text-xs text-slate-700 dark:text-purple-200">
                           Dashboard
                         </Label>
                       </Dropdown.Item>
@@ -235,15 +250,18 @@ export default function Navbar() {
                         as={Link}
                         href="/settings"
                         startContent={
-                          <Settings size={15} className="text-default-400" />
+                          <Settings
+                            size={15}
+                            className="text-default-400 dark:text-purple-300/60"
+                          />
                         }
                       >
-                        <Label className="font-semibold text-xs text-slate-700 dark:text-zinc-200">
+                        <Label className="font-semibold text-xs text-slate-700 dark:text-purple-200">
                           Account Settings
                         </Label>
                       </Dropdown.Item>
 
-                      <Separator className="bg-default-100 dark:bg-zinc-800" />
+                      <Separator className="bg-default-100 dark:bg-white/[0.06]" />
 
                       <Dropdown.Item
                         key="logout"
@@ -263,17 +281,18 @@ export default function Navbar() {
                   <Link href="/auth/login">
                     <Button
                       variant="light"
-                      className="border border-slate-200 dark:border-zinc-800 hover:bg-default-100 dark:hover:bg-zinc-800 font-bold text-xs h-9 px-4 rounded-xl text-slate-700 dark:text-zinc-300"
+                      className="border border-slate-200 dark:border-white/[0.1] hover:bg-default-100 dark:hover:bg-white/[0.04] font-bold text-xs h-9 px-4 rounded-xl text-slate-700 dark:text-purple-200"
                     >
                       Sign In
                     </Button>
                   </Link>
 
                   <Link href="/auth/register">
+                    {/* Sign Up বাটনে ইমেজের মূল আকর্ষণ Neon Teal গ্রাডিয়েন্ট ব্যবহার করা হয়েছে */}
                     <Button
                       size="sm"
                       startContent={<Sparkles size={13} />}
-                      className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 font-extrabold text-white shadow-md shadow-indigo-600/10 transition-transform duration-300 hover:scale-[1.02] h-9 px-4 rounded-xl"
+                      className="bg-gradient-to-r from-indigo-600 via-purple-600 to-[#00e5b4] dark:from-purple-600 dark:via-indigo-600 dark:to-[#00e5b4] font-extrabold text-white shadow-md shadow-indigo-600/10 transition-transform duration-300 hover:scale-[1.02] h-9 px-4 rounded-xl"
                     >
                       Sign Up
                     </Button>
@@ -282,11 +301,11 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile Menu Action Trigger Button */}
+            {/* ─── MOBILE MENU ACTION TRIGGER BUTTON ─── */}
             <Button
               isIconOnly
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-slate-700 dark:text-zinc-300 bg-default-100 dark:bg-zinc-900 border border-default-200/50 dark:border-zinc-800/60 rounded-xl h-9 w-9 min-w-0"
+              className="lg:hidden text-slate-700 dark:text-purple-200 bg-default-100 dark:bg-[#31106a] border border-default-200/50 dark:border-white/[0.08] rounded-xl h-9 w-9 min-w-0"
             >
               <motion.div animate={{ rotate: menuOpen ? 90 : 0 }}>
                 {menuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -296,7 +315,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Sidebar Layer Panels */}
+      {/* ─── MOBILE SIDEBAR LAYER PANELS ─── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -304,10 +323,10 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-default-200 dark:border-zinc-800 lg:hidden bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl"
+            className="overflow-hidden border-t border-default-200 dark:border-white/[0.08] lg:hidden bg-white/95 dark:bg-[#21094a]/95 backdrop-blur-xl"
           >
             <div className="space-y-4 p-5">
-              <div className="flex items-center justify-between gap-3 border-b border-default-100 dark:border-zinc-800/60 pb-4">
+              <div className="flex items-center justify-between gap-3 border-b border-default-100 dark:border-white/[0.06] pb-4">
                 <ThemeToggle />
 
                 {user ? (
@@ -318,7 +337,7 @@ export default function Navbar() {
                         src={user?.image || "https://i.pravatar.cc/150?u=1"}
                       />
                       <div className="flex flex-col text-left">
-                        <span className="text-xs font-black text-slate-800 dark:text-zinc-200 max-w-[100px] truncate">
+                        <span className="text-xs font-black text-slate-800 dark:text-purple-100 max-w-[100px] truncate">
                           {user.name}
                         </span>
                         {isPremiumUser && (
@@ -348,7 +367,7 @@ export default function Navbar() {
                     >
                       <Button
                         variant="flat"
-                        className="w-full font-bold text-xs rounded-xl h-8 text-slate-700 dark:text-zinc-300"
+                        className="w-full font-bold text-xs rounded-xl h-8 text-slate-700 dark:text-purple-200 bg-default-100 dark:bg-white/[0.04]"
                       >
                         Login
                       </Button>
@@ -358,7 +377,7 @@ export default function Navbar() {
                       className="flex-1"
                       onClick={() => setMenuOpen(false)}
                     >
-                      <Button className="w-full font-black text-xs bg-slate-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded-xl h-8">
+                      <Button className="w-full font-black text-xs bg-slate-900 dark:bg-[#00e5b4] dark:text-slate-950 text-white rounded-xl h-8">
                         Signup
                       </Button>
                     </Link>
@@ -383,8 +402,8 @@ export default function Navbar() {
                         onClick={() => setMenuOpen(false)}
                         className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition-all ${
                           isMobileActive
-                            ? "bg-indigo-50 text-indigo-600 dark:bg-violet-500/10 dark:text-violet-400 border-l-4 border-indigo-500"
-                            : "hover:bg-default-50 dark:hover:bg-zinc-900 text-slate-600 dark:text-zinc-400"
+                            ? "bg-indigo-50 text-indigo-600 dark:bg-white/[0.04] dark:text-[#00e5b4] border-l-4 border-indigo-500 dark:border-[#00e5b4]"
+                            : "hover:bg-default-50 dark:hover:bg-white/[0.02] text-slate-600 dark:text-purple-200/70"
                         }`}
                       >
                         <span className="flex items-center gap-1.5">

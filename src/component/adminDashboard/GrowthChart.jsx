@@ -35,7 +35,7 @@ const GrowthChart = ({ chartData }) => {
     users: user[index],
     lessons: lesson[index],
   }));
-  // console.log(formattedData );
+
 
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-default-200 dark:border-zinc-800 p-6 shadow-sm">

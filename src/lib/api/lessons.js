@@ -7,8 +7,12 @@ import {
 
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
+if (!baseURL) {
+  throw new Error("NEXT_PUBLIC_BASE_URL is missing");
+}
+
 export const allLessons = async () => {
-  const res = await fetch(`${baseURL}/api/lessons`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lessons`);
   return res.json();
 };
 
@@ -37,6 +41,9 @@ export const inappropriateLessonDelete = async (id) => {
   return res;
 };
 export const inappropriateLessonVerified = async (id, updateDoc) => {
-  const res = await serverUpdate(`api/inappropriateLessonVerified/${id}`, updateDoc);
+  const res = await serverUpdate(
+    `api/inappropriateLessonVerified/${id}`,
+    updateDoc,
+  );
   return res;
 };
