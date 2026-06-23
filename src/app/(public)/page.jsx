@@ -1,16 +1,21 @@
-
 import AnalyticsDashboardGrid from "@/component/AnalyticsDashboardGrid";
 import HeroSection from "@/component/Banner";
 import FeaturedLifeLessons from "@/component/FeaturedLifeLessons";
 import WhyLearningMatters from "@/component/WhyLearningMatters,";
+import { getFeatured } from "@/lib/api/featured";
+import { getUseSession } from "@/lib/core/session";
 
+export default async function Home() {
+  const user = await getUseSession();
 
-export default function Home() {
+  const allFeatured = await getFeatured();
+  console.log(allFeatured);
+
   return (
-    <div className="">
+    <div className="min-h-screen bg-transparent dark:bg-[#12032e] transition-colors duration-500 overflow-x-hidden flex flex-col gap-y-6 sm:gap-y-12">
       <HeroSection></HeroSection>
-      <FeaturedLifeLessons></FeaturedLifeLessons>
-      <WhyLearningMatters/>
+      <FeaturedLifeLessons allFeatured={allFeatured} user={user}></FeaturedLifeLessons>
+      <WhyLearningMatters />
       <AnalyticsDashboardGrid></AnalyticsDashboardGrid>
     </div>
   );

@@ -1,201 +1,253 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
+import { createFavoritesLesson } from "@/lib/action/favorites";
+import { lessonLikes } from "@/lib/api/lessons";
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
+import { Bookmark, Heart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-// Inline Icons matching image_3735a3.png
 const SectionStarIcon = () => (
-  <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-purple-50 text-purple-600">
-    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-    </svg>
+  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-[#00e5b4] shadow-sm transition-colors">
+    <Star className="w-4 h-4 fill-current" />
   </div>
 );
 
-const HeartIcon = () => (
-  <svg className="w-4 h-4 text-rose-500 fill-rose-500" viewBox="0 0 24 24">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-  </svg>
-);
+export default function FeaturedLifeLessons({ allFeatured, user }) {
+  const router = useRouter();
 
-const BookmarkIcon = () => (
-  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-  </svg>
-);
+  // ১. অল ফিচারড লেসনের জন্য লোকাল স্টেট ম্যানেজমেন্ট
+  const [lessons, setLessons] = useState(allFeatured);
 
-const lessonsData = [
-  {
-    id: 1,
-    title: "The Power of Positive Thinking",
-    description: "Your thoughts shape your reality. Choose positivity and watch your world transform.",
-    tag: "Mindset",
-    tagStyles: "bg-indigo-600/90 text-white",
-    image: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=500&auto=format&fit=crop&q=80",
-    likes: 245,
-    bookmarks: 543,
-    author: {
-      name: "Nusrat Jahan",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-    },
-  },
-  {
-    id: 2,
-    title: "Small Steps Every Day",
-    description: "Great things never came from comfort zones. Keep showing up for yourself.",
-    tag: "Growth",
-    tagStyles: "bg-emerald-100 text-emerald-800 font-bold",
-    image: "https://images.unsplash.com/photo-1530603768230-3759979bad90?w=500&auto=format&fit=crop&q=80",
-    likes: 312,
-    bookmarks: 678,
-    author: {
-      name: "Tanvir Rahman",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-    },
-  },
-  {
-    id: 3,
-    title: "Letting Go is Sometimes the Best Choice",
-    description: "Not everything is meant to stay in your life forever. And that's okay.",
-    tag: "Life",
-    tagStyles: "bg-orange-100 text-orange-700 font-bold",
-    image: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=500&auto=format&fit=crop&q=80",
-    likes: 198,
-    bookmarks: 421,
-    author: {
-      name: "Meher Afroz",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-    },
-  },
-];
+  // প্রপস আপডেট হলে স্টেট সিঙ্ক করার জন্য
+  useEffect(() => {
+    setLessons(allFeatured);
+  }, [allFeatured]);
 
-export default function FeaturedLifeLessons() {
-  
-  // AOS-style Frame Motion configurations
+  // Framer Motion Variants
   const fadeInUpVariant = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] } 
-    }
+    hidden: { opacity: 0, y: 25 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
 
   const gridContainerVariant = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15 // Smooth progressive staggering gap
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
   };
 
   const cardVariant = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: "spring", stiffness: 70, damping: 14 } 
+    hidden: { opacity: 0, y: 35 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 15 } },
+  };
+
+  // ২. বুকমার্ক/ফেভারিট অপ্টিমিস্টিক হ্যান্ডলার
+  const handleFavorites = async (lessonId) => {
+    if (!user) {
+      return toast.warn("Please login to favorites!");
+    }
+
+    const userId = user.id;
+    // পূর্ববর্তী স্টেটের ব্যাকআপ (Rollback এর জন্য)
+    const previousLessons = [...lessons];
+
+    // ইনস্ট্যান্ট ইউআই আপডেট (Optimistic Update)
+    setLessons((prev) =>
+      prev.map((l) => {
+        if (l._id === lessonId) {
+          const hasFav = l.favorites?.includes(userId);
+          return {
+            ...l,
+            favorites: hasFav ? l.favorites.filter((id) => id !== userId) : [...(l.favorites || []), userId],
+            favoritesCount: hasFav ? Math.max(0, (l.favoritesCount || 1) - 1) : (l.favoritesCount || 0) + 1,
+          };
+        }
+        return l;
+      })
+    );
+
+    try {
+      const newFavorites = { userId, userName: user?.name, lessonId };
+      const data = await createFavoritesLesson(newFavorites);
+      if (data.message) {
+        toast.success(`${data.message}`);
+        router.refresh();
+      }
+    } catch (error) {
+      // রিকোয়েস্ট ফেইল করলে আগের ইউআই ফিরিয়ে আনা
+      setLessons(previousLessons);
+      toast.error("Something went wrong with favorites!");
+    }
+  };
+
+  // ৩. লাইক বাটন অপ্টিমিস্টিক হ্যান্ডলার
+  const handleLikeBtn = async (lessonId) => {
+    if (!user) {
+      return toast.warn("Please login to like");
+    }
+
+    const userId = user.id;
+    const previousLessons = [...lessons];
+
+    // ক্লিক করার সাথে সাথে ইউআইতে লাইক ও কাউন্ট আপডেট (Optimistic Update)
+    setLessons((prev) =>
+      prev.map((l) => {
+        if (l._id === lessonId) {
+          const hasLiked = l.likes?.includes(userId);
+          return {
+            ...l,
+            likes: hasLiked ? l.likes.filter((id) => id !== userId) : [...(l.likes || []), userId],
+            likesCount: hasLiked ? Math.max(0, (l.likesCount || 1) - 1) : (l.likesCount || 0) + 1,
+          };
+        }
+        return l;
+      })
+    );
+
+    try {
+      const newLikes = { lessonId, userId };
+      const likeCount = await lessonLikes(newLikes);
+      
+      if (likeCount.message) {
+        toast.success(`${likeCount.message}`);
+      }
+      router.refresh();
+    } catch (error) {
+      // নেটওয়ার্ক বা সার্ভার এরর হলে আগের স্টেট রোলব্যাক করা
+      setLessons(previousLessons);
+      toast.error("Failed to update like. Please try again.");
     }
   };
 
   return (
-    <section className="w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden select-none">
-      
-      {/* Header Viewport AOS Reveal Container */}
-      <motion.div 
+    <section className="w-full max-w-7xl mx-auto py-14 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#1a093c]/90 overflow-hidden select-none transition-colors duration-500 rounded-b-2xl">
+      {/* Header Section */}
+      <motion.div
         variants={fadeInUpVariant}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10"
       >
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           <SectionStarIcon />
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Featured Life Lessons
             </h2>
-            <p className="text-sm font-medium text-slate-500 mt-0.5">
+            <p className="text-sm font-medium text-slate-500 dark:text-purple-300/40 mt-0.5">
               Handpicked lessons from our amazing community
             </p>
           </div>
         </div>
-        
-        <Link href={'/publicLessons'}>
+
+        <Link href={"/publicLessons"}>
           <Button
-          variant="bordered"
-          className="border-purple-200 border shadow-2xl text-purple-600 font-semibold hover:bg-purple-50/50 self-start sm:self-auto transition-all px-5 h-9 active:scale-95"
-          radius="md"
-        >
-          View All
-        </Button>
+            variant="bordered"
+            className="border-purple-200 dark:border-white/[0.08] shadow-sm text-purple-600 dark:text-[#00e5b4] font-bold hover:bg-purple-50/50 dark:hover:bg-white/[0.02] transition-all px-5 h-9 active:scale-95 radius-xl"
+          >
+            View All
+          </Button>
         </Link>
       </motion.div>
 
-      {/* Staggered Cards Workspace Container */}
-      <motion.div 
+      {/* Grid Container */}
+      <motion.div
         variants={gridContainerVariant}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-8px" }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        {lessonsData.map((lesson) => (
-          <motion.div 
-            key={lesson.id} 
+        {/* ৪. অল ফিচারড ম্যাপ করার জায়গায় স্টেট 'lessons' ব্যবহার করা হয়েছে */}
+        {lessons.map((lesson) => (
+          <motion.div
+            key={lesson._id}
             variants={cardVariant}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="flex flex-col bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(99,102,241,0.12)] transition-shadow duration-300 group cursor-pointer"
+            className="flex flex-col bg-white dark:bg-[#1a093c]/60 border border-slate-100 dark:border-white/[0.06] backdrop-blur-md rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl dark:hover:shadow-purple-950/10 transition-all duration-300 group cursor-pointer"
           >
-            {/* Image Box Container */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-50">
-              <Image 
-                src={lesson.image} 
+            {/* Image Wrap */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-50 dark:bg-[#12032e]">
+              <Image
+                src={lesson.imageUrl}
                 alt={lesson.title}
-                width='40'
-                height='40'
+                width={400}
+                height={250}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 loading="lazy"
               />
-              <span className={`absolute top-3 left-3 text-xs px-3 py-1 rounded-full shadow-sm select-none ${lesson.tagStyles}`}>
-                {lesson.tag}
+              <span className="absolute top-3 left-3 text-[11px] font-bold px-3 py-1 bg-black/40 dark:bg-black/50 backdrop-blur-md text-white border border-white/10 rounded-full shadow-sm select-none">
+                {lesson.category}
               </span>
             </div>
 
-            {/* Typography Content Meta */}
+            {/* Content Area */}
             <div className="flex flex-col flex-1 p-5">
-              <h3 className="text-base font-bold text-slate-900 leading-snug min-h-[44px] group-hover:text-[#5850EC] transition-colors duration-200">
+              <h3 className="text-base font-bold text-slate-900 dark:text-purple-50 leading-snug min-h-[44px] group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors duration-200">
                 {lesson.title}
               </h3>
-              <p className="text-xs font-medium text-slate-500 leading-relaxed mt-1.5 flex-1 line-clamp-2">
+              <p className="text-xs font-medium text-slate-500 dark:text-purple-200/40 leading-relaxed mt-1.5 flex-1 line-clamp-2">
                 {lesson.description}
               </p>
 
-              {/* Card Footer Base Bar */}
-              <div className="flex items-center justify-between mt-6 pt-3 border-t border-slate-100/60">
+              {/* Card Footer */}
+              <div className="flex items-center justify-between mt-6 pt-3 border-t border-slate-100/60 dark:border-white/[0.04]">
                 <div className="flex items-center gap-2">
-                  <img 
-                    src={lesson.author.avatar} 
-                    alt={lesson.author.name} 
-                    className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-100"
+                  <img
+                    src={lesson.author?.image || "https://i.pravatar.cc/150"}
+                    alt={lesson.author?.name}
+                    className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-100 dark:ring-white/[0.08]"
                   />
-                  <span className="text-xs font-bold text-slate-700">
-                    {lesson.author.name}
+                  <span className="text-xs font-bold text-slate-700 dark:text-purple-200/70">
+                    {lesson.author?.name}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-slate-500 font-bold text-[11px]">
-                  <div className="flex items-center gap-1.5 transition-colors hover:text-rose-500">
-                    <HeartIcon />
-                    <span>{lesson.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 transition-colors hover:text-indigo-600">
-                    <BookmarkIcon />
-                    <span>{lesson.bookmarks}</span>
+                <div className="flex items-center gap-4 font-bold text-[11px]">
+                  <div className="flex items-center gap-3">
+                    
+                    {/* Like Button */}
+                    <button 
+                      onClick={() => handleLikeBtn(lesson._id)}
+                      className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      <Heart
+                        size={15}
+                        fill={lesson.likes?.includes(user?.id) ? "currentColor" : "none"}
+                        className={`transition-colors duration-200 ${
+                          lesson.likes?.includes(user?.id)
+                            ? "text-red-500 dark:text-red-400"
+                            : "text-slate-400 dark:text-purple-300/40 hover:text-red-500"
+                        }`}
+                      />
+                      <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
+                        {lesson.likesCount}
+                      </span>
+                    </button>
+
+                    {/* Bookmark Button */}
+                    <button 
+                      onClick={() => handleFavorites(lesson._id)}
+                      className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      <Bookmark
+                        size={15}
+                        fill={lesson.favorites?.includes(user?.id) ? "currentColor" : "none"}
+                        className={`transition-colors duration-200 ${
+                          lesson.favorites?.includes(user?.id)
+                            ? "text-violet-600 dark:text-[#00e5b4]"
+                            : "text-slate-400 dark:text-purple-300/40 hover:text-violet-500 dark:hover:text-[#00e5b4]"
+                        }`}
+                      />
+                      <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
+                        {lesson.favoritesCount}
+                      </span>
+                    </button>
+
                   </div>
                 </div>
               </div>
@@ -203,7 +255,6 @@ export default function FeaturedLifeLessons() {
           </motion.div>
         ))}
       </motion.div>
-      
     </section>
   );
 }
