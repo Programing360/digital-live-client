@@ -46,12 +46,12 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 6;
   
-  // এপিআই থেকে ডেটা ফেচ করার ফাংশন
+
   const fetchLessons = async (page, search, categories) => {
     try {
       setLoading(true);
       const categoryQuery = categories.length > 0 ? `&category=${categories.join(",")}` : "";
-      
+      console.log(categoryQuery);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/lessonsPage?page=${page}&limit=${itemsPerPage}&search=${search}${categoryQuery}`
       );
@@ -65,7 +65,7 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
     }
   };
 
-  // ক্যাটাগরি চেঞ্জ হলে ১ নম্বর পেজ থেকে ডেটা ফেচ হবে
+
   useEffect(() => {
     setCurrentPage(1);
     router.push(`?page=1`, { scroll: false }); // URL পেজ রিসেট
@@ -78,17 +78,16 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
     setCurrentPage(urlPage);
   }, [urlPage]);
 
-  // সার্চ সাবমিট হ্যান্ডলার (পেজ বাগ ফিক্সড 🚀)
+
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
     
-    // ১. লোকাল স্টেট ১ নম্বর পেজে পুশ করা
+
     setCurrentPage(1); 
     
-    // ২. URL প্যারামিটার পরিবর্তন করে ১ নম্বর পেজে নিয়ে যাওয়া
+   
     router.push(`?page=1`, { scroll: false }); 
-    
-    // ৩. মেইন সার্চ কুয়েরি আপডেট করা (যা প্রথম useEffect-কে ট্রিগার করবে)
+
     setSearchQuery(tempSearch); 
   };
 
