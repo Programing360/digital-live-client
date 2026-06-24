@@ -16,7 +16,7 @@ const page = async () => {
     <div className="min-h-screen bg-transparent dark:bg-[#12032e] transition-colors duration-500">
       <div className="container mx-auto">
         <LessonsFeed
-          initialLessons={lessonsData}
+          allLessons={lessonsData}
           userPlan={currentUserPlan} 
           favorites={favorites}
         />

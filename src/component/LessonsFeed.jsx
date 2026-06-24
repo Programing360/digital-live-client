@@ -3,12 +3,9 @@
 import React, { useState, useMemo } from "react";
 import { Input, Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  SearchIcon,
-  ChevronDown,
-  Funnel,
-} from "lucide-react";
+import { SearchIcon, ChevronDown, Funnel } from "lucide-react";
 import LessonCard from "./LessonsCard";
+import LessonsContainer from "./LessonsContainer";
 
 const categoriesList = [
   "All Lessons",
@@ -25,24 +22,28 @@ const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.05 }
-  }
+    transition: { staggerChildren: 0.05 },
+  },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 100, damping: 15 },
+  },
 };
 
 export default function LessonsFeed({
-  initialLessons = [],
+   allLessons = [],
   userPlan = "Free",
-  favorites
+  favorites,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(allLessons);
   const handleCategoryChange = (category) => {
     if (category === "All Lessons") {
       setSelectedCategories([]);
@@ -52,19 +53,15 @@ export default function LessonsFeed({
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((item) => item !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
   const filteredLessons = useMemo(() => {
-    return initialLessons.filter((lesson) => {
+    return allLessons.filter((lesson) => {
       const matchesSearch =
-        lesson?.title
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        lesson?.description
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
+        lesson?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lesson?.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory =
         selectedCategories.length === 0 ||
@@ -72,14 +69,12 @@ export default function LessonsFeed({
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategories, initialLessons]);
+  }, [searchQuery, selectedCategories, allLessons]);
 
   return (
-
     <div className="max-w-7xl mx-auto px-4 py-8 bg-default-50/30 dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#12032e] min-h-screen transition-colors duration-500">
-      
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         className="mb-8"
@@ -100,7 +95,10 @@ export default function LessonsFeed({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           startContent={
-            <SearchIcon className="text-default-400 dark:text-purple-300/40 " size={18} />
+            <SearchIcon
+              className="text-default-400 dark:text-purple-300/40 "
+              size={18}
+            />
           }
           radius="lg"
           variant="bordered"
@@ -108,25 +106,22 @@ export default function LessonsFeed({
           isClearable
           onClear={() => setSearchQuery("")}
           classNames={{
-            inputWrapper: "dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-purple-500/50 focus-within:!border-purple-500",
-            input: "dark:text-purple-100 placeholder:dark:text-purple-300/30 "
+            inputWrapper:
+              "dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-purple-500/50 focus-within:!border-purple-500",
+            input: "dark:text-purple-100 placeholder:dark:text-purple-300/30 ",
           }}
         />
 
         {/* Filters Button with Neon Teal Hover Aspect */}
-        <Button
-          className="bg-indigo-600 dark:bg-[#00e5b4] text-white dark:text-slate-950 font-bold h-10 px-5 rounded-xl hidden sm:flex gap-2 transition-all shadow-md shadow-indigo-600/10 dark:shadow-[#00e5b4]/10 hover:opacity-90"
-        >
-          <Funnel size={16} /> Filters 
+        <Button className="bg-indigo-600 dark:bg-[#00e5b4] text-white dark:text-slate-950 font-bold h-10 px-5 rounded-xl hidden sm:flex gap-2 transition-all shadow-md shadow-indigo-600/10 dark:shadow-[#00e5b4]/10 hover:opacity-90">
+          <Funnel size={16} /> Filters
         </Button>
       </div>
 
       {/* Layout */}
       <div className="flex flex-col md:flex-row gap-8">
-        
         {/* Sidebar Categories Box */}
         <div className="w-full md:w-64 shrink-0 bg-white dark:bg-[#1a093c]/90 border border-slate-100 dark:border-white/[0.08] backdrop-blur-xl rounded-[24px] p-6 h-fit shadow-sm transition-all">
-          
           {/* Mobile Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -172,9 +167,8 @@ export default function LessonsFeed({
                     }
                   `}
                 >
-       
                   {isSelected && (
-                    <motion.span 
+                    <motion.span
                       layoutId="activeDot"
                       className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-violet-600 dark:bg-[#00e5b4]"
                     />
@@ -190,30 +184,31 @@ export default function LessonsFeed({
         <div className="flex-1">
           <AnimatePresence mode="wait">
             {filteredLessons.length > 0 ? (
-              <motion.div 
+              <motion.div
                 key="grid"
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                className=" "
               >
-                {filteredLessons.map((lesson) => (
-                  <motion.div 
-                    key={lesson._id} 
-                    variants={itemVariants}
-                    layout
-                  >
-                    <LessonCard
+                
+                  <motion.div variants={itemVariants} layout className="w-full ">
+                    {/* <LessonCard
                       lesson={lesson}
                       userPlan={userPlan}
                       favorites={favorites}
-                    />
+                    /> */}
+                    <LessonsContainer
+                      allLessons={allLessons}
+                      userPlan={userPlan}
+                      favorites={favorites}
+                    ></LessonsContainer>
                   </motion.div>
-                ))}
+          
               </motion.div>
             ) : (
               /* empty state animated element */
-              <motion.div 
+              <motion.div
                 key="empty"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

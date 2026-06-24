@@ -16,8 +16,8 @@ const LessonDetailsPage = async ({ params }) => {
   if (!user) {
     return redirect("/privateDashboard");
   }
-  const getUserComment = await getComment(user?.id);
-  console.log(getUserComment);
+  const getUserComment = await getComment(id);
+  // console.log(getUserComment);
   const allLesson = await allLessons();
   const lessonData = await getLessonsDetailsById(id);
 

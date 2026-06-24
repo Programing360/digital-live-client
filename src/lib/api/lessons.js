@@ -16,6 +16,8 @@ export const allLessons = async () => {
   return res.json();
 };
 
+
+
 export const getLessonsDetailsById = async (id) => {
   const res = await serverFetchById(`api/lesson/${id}`);
   return res;

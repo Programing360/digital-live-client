@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, Button, Avatar, Chip } from "@heroui/react";
 import { BookOpen, Heart, Eye, ArrowUpRight, TrendingUp } from "lucide-react";
+import Image from "next/image";
 
 export default function DashboardHome({ user, setActiveTab, lessonData, favorites,totalLikes }) {
   const stats = [
@@ -30,6 +31,8 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
       bg: "bg-rose-50 text-rose-600",
     },
   ];
+
+  // console.log(typeof(totalLikes));
 
   const recents = [
     {
@@ -74,7 +77,7 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
       </div>
 
       {/* Metric Counters Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 text-center">
         {stats.map((stat, i) => (
           <Card
             key={i}
@@ -86,7 +89,7 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
                 <p className="text-2xl font-black text-slate-900 leading-none">
                   {stat.val}
                 </p>
-                <p className="text-xs font-semibold text-slate-400 mt-1.5">
+                <p className="text-xs font-semibold text-slate-400 mt-1.5 text-center">
                   {stat.title}
                 </p>
               </div>
@@ -157,8 +160,10 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
                 key={i}
                 className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition-all"
               >
-                <img
+                <Image
                   src={item.img}
+                  width={300}
+                  height={300}
                   className="w-12 h-12 rounded-xl object-cover"
                   alt="Thumb"
                 />
