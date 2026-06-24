@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
   Clock,
@@ -14,8 +14,11 @@ import {
   User,
   MessageSquare,
   ArrowRight,
+  Sparkles,
+  ShieldCheck,
+  Share2,
 } from "lucide-react";
-import { Button, Avatar, Card, CardBody, TextArea } from "@heroui/react";
+import { Button, Avatar, Card, TextArea } from "@heroui/react";
 import { toast } from "react-toastify";
 
 import { lessonLikes } from "@/lib/api/lessons";
@@ -28,7 +31,7 @@ export default function LessonDetails({
   user = null,
   total = [],
   allLessons = [],
-  getUserComment,
+  getUserComment = [],
 }) {
   const {
     _id,
@@ -52,14 +55,13 @@ export default function LessonDetails({
   const readingTime = Math.ceil((description?.split(" ").length || 0) / 200);
   const router = useRouter();
 
-  // স্টেটস
+  // লোকাল স্টেটস (অপ্টিমিস্টিক আপডেটের জন্য)
   const [commentValue, setCommentValue] = useState("");
   const [localLikes, setLocalLikes] = useState(likes);
   const [localLikesCount, setLocalLikesCount] = useState(likesCount);
   const [localFavs, setLocalFavs] = useState(favorites);
   const [localFavsCount, setLocalFavsCount] = useState(favoritesCount);
 
-  // সিঙ্ক স্টেটস যখন প্রপস চেঞ্জ হয়
   useEffect(() => {
     setLocalLikes(likes);
     setLocalLikesCount(likesCount);
@@ -70,15 +72,12 @@ export default function LessonDetails({
   const isLike = localLikes.includes(user?.id);
   const isFav = localFavs.includes(user?.id);
 
-  // ১. অপ্টিমিস্টিক লাইক হ্যান্ডলার
   const handleLikeBtn = async () => {
     if (!user) return toast.warn("Please log in to like");
-
     const userId = user.id;
     const previousLikes = [...localLikes];
     const previousCount = localLikesCount;
 
-    // ইউআই আপডেট সাথে সাথে
     if (isLike) {
       setLocalLikes((prev) => prev.filter((id) => id !== userId));
       setLocalLikesCount((c) => Math.max(0, c - 1));
@@ -88,7 +87,7 @@ export default function LessonDetails({
     }
 
     try {
-      const result = await lessonLikes({ lessonId: _id, userId });
+      await lessonLikes({ lessonId: _id, userId });
       router.refresh();
     } catch (error) {
       setLocalLikes(previousLikes);
@@ -97,10 +96,8 @@ export default function LessonDetails({
     }
   };
 
-  // ২. অপ্টিমিস্টিক ফেভারিট হ্যান্ডলার
   const handleFavoritesBtn = async () => {
     if (!user) return toast.warn("Please log in to add favorites");
-
     const userId = user.id;
     const previousFavs = [...localFavs];
     const previousCount = localFavsCount;
@@ -119,7 +116,7 @@ export default function LessonDetails({
         userName: user?.name,
         lessonId: _id,
       });
-      if (fav.insertedId) toast.success("Favorites Lesson Added");
+      if (fav?.insertedId) toast.success("Lesson saved to dashboard");
       router.refresh();
     } catch (error) {
       setLocalFavs(previousFavs);
@@ -127,7 +124,6 @@ export default function LessonDetails({
     }
   };
 
-  // ৩. কমেন্ট সাবমিট হ্যান্ডলার
   const handleUserComments = async () => {
     if (!user) return toast.warn("Please login to comment");
     if (!commentValue.trim()) return toast.error("Comment cannot be empty");
@@ -141,323 +137,335 @@ export default function LessonDetails({
     };
 
     const result = await userComment(comment);
-    if (result.insertedId) {
+    if (result?.insertedId) {
       setCommentValue("");
-      toast.success("Comment posted successfully!");
+      toast.success("Discussion point generated!");
       router.refresh();
     }
   };
 
-  // ৪. সিমিলার লেসন ফিল্টারিং লজিক (সর্বোচ্চ ৬টি কার্ড)
   const similarLessons = allLessons
     .filter(
       (lesson) =>
         lesson._id !== _id &&
-        (lesson.category === category ||
-          lesson.emotionalTone === emotionalTone),
+        (lesson.category === category || lesson.emotionalTone === emotionalTone)
     )
-    .slice(0, 6);
+    .slice(0, 3); 
 
-  // অ্যানিমেশন কনফিগ
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 100, damping: 15 },
-    },
-  };
-
+    // console.log(similarLessons);
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#09021a] text-slate-900 dark:text-purple-50 transition-colors duration-500 pb-16">
-      <div className="container mx-auto px-4 py-10 max-w-5xl">
-        {/* Banner image aspect ratio fixed to 16/9 */}
+    <div className="min-h-screen bg-slate-50/50 dark:bg-gradient-to-br dark:from-[#1b073e] dark:to-[#0b0214] text-slate-900 dark:text-purple-50 transition-colors duration-500 pb-24 relative overflow-hidden">
+      
+      {/* Background Neon Ambient Aura */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[150px] pointer-events-none" />
+      <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#00e5b4]/5 blur-[130px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 pt-12 max-w-6xl relative z-10 space-y-10">
+        
+        {/* UPPER PORTION: HERO STREAM BANNER (Linear Aspect Master) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative aspect-[16/9] w-full overflow-hidden rounded-[32px] border border-slate-100 dark:border-white/[0.06] shadow-md bg-purple-950"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-6"
         >
-          <Image
-            src={imageUrl}
-            alt={title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </motion.div>
+          <motion.div className="relative aspect-[21/9] w-full overflow-hidden rounded-[36px] border border-slate-200/60 dark:border-white/[0.08] shadow-2xl bg-[#12032e]">
+            <Image
+              src={imageUrl || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"}
+              alt={title}
+              sizes="(max-width: 968px) 100vw, 33vw"
+              fill
+              className="object-cover group-hover:scale-102 transition-transform duration-700"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+            
+            {/* Opaque Badge Overlay on Banner */}
+            <div className="absolute bottom-6 left-6 md:left-10 flex flex-wrap gap-2">
+              <span className="px-3.5 py-1 rounded-xl bg-slate-950/60 backdrop-blur-md text-white text-[11px] font-black tracking-wider uppercase border border-white/10">
+                {category}
+              </span>
+              <span className="px-3.5 py-1 rounded-xl bg-slate-950/60 backdrop-blur-md text-[#00e5b4] text-[11px] font-black tracking-wider uppercase border border-[#00e5b4]/20">
+                {emotionalTone}
+              </span>
+              <span className={`px-3.5 py-1 rounded-xl text-[11px] font-black tracking-wider uppercase backdrop-blur-md border ${
+                access === "Premium" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+              }`}>
+                {access} Plan
+              </span>
+            </div>
+          </motion.div>
 
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2.5 mt-6">
-          <span className="px-4 py-1 rounded-full bg-purple-100/70 text-purple-700 dark:bg-purple-500/10 dark:text-[#00e5b4] text-xs font-bold border border-purple-200/30">
-            {category}
-          </span>
-          <span className="px-4 py-1 rounded-full bg-blue-100/70 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300 text-xs font-bold border border-blue-200/30">
-            {emotionalTone}
-          </span>
-          <span
-            className={`px-4 py-1 rounded-full text-xs font-bold border ${access === "Premium" ? "bg-amber-100/70 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border-amber-200/30" : "bg-emerald-100/70 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-200/30"}`}
-          >
-            {access}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h1 className="mt-5 text-2xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-          {title}
-        </h1>
-
-        {/* Quick Stats Summary */}
-        <div className="flex flex-wrap gap-5 mt-4 text-xs font-bold text-slate-500 dark:text-purple-300/40 border-b border-slate-100 dark:border-white/[0.05] pb-5">
-          <div className="flex items-center gap-1.5">
-            <Heart
-              className={isLike ? "text-rose-500 fill-rose-500" : ""}
-              size={16}
-            />{" "}
-            {localLikesCount} Likes
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Bookmark
-              className={isFav ? "text-violet-500 fill-violet-500" : ""}
-              size={16}
-            />{" "}
-            {localFavsCount} Saved
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Eye size={16} /> {views} Views
-          </div>
-        </div>
-
-        {/* Lesson Body Story */}
-        <div className="mt-8">
-          <h2 className="text-xl font-extrabold mb-4 dark:text-white">
-            Lesson Story
-          </h2>
-          <div className="rounded-[24px] border border-slate-100 dark:border-white/[0.05] bg-slate-50/50 dark:bg-[#1a093c]/30 backdrop-blur-md p-6 md:p-8">
-            <p className="leading-relaxed text-sm md:text-base text-slate-600 dark:text-purple-100/80 whitespace-pre-wrap">
-              {description}
-            </p>
-          </div>
-        </div>
-
-        {/* Metadata grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="rounded-[24px] border border-slate-100 dark:border-white/[0.05] bg-white dark:bg-[#1a093c]/20 p-6">
-            <h3 className="text-lg font-bold mb-4 dark:text-white">Metadata</h3>
-            <div className="space-y-3.5 text-xs font-bold text-slate-600 dark:text-purple-200/60">
-              <div className="flex items-center gap-3">
-                <Calendar size={16} />{" "}
-                <span>Created: {new Date(createAt).toLocaleDateString()}</span>
+          {/* Title Area */}
+          <div className="space-y-4 max-w-4xl">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+              {title}
+            </h1>
+            
+            {/* Quick Micro Metrics Stats */}
+            <div className="flex flex-wrap items-center gap-6 text-xs font-bold text-slate-400 dark:text-purple-300/40">
+              <div className="flex items-center gap-2">
+                <Heart size={15} className={isLike ? "text-rose-500 fill-rose-500" : "text-slate-400"} />
+                <span className="text-slate-700 dark:text-purple-100">{localLikesCount} Appreciations</span>
               </div>
-              <div className="flex items-center gap-3">
-                <Calendar size={16} />{" "}
-                <span>
-                  Updated:{" "}
-                  {updatedAt
-                    ? new Date(updatedAt).toLocaleDateString()
-                    : "Original Version"}
-                </span>
+              <div className="flex items-center gap-2">
+                <Bookmark size={15} className={isFav ? "text-[#00e5b4] fill-[#00e5b4]" : "text-slate-400"} />
+                <span className="text-slate-700 dark:text-purple-100">{localFavsCount} Bookmarked</span>
               </div>
-              <div className="flex items-center gap-3">
-                <User size={16} /> <span>Visibility: {visibility}</span>
+              <div className="flex items-center gap-2">
+                <Eye size={15} />
+                <span>{views} Matrix Views</span>
               </div>
-              <div className="flex items-center gap-3">
-                <Clock size={16} /> <span>{readingTime} min read</span>
+              <div className="flex items-center gap-2">
+                <Clock size={15} />
+                <span>{readingTime} Min Engine Read</span>
               </div>
             </div>
           </div>
+        </motion.div>
+              
+        {/* CORE GRID ARCHITECTURE: STORY KNOWLEDGE LAYER VS METADATA SIDEBAR */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          
+          {/* LEFT CONTENT: THE LESSON STORY */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center gap-2 px-1">
+              <Sparkles size={16} className="text-indigo-500 dark:text-[#00e5b4]" />
+              <h2 className="text-xs font-black text-slate-400 dark:text-purple-300/40 uppercase tracking-widest">
+                Curriculum Asset Narrative
+              </h2>
+            </div>
+            
+            <Card className="rounded-[32px] border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#1f0c41]/40 backdrop-blur-xl shadow-sm">
+              <div className="p-6 md:p-8">
+                <p className="leading-[1.75] text-sm md:text-base text-slate-600 dark:text-purple-100/90 whitespace-pre-wrap font-medium tracking-normal">
+                  {description}
+                </p>
+              </div>
+            </Card>
 
-          {/* Creator Profile */}
-          <div className="rounded-[24px] border border-slate-100 dark:border-white/[0.05] bg-white dark:bg-[#1a093c]/20 p-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-lg font-bold mb-4 dark:text-white">
-                Creator
-              </h3>
-              <div className="flex items-center gap-3.5">
-                <Avatar
-                  src={author?.image || "https://i.pravatar.cc/150"}
-                  className="w-12 h-12 border-2 border-purple-500/20"
-                />
-                <div>
-                  <h4 className="font-bold text-sm dark:text-white">
-                    {author?.name}
-                  </h4>
-                  <p className="text-xs font-medium text-slate-400 dark:text-purple-300/40">
-                    {total.length || 0} Lessons Published
-                  </p>
+            {/* INTERACTIVE CONTROLS BAR */}
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button
+                onClick={handleLikeBtn}
+                className={`font-black text-xs h-10 px-5 rounded-xl transition-all gap-2 ${
+                  isLike 
+                    ? "bg-rose-500 text-white shadow-lg shadow-rose-500/20" 
+                    : "bg-white dark:bg-white/[0.04] text-rose-500 border border-slate-200 dark:border-white/[0.06]"
+                }`}
+              >
+                <Heart fill={isLike ? "currentColor" : "none"} size={14} />
+                {isLike ? "Appreciated" : "Appreciate Resource"}
+              </Button>
+
+              <Button
+                onClick={handleFavoritesBtn}
+                className={`font-black text-xs h-10 px-5 rounded-xl transition-all gap-2 ${
+                  isFav 
+                    ? "bg-indigo-600 dark:bg-[#00e5b4] text-white dark:text-slate-950 shadow-lg" 
+                    : "bg-white dark:bg-white/[0.04] text-indigo-600 dark:text-purple-300 border border-slate-200 dark:border-white/[0.06]"
+                }`}
+              >
+                <Bookmark fill={isFav ? "currentColor" : "none"} size={14} />
+                {isFav ? "Saved to Base" : "Save Module"}
+              </Button>
+
+              <ReportLessonButton
+                lessonId={_id}
+                currentUserEmail={user}
+                lessonData={lessonData}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT SIDEBAR: CREATOR INTERFACE MODULE & ENGINE METADATA */}
+          <div className="space-y-6">
+            
+            {/* WIDGET 1: CREATOR BLOCK */}
+            <Card className="rounded-[28px] border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#1f0c41]/30 backdrop-blur-xl p-5 shadow-sm">
+              <div className="space-y-5">
+                <h3 className="text-xs font-black text-slate-400 dark:text-purple-300/40 uppercase tracking-widest">Verified Educator</h3>
+                <div className="flex items-center gap-3.5">
+                  <div className="relative">
+                    <Avatar
+                      src={author?.image || "https://i.pravatar.cc/150"}
+                      className="w-12 h-12 border-2 border-indigo-500/20"
+                    />
+                    <span className="absolute bottom-0 right-0 bg-[#00e5b4] text-slate-950 p-0.5 rounded-full border border-white dark:border-[#12032e]">
+                      <ShieldCheck size={10} strokeWidth={3} />
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-black text-sm text-slate-800 dark:text-white">{author?.name || "Anonymous Creator"}</h4>
+                    <p className="text-[11px] font-bold text-slate-400 dark:text-purple-300/30 mt-0.5">
+                      {total?.length || 0} Dynamic Publications
+                    </p>
+                  </div>
+                </div>
+                <Link href={`/author/${_id}`} className="block w-full">
+                  <Button className="w-full h-10 font-bold text-xs bg-indigo-50 dark:bg-white/[0.04] text-indigo-600 dark:text-[#00e5b4] border dark:border-white/[0.05] rounded-xl transition-all">
+                    Examine Profile
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+
+            {/* WIDGET 2: ENGINE METADATA BOX */}
+            <Card className="rounded-[28px] border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#1f0c41]/30 backdrop-blur-xl p-5 shadow-sm">
+              <div className="space-y-4">
+                <h3 className="text-xs font-black text-slate-400 dark:text-purple-300/40 uppercase tracking-widest">System Registry</h3>
+                <div className="space-y-3 text-xs font-bold text-slate-600 dark:text-purple-200/70">
+                  <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-white/[0.04]">
+                    <div className="flex items-center gap-2 opacity-70"><Calendar size={14} /> <span>Compiled</span></div>
+                    <span className="text-slate-800 dark:text-purple-100">{new Date(createAt).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-white/[0.04]">
+                    <div className="flex items-center gap-2 opacity-70"><Calendar size={14} /> <span>Modified</span></div>
+                    <span className="text-slate-800 dark:text-purple-100">
+                      {updatedAt ? new Date(updatedAt).toLocaleDateString() : "Base Stack Version"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-2 opacity-70"><User size={14} /> <span>Visibility</span></div>
+                    <span className="text-slate-800 dark:text-[#00e5b4] uppercase text-[10px] bg-indigo-50 dark:bg-[#00e5b4]/10 border dark:border-[#00e5b4]/20 px-2 py-0.5 rounded-md">
+                      {visibility || "Public"}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <Link href={`/author/${_id}`} className="mt-5">
-              <Button
-                size="sm"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold radius-xl transition-all"
-              >
-                View Profile
-              </Button>
-            </Link>
+            </Card>
+
           </div>
         </div>
 
-        {/* User Interaction Actions Bar */}
-        <div className="mt-8 pt-5 border-t border-slate-100 dark:border-white/[0.05]">
-          <div className="flex flex-wrap gap-3">
-            <Button
-              size="md"
-              onClick={handleLikeBtn}
-              className={`font-bold radius-xl ${isLike ? "bg-rose-500 text-white shadow-lg" : "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400"}`}
-            >
-              <Heart fill={isLike ? "currentColor" : "none"} size={16} />{" "}
-              {isLike ? "Liked" : "Like"} ({localLikesCount})
-            </Button>
-            <Button
-              size="md"
-              onClick={handleFavoritesBtn}
-              className={`font-bold radius-xl ${isFav ? "bg-purple-600 text-white shadow-lg" : "bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400"}`}
-            >
-              <Bookmark fill={isFav ? "currentColor" : "none"} size={16} />{" "}
-              {isFav ? "Saved to Favorites" : "Save Favorite"}
-            </Button>
-            <ReportLessonButton
-              lessonId={_id}
-              currentUserEmail={user}
-              lessonData={lessonData}
-            />
-          </div>
-        </div>
-
-        {/* 6. Comment Section (পোস্ট কমেন্ট এবং ডিসপ্লে লিস্ট) */}
-        <div className="mt-12">
-          <div className="flex items-center gap-2 mb-5">
-            <MessageSquare
-              className="text-purple-600 dark:text-[#00e5b4]"
-              size={22}
-            />
-            <h3 className="text-xl font-extrabold dark:text-white">
+        {/* DISCUSSION & DISCOURSE MANAGEMENT INTERFACE */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-2 px-1">
+            <MessageSquare className="text-indigo-500 dark:text-[#00e5b4]" size={16} />
+            <h3 className="text-xs font-black text-slate-400 dark:text-purple-300/40 uppercase tracking-widest">
               Discussions ({getUserComment?.length || 0})
             </h3>
           </div>
 
-          <div className="rounded-[24px] border border-slate-100 dark:border-white/[0.05] bg-white dark:bg-[#1a093c]/10 p-5 shadow-sm">
+          <Card className="rounded-[32px] border border-slate-200/60 dark:border-white/[0.06] bg-white dark:bg-[#1f0c41]/20 backdrop-blur-xl p-5 md:p-6 shadow-sm">
             {user ? (
               <div className="space-y-4">
                 <TextArea
                   value={commentValue}
                   onChange={(e) => setCommentValue(e.target.value)}
-                  placeholder="Share your thoughts on this lesson..."
+                  placeholder="Contribute to this technical knowledge framework..."
                   variant="bordered"
-                  rows={3}
-                  disableAnimation
+                  minRows={6}
+                  className='w-full dark:text-white'
                   classNames={{
-                    inputWrapper:
-                      "border-slate-200 dark:border-white/[0.08] focus-within:border-purple-500 rounded-xl dark:bg-[#12032e]/40 text-sm",
+                    inputWrapper: "border-slate-200 dark:border-white/[0.08] focus-within:border-indigo-500 dark:focus-within:border-[#00e5b4] rounded-2xl bg-slate-50 dark:bg-[#12032e]/50 text-sm py-3",
+                    input: "placeholder:text-slate-400 dark:placeholder:text-purple-300/30 text-slate-800 dark:text-purple-50"
                   }}
                 />
                 <div className="flex justify-end">
                   <Button
                     onClick={handleUserComments}
-                    className="bg-purple-600 text-white font-bold radius-xl px-6"
+                    className="bg-indigo-600 text-white dark:bg-[#00e5b4] dark:text-slate-950 font-black text-xs h-10 px-6 rounded-xl transition-all shadow-md shadow-indigo-600/10 dark:shadow-[#00e5b4]/10"
                   >
-                    Post Comment
+                    Commit Point
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="p-4 text-center text-xs font-bold text-slate-400 dark:text-purple-300/30">
-                Please{" "}
-                <Link href="/login" className="text-purple-600 underline">
-                  Login
+              <div className="p-6 text-center text-xs font-bold text-slate-400 dark:text-purple-300/30 bg-slate-50 dark:bg-[#12032e]/30 border border-dashed border-slate-200 dark:border-white/[0.05] rounded-2xl">
+                Authentication required. Please{" "}
+                <Link href="/login" className="text-indigo-600 dark:text-[#00e5b4] underline hover:opacity-80">
+                  Authorize Account
                 </Link>{" "}
-                to join the discussion.
+                to inject discussion points.
               </div>
             )}
 
-            {/* Render getUserComment List */}
-            {getUserComment && getUserComment.length > 0 && (
-              <div className="mt-6 pt-5 border-t border-slate-100 dark:border-white/[0.05] space-y-4">
+            {/* DISCUSSION NODE DISPLAY LIST */}
+            {getUserComment?.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-slate-100 dark:border-white/[0.05] space-y-4">
                 {getUserComment.map((c, i) => (
-                  <div
+                  <motion.div
                     key={c._id || i}
-                    className="flex gap-3 items-start text-sm"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="flex gap-4 items-start text-sm"
                   >
                     <Avatar
                       src={c.userImage || "https://i.pravatar.cc/150"}
-                      className="w-8 h-8 flex-shrink-0"
+                      className="w-9 h-9 flex-shrink-0 border dark:border-white/10"
                     />
-                    <div className="flex-1 bg-slate-50 dark:bg-[#1a093c]/40 rounded-2xl p-3 border border-slate-100 dark:border-white/[0.03]">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="font-bold text-xs dark:text-purple-200">
-                          {c.userName || "Anonymous"}
+                    <div className="flex-1 bg-slate-50 dark:bg-[#12032e]/40 rounded-2xl p-4 border border-slate-100 dark:border-white/[0.03]">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="font-black text-xs text-slate-800 dark:text-purple-200">
+                          {c.userName || "Anonymous Network User"}
                         </span>
-                        <span className="text-[10px] text-slate-400 dark:text-purple-300/30 font-medium">
-                          {c.formattedDate || "Just now"}
+                        <span className="text-[10px] text-slate-400 dark:text-purple-300/30 font-bold uppercase tracking-wider">
+                          {c.formattedDate || "Active Sync"}
                         </span>
                       </div>
-                      <p className="text-slate-600 dark:text-purple-100/70 text-xs leading-relaxed">
+                      <p className="text-slate-600 dark:text-purple-200/80 text-xs leading-relaxed font-medium">
                         {c.text}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
-          </div>
+          </Card>
         </div>
 
-        {/* 7. Similar & Recommended Lessons (সর্বোচ্চ ৬টি কার্ড গ্রিড) */}
-        <div className="mt-14">
-          <h3 className="text-xl font-extrabold mb-5 dark:text-white">
-            Recommended for You
+        {/* SIMILAR RECOMMENDATIONS: MATRIX INDEX GRID */}
+        <div className="space-y-5">
+          <h3 className="text-xs font-black text-slate-400 dark:text-purple-300/40 uppercase tracking-widest pl-1">
+            Recommended Channels
           </h3>
           {similarLessons.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {similarLessons.map((lesson) => (
                 <motion.div
                   key={lesson._id}
-                  variants={fadeInUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
                   whileHover={{ y: -5 }}
-                  className="flex flex-col bg-white dark:bg-[#1a093c]/40 border border-slate-100 dark:border-white/[0.06] rounded-2xl overflow-hidden shadow-sm group transition-all"
+                  className="flex flex-col bg-white dark:bg-[#1f0c41]/30 border border-slate-200/60 dark:border-white/[0.06] rounded-[24px] overflow-hidden shadow-sm group transition-all duration-300"
                 >
                   <div className="relative aspect-[16/10] w-full bg-slate-100 dark:bg-[#12032e]">
                     <Image
                       src={lesson.imageUrl}
                       alt={lesson.title}
                       fill
-                      className="object-cover group-hover:scale-103 transition-transform duration-500"
+                      className="object-cover group-hover:scale-102 transition-transform duration-500"
                     />
                   </div>
-                  <div className="p-4 flex flex-col flex-1 justify-between">
-                    <div>
-                      <span className="text-[10px] font-extrabold text-purple-600 dark:text-[#00e5b4] tracking-wider uppercase">
+                  <div className="p-5 flex flex-col flex-1 justify-between space-y-4">
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-black text-indigo-600 dark:text-[#00e5b4] tracking-widest uppercase">
                         {lesson.category}
                       </span>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-purple-50 mt-1 line-clamp-2 min-h-[40px] group-hover:text-purple-600 dark:group-hover:text-[#00e5b4] transition-colors">
-                        {lesson.title}
+                      <h4 className="text-sm font-black text-slate-800 dark:text-purple-50 mt-1 line-clamp-2 min-h-[40px] group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors leading-snug">
+                        {title}
                       </h4>
                     </div>
                     <Link
                       href={`/lessons/${lesson._id}`}
-                      className="mt-4 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-purple-300/50 group-hover:text-purple-600 dark:group-hover:text-[#00e5b4] transition-colors"
+                      className="flex items-center justify-between text-xs font-bold text-slate-400 dark:text-purple-300/40 group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors"
                     >
-                      <span>Read Story</span>
-                      <ArrowRight
-                        size={14}
-                        className="transform group-hover:translate-x-1 transition-transform"
-                      />
+                      <span>Read Narrative</span>
+                      <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
                 </motion.div>
               ))}
             </div>
           ) : (
-            <div className="text-center p-8 border border-dashed border-slate-200 dark:border-white/[0.06] rounded-[24px] text-xs font-bold text-slate-400 dark:text-purple-300/30">
-              No recommended lessons found right now.
+            <div className="text-center p-8 border border-dashed border-slate-200 dark:border-white/[0.06] rounded-[24px] text-xs font-bold text-slate-400 dark:text-purple-300/30 bg-white dark:bg-white/[0.01]">
+              No matching structural records compiled inside this index.
             </div>
           )}
         </div>
+
       </div>
+      
     </div>
-  );
+  )
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Card, CardFooter, Avatar, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
-import { Lock, Calendar, Heart, Bookmark, Eye } from "lucide-react";
+import { Lock, Calendar, Heart, Bookmark, Eye, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { createFavoritesLesson } from "@/lib/action/favorites";
 import { toast } from "react-toastify";
@@ -12,14 +12,14 @@ import { authClient } from "@/lib/auth-client";
 import { lessonLikes } from "@/lib/api/lessons";
 import { useRouter } from "next/navigation";
 
-
+// UI/UX থিম অনুযায়ী কালার ডাইনামিক্স ম্যাপিং (ইমেজের ভাইব্রেন্ট স্টাইল অনুসরণ করে)
 const toneColorMap = {
-  Motivational: "bg-blue-500 shadow-sm shadow-blue-500/50",
-  Grateful: "bg-[#00e5b4] shadow-sm shadow-[#00e5b4]/50", // Neon Teal
-  Peaceful: "bg-purple-400 shadow-sm shadow-purple-400/50",
-  Sad: "bg-orange-400 shadow-sm shadow-orange-400/50",
-  Happy: "bg-yellow-400 shadow-sm shadow-yellow-400/50",
-  Neutral: "bg-slate-400 shadow-sm shadow-slate-400/50",
+  Motivational: "bg-blue-500 shadow-md shadow-blue-500/20",
+  Grateful: "bg-[#00e5b4] shadow-md shadow-[#00e5b4]/20",
+  Peaceful: "bg-purple-400 shadow-md shadow-purple-400/20",
+  Sad: "bg-orange-400 shadow-md shadow-orange-400/20",
+  Happy: "bg-yellow-400 shadow-md shadow-yellow-400/20",
+  Neutral: "bg-slate-400 shadow-md shadow-slate-400/20",
 };
 
 export default function LessonCard({ lesson }) {
@@ -36,7 +36,7 @@ export default function LessonCard({ lesson }) {
     likesCount = 0,
     likes = [],
     favorites = [],
-    favoritesCount,
+    favoritesCount = 0,
   } = lesson;
 
   const { data: session } = authClient.useSession();
@@ -44,46 +44,37 @@ export default function LessonCard({ lesson }) {
   const router = useRouter();
 
   const isLike = likes?.includes(user?.id);
-  const isFavorites = favorites.includes(user?.id);
+  const isFavorites = favorites?.includes(user?.id);
 
-  const handleFavorites = async () => {
+  const handleFavorites = async (e) => {
+    e.preventDefault(); // প্যারেন্ট কার্ড নেভিগেশন প্রটেক্ট করতে
+    if (!user) return toast.warn("Please login to save favorites!");
+
     const newFavorites = {
       userId: user?.id,
       userName: user?.name,
       lessonId: _id,
     };
-    if (!user) {
-      return toast.warn("Please login to favorites!");
-    }
 
     const data = await createFavoritesLesson(newFavorites);
-
-    if (data.message) {
-      toast.success(`${data.message}`);
+    if (data?.message) {
+      toast.success(data.message);
       router.refresh();
     }
   };
 
-  const handleLikeBtn = async (id) => {
-    if (!user) {
-      return toast.warn("Please login to like");
-    }
+  const handleLikeBtn = async (e) => {
+    e.preventDefault();
+    if (!user) return toast.warn("Please login to like this lesson");
+
     const newLikes = {
-      lessonId: id,
+      lessonId: _id,
       userId: user?.id,
     };
 
-    // console.log(like);
-    // setLike((prev) => prev + 1, 0);
-    
     const likeCount = await lessonLikes(newLikes);
-    // console.log(likeCount);
-    if (likeCount.liked) {
-      toast.success(`${likeCount.message}`);
-      router.refresh();
-    }
-    if (!likeCount.liked) {
-      toast.success(`${likeCount.message}`);
+    if (likeCount) {
+      toast.success(likeCount.message);
       router.refresh();
     }
   };
@@ -96,209 +87,169 @@ export default function LessonCard({ lesson }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 25 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      whileHover={!isLocked ? { y: -6, transition: { duration: 0.2 } } : {}}
-      className="w-full h-full flex"
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={!isLocked ? { y: -6 } : {}}
+      className="w-full flex h-full group"
     >
-      <Card className="w-full relative overflow-hidden bg-white dark:bg-[#1a093c]/60 border border-slate-100 dark:border-white/[0.06] backdrop-blur-md rounded-[24px] shadow-sm hover:shadow-xl dark:hover:shadow-purple-950/20 transition-all duration-300 flex flex-col justify-between">
-        {/* Upper Card Area: Image section */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-[#12032e]">
+      <Card className="w-full relative overflow-hidden bg-white dark:bg-[#1a093c]/50 border border-slate-200/60 dark:border-white/[0.06] backdrop-blur-xl rounded-[28px] shadow-sm hover:shadow-xl hover:border-indigo-500/20 dark:hover:border-[#00e5b4]/30 transition-all duration-300 flex flex-col justify-between">
+        
+        {/* UPPER CARD AREA: PREMIUM IMAGE METRICS CONTAINER */}
+        <div className="relative aspect-[16/11] w-full overflow-hidden bg-slate-100 dark:bg-[#12032e]">
           <Image
-            src={
-              imageUrl ||
-              "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
-            }
+            src={imageUrl || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"}
             alt={title}
-            width={400}
-            height={300}
-            className={`w-full h-full object-cover transition-transform duration-700 ${
-              !isLocked ? "hover:scale-105" : ""
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className={`object-cover transition-transform duration-700 ease-out ${
+              !isLocked ? "group-hover:scale-105" : ""
             }`}
           />
 
-          {/* Floating Category Badge */}
-          <div className="absolute top-4 left-4 z-10 flex gap-2">
+          {/* Floating Badges */}
+          <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between pointer-events-none">
             <Chip
               size="sm"
-              className="bg-black/50 backdrop-blur-md text-white font-bold text-[11px] border border-white/10 capitalize px-2.5 py-1"
+              className="bg-slate-900/60 backdrop-blur-md text-white font-bold text-[10px] border border-white/[0.08] tracking-wide uppercase px-2.5 h-6 rounded-lg"
             >
-              {category}
+              {category || "General"}
             </Chip>
-          </div>
 
-          {/* Floating Access Status Badge */}
-          <div className="absolute top-4 right-4 z-10">
             <Chip
               size="sm"
-              color={isPremiumLesson ? "warning" : "default"}
-              variant="solid"
-              className={`font-black text-[10px] uppercase tracking-wider px-2.5 ${
+              className={`font-black text-[10px] uppercase tracking-wider px-2.5 h-6 rounded-lg border ${
                 isPremiumLesson
-                  ? "bg-amber-500 text-slate-950"
-                  : "bg-white/20 backdrop-blur-sm text-white"
+                  ? "bg-amber-500/20 text-amber-400 border-amber-500/30 backdrop-blur-md"
+                  : "bg-white/10 text-white border-white/10 backdrop-blur-md"
               }`}
             >
               {access}
             </Chip>
           </div>
 
-          {/* OPAQUE PREMIUM LOCK OVERLAY LAYER */}
+          {/* PREMIUM LOCK OVERLAY (গ্লাস মরফিজম গ্লো ইফেক্ট) */}
           {isLocked && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="absolute inset-0 z-20 bg-[#12032e]/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center"
+              className="absolute inset-0 z-20 bg-[#12032e]/85 backdrop-blur-md flex flex-col items-center justify-center p-5 text-center"
             >
               <motion.div
-                animate={{ y: [0, -5, 0] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 2,
-                  ease: "easeInOut",
-                }}
-                className="p-3.5 bg-white/10 border border-white/20 rounded-full mb-3 text-[#00e5b4] shadow-lg shadow-[#00e5b4]/10"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                className="p-3 bg-white/[0.04] border border-white/[0.08] rounded-full mb-2.5 text-[#00e5b4] shadow-xl shadow-[#00e5b4]/5"
               >
-                <Lock size={24} strokeWidth={2.5} />
+                <Lock size={20} strokeWidth={2.5} />
               </motion.div>
 
-              <h4 className="text-white font-black text-sm tracking-wide">
-                {!isLoggedIn ? "Login Required" : "Premium Content"}
+              <h4 className="text-white font-black text-sm tracking-tight">
+                {!isLoggedIn ? "Access Restricted" : "Premium Content"}
               </h4>
-
-              <p className="text-purple-200/60 text-[11px] mt-1 mb-4 max-w-[180px]">
-                {!isLoggedIn
-                  ? "Please login to view this lesson."
-                  : "Upgrade to Premium to unlock everything."}
+              <p className="text-purple-200/50 text-[11px] mt-1 mb-4 max-w-[200px] leading-normal font-medium">
+                {!isLoggedIn ? "Sign in to unlock this learning channel module." : "Upgrade plan to unlock this asset block."}
               </p>
 
-              <Link
-                href={!isLoggedIn ? "/auth/login" : "/upgrade"}
-                className="w-full max-w-[150px]"
-              >
+              <Link href={!isLoggedIn ? "/auth/login" : "/upgrade"} className="w-full max-w-[130px]">
                 <Button
                   size="sm"
-                  radius="xl"
-                  className="w-full bg-[#00e5b4] text-slate-950 font-black text-xs shadow-md shadow-[#00e5b4]/20 hover:opacity-90"
+                  className="w-full bg-[#00e5b4] text-slate-950 font-black text-xs rounded-xl shadow-md shadow-[#00e5b4]/20 hover:opacity-90 transition-all"
                 >
-                  {!isLoggedIn ? "Login Now" : "Unlock Now"}
+                  {!isLoggedIn ? "Login Now" : "Unlock Module"}
                 </Button>
               </Link>
             </motion.div>
           )}
         </div>
 
-        {/* Card Body */}
-        <div className="p-5 flex-grow flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span
-                className={`w-2 h-2 rounded-full ${toneColorMap[emotionalTone] || "bg-neutral-400"}`}
-              />
-              <span className="text-[10px] text-default-400 dark:text-purple-300/50 font-bold uppercase tracking-widest">
-                {emotionalTone} Tone
+        {/* CARD CONTENT BODY */}
+        <div className="p-5 flex-grow flex flex-col justify-between space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${toneColorMap[emotionalTone] || "bg-neutral-400"}`} />
+              <span className="text-[10px] text-slate-400 dark:text-purple-300/40 font-black uppercase tracking-widest">
+                {emotionalTone} Perspective
               </span>
             </div>
 
-            <h3 className="font-bold text-base text-slate-800 dark:text-purple-50 tracking-tight line-clamp-2 leading-snug hover:text-indigo-600 dark:hover:text-[#00e5b4] transition-colors">
+            <h3 className="font-black text-sm md:text-base text-slate-800 dark:text-white tracking-tight line-clamp-2 leading-snug group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors duration-200">
               {title}
             </h3>
 
-            <p className="text-default-500 dark:text-purple-200/40 text-xs mt-2 leading-relaxed line-clamp-2">
+            <p className="text-slate-500 dark:text-purple-200/50 text-xs leading-relaxed line-clamp-2 font-medium">
               {description}
             </p>
           </div>
 
-          {/* Creation Date Badge */}
-          <div className="flex items-center gap-1.5 text-default-400 dark:text-purple-300/30 mt-4 text-[11px] font-medium">
-            <Calendar size={12} className="opacity-70" />
-            <span>Published {createdAt}</span>
+          {/* Published Meta Timestamp */}
+          <div className="flex items-center gap-1.5 text-slate-400 dark:text-purple-300/30 text-[10px] font-bold uppercase tracking-wider">
+            <Calendar size={12} className="opacity-60" />
+            <span>Published {createdAt || "Recent"}</span>
           </div>
         </div>
 
-        {/* Footer Interaction Elements */}
-        <CardFooter className="flex flex-col gap-3 border-t border-slate-100 dark:border-white/[0.04] bg-slate-50/40 dark:bg-white/[0.01] p-4">
+        {/* FOOTER ACTION INTERACTIONS */}
+        <CardFooter className="flex flex-col gap-3 border-t border-slate-100 dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.01] p-4 rounded-b-[28px]">
           <div className="flex items-center justify-between w-full">
-            {/* Author Meta Profile */}
-            <div className="flex items-center gap-2 max-w-[55%]">
-              <Avatar className="w-6 h-6 border border-purple-500/20">
-                <Avatar.Image
-                  src={author?.image || "https://i.pravatar.cc/150"}
-                  name={author?.name || ""}
-                  className="object-cover"
-                />
-              </Avatar>
-              <span className="text-xs font-bold text-slate-700 dark:text-purple-200/70 truncate">
-                {author?.name || "Anonymous"}
+            
+            {/* Author Identification */}
+            <div className="flex items-center gap-2 max-w-[60%]">
+              <Avatar size="sm" src={author?.image || "https://i.pravatar.cc/150"} className="w-6 h-6 border dark:border-white/10" />
+              <span className="text-xs font-bold text-slate-700 dark:text-purple-200/80 truncate">
+                {author?.name || "Anonymous Creator"}
               </span>
             </div>
 
-            {/* Interaction Action Metrics Counter */}
+            {/* Micro Interaction Core Icons */}
             <div className="flex items-center gap-3">
-              {/* Like Component Option */}
               <button
-                onClick={() => handleLikeBtn(_id)}
-                className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                onClick={handleLikeBtn}
+                className="flex items-center gap-1 group/btn hover:scale-105 active:scale-95 transition-all"
               >
                 <Heart
                   size={15}
                   fill={isLike ? "currentColor" : "none"}
                   className={`transition-colors duration-200 ${
-                    isLike
-                      ? "text-red-500 dark:text-red-400"
-                      : "hover:text-red-500"
+                    isLike ? "text-red-500" : "text-slate-400 dark:text-purple-300/40 group-hover/btn:text-red-500"
                   }`}
                 />
-                <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
-                  {likesCount}
-                </span>
+                <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">{likesCount}</span>
               </button>
 
-              {/* Bookmark Component Option */}
               <button
                 onClick={handleFavorites}
-                className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                className="flex items-center gap-1 group/btn hover:scale-105 active:scale-95 transition-all"
               >
                 <Bookmark
                   size={15}
                   fill={isFavorites ? "currentColor" : "none"}
                   className={`transition-colors duration-200 ${
-                    isFavorites
-                      ? "text-violet-600 dark:text-[#00e5b4]"
-                      : "hover:text-violet-500 dark:hover:text-[#00e5b4]"
+                    isFavorites ? "text-[#00e5b4]" : "text-slate-400 dark:text-purple-300/40 group-hover/btn:text-[#00e5b4]"
                   }`}
                 />
-                <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
-                  {favoritesCount}
-                </span>
+                <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">{favoritesCount}</span>
               </button>
             </div>
           </div>
 
-          {/* Details Trigger Redirection Navigation Button */}
-          <div className="w-full">
+          {/* Action Trigger Block Button */}
+          <div className="w-full pt-0.5">
             {isLocked ? (
-              <Link
-                href={!isLoggedIn ? "/auth/login" : "/upgrade"}
-                className="w-full block"
-              >
+              <Link href={!isLoggedIn ? "/auth/login" : "/upgrade"} className="w-full block">
                 <Button
                   size="sm"
-                  radius="xl"
-                  className="w-full font-black text-xs bg-amber-500 text-slate-950"
+                  className="w-full font-black text-xs h-9 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20"
                 >
-                  {!isLoggedIn ? "Login to Continue" : "Upgrade to Premium"}
+                  {!isLoggedIn ? "Login to Premium" : "Upgrade Subscription"}
                 </Button>
               </Link>
             ) : (
               <Link href={`/publicLessons/${_id}`} className="w-full block">
                 <Button
                   size="sm"
-                  radius="xl"
                   variant="flat"
-                  className="w-full font-black text-xs bg-violet-100 text-violet-600 dark:bg-white/[0.04] dark:text-[#00e5b4] dark:hover:bg-white/[0.08]"
+                  className="w-full font-black text-xs h-9 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-white/[0.04] dark:text-[#00e5b4] dark:hover:bg-white/[0.08]"
                   endContent={<Eye size={13} />}
                 >
                   See Details
@@ -307,6 +258,7 @@ export default function LessonCard({ lesson }) {
             )}
           </div>
         </CardFooter>
+
       </Card>
     </motion.div>
   );

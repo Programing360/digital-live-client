@@ -36,7 +36,7 @@ const LessonDetailsPage = async ({ params }) => {
     return <OwnerGuard ownerId={user?.id} user={user?.id}></OwnerGuard>;
   }
   return (
-    <LessonDetails lessonData={lessonData} user={user} total={totalLessons} getUserComment={getUserComment} />
+    <LessonDetails lessonData={lessonData} user={user} total={totalLessons} allLessons={allLesson} getUserComment={getUserComment} />
   );
 };
 
