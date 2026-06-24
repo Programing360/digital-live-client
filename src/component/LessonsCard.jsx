@@ -43,9 +43,6 @@ export default function LessonCard({ lesson }) {
   const user = session?.user;
   const router = useRouter();
 
-  // const [lessons, setLessons] = useState()
-  // const [like, setLike] = useState(likesCount);
-
   const isLike = likes?.includes(user?.id);
   const isFavorites = favorites.includes(user?.id);
 
@@ -106,7 +103,6 @@ export default function LessonCard({ lesson }) {
       whileHover={!isLocked ? { y: -6, transition: { duration: 0.2 } } : {}}
       className="w-full h-full flex"
     >
-      {/* কার্ড ব্যাকগ্রাউন্ড থিমিং - সাইবার গ্লো শেড */}
       <Card className="w-full relative overflow-hidden bg-white dark:bg-[#1a093c]/60 border border-slate-100 dark:border-white/[0.06] backdrop-blur-md rounded-[24px] shadow-sm hover:shadow-xl dark:hover:shadow-purple-950/20 transition-all duration-300 flex flex-col justify-between">
         {/* Upper Card Area: Image section */}
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-[#12032e]">

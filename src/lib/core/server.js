@@ -24,15 +24,16 @@ export const protectedFetch = async (apiUrl) => {
     headers: await authHeaders(),
   });
 
-  
+  return handleProtectedStatus(res);
+};
+export const normalFetch = async (apiUrl) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`);
   return handleProtectedStatus(res);
 };
 
 export const serverFetch = async (apiUrl) => {
   return await protectedFetch(apiUrl);
 };
-
-
 
 export const serverFetchById = async (apiUrl) => {
   return await protectedFetch(apiUrl);
@@ -77,7 +78,6 @@ export const serverDelete = async (apiUrl) => {
 
 // handle user authentication -------------------------------------------
 export const handleProtectedStatus = async (res) => {
-  
   if (res.status === 401) {
     redirect("/auth/login");
   } else if (res.status === 403) {
