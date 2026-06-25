@@ -17,10 +17,10 @@ const page = async () => {
     (lesson) => lesson.likes.includes(user?.id)
   );
 
-  console.log(myLesson);
+  // console.log(myLesson);
   const totalLikes = myLesson.reduce((sum, num) => sum + num.likesCount, 0);
 
-  console.log(totalLikes);
+  // console.log(totalLikes);
 
   return (
     <div>

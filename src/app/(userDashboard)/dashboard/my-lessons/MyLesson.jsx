@@ -37,6 +37,8 @@ export default function MyLessons({
 
   // Visibility toggle handler
   const toggleVisibility = async (id) => {
+    console.log(id);
+
     const lesson = lessons.find((l) => l._id === id);
 
     const newVisibility = lesson.visibility === "Public" ? "Private" : "Public";
@@ -53,10 +55,9 @@ export default function MyLessons({
     );
 
     const updateVisibility = { visibility: newVisibility };
-
     const res = await lessonUpdate(id, updateVisibility);
 
-    if (res.ok) {
+    if (res.modifiedCount) {
       toast.success("Update Successful");
     }
   };
@@ -68,7 +69,7 @@ export default function MyLessons({
       return;
     }
 
-    console.log(id);
+    // console.log(id);
 
     const lesson = lessons.find((l) => l._id === id);
 

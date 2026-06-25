@@ -100,7 +100,7 @@ export default function ManageReportedPage({ allReport }) {
   const handleDeleteLesson = async (lessonId) => {
     const reportDelete = await deleteReportById(lessonId);
 
-    console.log(reportDelete);
+    // console.log(reportDelete);
 
     if (reportDelete.deletedCount > 0) {
       toast.success("Report Delete Successful");

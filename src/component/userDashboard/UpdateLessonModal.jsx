@@ -60,10 +60,10 @@ export function UpdateLessonModal({
         ...formData,
         image: selectedImage
       };
-      console.log(lessonData);
+      // console.log(lessonData);
       const updateLessonData = await lessonUpdate( lessonData._id, updateData);
 
-      console.log( updateLessonData);
+      // console.log( updateLessonData);
 
       if (updateLessonData?.modifiedCount || updateLessonData) {
         toast.success('Lesson Update Successful');

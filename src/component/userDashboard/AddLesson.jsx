@@ -294,7 +294,7 @@ export default function AddLesson({ user }) {
                   <Label className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-purple-300/30 block">
                     Access Level
                   </Label>
-                  {user?.isPlan ? (
+                  {user?.isPlan === 'Premium' ? (
                     <Select>
                       <Select.Trigger className="w-full border border-slate-200 dark:border-purple-500/10 p-3.5 rounded-2xl flex justify-between bg-slate-50/50 dark:bg-purple-950/20 text-sm font-medium text-slate-700 dark:text-purple-200 items-center">
                         <Select.Value placeholder={formData.access || "Free"} />
