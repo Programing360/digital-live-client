@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, Avatar, Button, Chip } from "@heroui/react";
 import { Star, Mail, Calendar, Crown, Edit3 } from "lucide-react";
+import Link from 'next/link';
 
 export default function ProfileView({ user }) {
   // Real Plan Evaluation matching previous architectural schemas
@@ -106,7 +107,8 @@ export default function ProfileView({ user }) {
                   {item.category}
                 </Chip>
                 <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 flex items-center gap-1">
-                  <Calendar size={13} className="text-slate-300 dark:text-zinc-600"/> {item.date}
+                  <Calendar size={13} className="text-slate-300 d
+                  ark:text-zinc-600"/> {item.date}
                 </span>
               </div>
               
@@ -120,9 +122,11 @@ export default function ProfileView({ user }) {
                 <span className="text-[11px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-1 rounded-lg">
                   {item.tone}
                 </span>
-                <Button size="sm" variant="light" color="primary" className="font-bold text-xs dark:text-violet-400">
+                <Link href={`/publicLessons/${item._id}`}>
+                  <Button size="sm" variant="light" color="primary" className="font-bold text-xs dark:text-violet-400">
                   Read Details
                 </Button>
+                </Link>
               </div>
             </Card>
           ))}

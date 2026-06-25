@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 
 export default function MyLessonsDashboard({lessonData}) {
 
-
   const [lessons, setLessons] = useState(lessonData);
+  // console.log(lessons);
 
   const [isPremiumUser] = useState(true); 
 

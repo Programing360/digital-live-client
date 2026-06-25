@@ -97,7 +97,7 @@ export default function MyLessons({
   return (
     <div className="space-y-6" data-aos="fade-up">
       <div>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+        <h2 className="text-2xl font-black text-slate-900 tracking-tight dark:text-white">
           My Lessons
         </h2>
         <p className="text-slate-500 text-sm mt-1">
@@ -132,7 +132,7 @@ export default function MyLessons({
                     </p>
                     <div className="flex items-center gap-1 text-xs font-semibold text-slate-400 mt-1">
                       <Calendar size={12} />
-                      <span>
+                      <span className="">
                         Created:{" "}
                         {new Date(lesson.createAt).toLocaleString("en-GB", {
                           day: "2-digit",
@@ -149,7 +149,7 @@ export default function MyLessons({
                       size="sm"
                       variant="flat"
                       color="primary"
-                      className="font-bold"
+                      className="font-bold dark:text-white"
                     >
                       {lesson.category}
                     </Chip>

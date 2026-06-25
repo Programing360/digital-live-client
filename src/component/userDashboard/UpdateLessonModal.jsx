@@ -13,7 +13,7 @@ export function UpdateLessonModal({
   isPremiumUser = false, 
   onUpdateSuccess 
 }) {
-
+// console.log(lessonData);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -81,8 +81,8 @@ export function UpdateLessonModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Modal.Backdrop className="bg-black/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in">
-        <Modal.Container placement="auto" className="transition-all duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4">
+      <Modal.Backdrop className="bg-black/40 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in dark:text-white">
+        <Modal.Container placement="auto" className="transition-all duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 dark:text-white">
           <Modal.Dialog className="sm:max-w-lg rounded-[28px] border border-slate-100 dark:border-zinc-900/80 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
             <Modal.CloseTrigger onClick={onClose} />
             
@@ -102,39 +102,39 @@ export function UpdateLessonModal({
               </div>
             </Modal.Header>
 
-            <Modal.Body className="px-6 py-4 max-h-[65vh] overflow-y-auto space-y-4">
-              <Surface variant="default" className="border-0 p-0 shadow-none bg-transparent">
-                <form id="update-lesson-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <Modal.Body className="px-6 py-4 max-h-[65vh] overflow-y-auto space-y-4 "> 
+              <Surface variant="default" className="border-0 p-0 shadow-none bg-transparent ">
+                <form id="update-lesson-form" onSubmit={handleSubmit} className="flex flex-col gap-4 dark:text-white">
                   
                   {/* Read-Only Owner Segment Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 opacity-75">
                     <TextField className="w-full" name="userName" variant="secondary">
                       <Label className="flex items-center gap-1 text-[11px] font-bold text-default-400"><Key size={11}/> Creator</Label>
-                      <Input value={formData.userName} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500" />
+                      <Input value={formData.userName} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500 dark:text-white" />
                     </TextField>
 
                     <TextField className="w-full" name="userEmail" variant="secondary">
                       <Label className="flex items-center gap-1 text-[11px] font-bold text-default-400"><Key size={11}/> Security Scope</Label>
-                      <Input value={formData.userEmail} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500" />
+                      <Input value={formData.userEmail} readOnly className="bg-default-50 dark:bg-zinc-800/50 cursor-not-allowed select-none font-semibold text-xs h-9 rounded-xl text-default-500 dark:text-white" />
                     </TextField>
                   </div>
 
                   {/* Lesson Title */}
                   <TextField className="w-full" name="title" variant="secondary">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Lesson Title</Label>
-                    <Input name="title" value={formData.title} onChange={handleInputChange} placeholder="Enter dynamic asset title" className="text-xs h-10 rounded-xl font-medium" required />
+                    <Input name="title" value={formData.title} onChange={handleInputChange} placeholder="Enter dynamic asset title" className="text-xs h-10 rounded-xl font-medium dark:text-white" required />
                   </TextField>
 
                   {/* Category */}
                   <TextField className="w-full" name="category" variant="secondary">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Category Identity</Label>
-                    <Input name="category" value={formData.category} onChange={handleInputChange} placeholder="e.g. Next.js, MERN Stack" className="text-xs h-10 rounded-xl font-medium" required />
+                    <Input name="category" value={formData.category} onChange={handleInputChange} placeholder="e.g. Next.js, MERN Stack" className="text-xs h-10 rounded-xl font-medium dark:text-white" required />
                   </TextField>
 
                   {/* Description / Content Textfield */}
                   <TextField className="w-full" name="description" variant="secondary">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Lesson Description</Label>
-                    <Input name="description" value={formData.description} onChange={handleInputChange} placeholder="Update documentation details..." className="text-xs h-10 rounded-xl font-medium" />
+                    <Input name="description" value={formData.description} onChange={handleInputChange} placeholder="Update documentation details..." className="text-xs h-10 rounded-xl font-medium dark:text-white" />
                   </TextField>
 
                   {/* Access Level Controller (Interactive drop-down logic based on subscription level) */}
@@ -143,13 +143,13 @@ export function UpdateLessonModal({
                       Clearance Target Access
                     </Label>
                     
-                    {isPremiumUser ? (
+                    {lessonData.access === 'Premium' ? (
                       <div className="relative">
                         <select 
                           name="access"
                           value={formData.access}
                           onChange={handleInputChange}
-                          className="w-full h-10 pl-3 pr-10 rounded-xl border border-default-200 dark:border-zinc-800 bg-default-50 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer"
+                          className="w-full h-10 pl-3 pr-10 rounded-xl border border-default-200 dark:border-zinc-800 bg-default-50 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointe r"
                         >
                           <option value="Free">🟢 Free (Public Access Level)</option>
                           <option value="Premium">✨ Premium (Subscription Tier Lock)</option>

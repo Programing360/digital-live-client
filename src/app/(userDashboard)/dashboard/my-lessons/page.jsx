@@ -8,7 +8,6 @@ const MyLessonPage = async () => {
 
   
   const lessonData = await getLessonById(user?.id);
-  console.log(lessonData);
   return (
     <div>
       <MyLessonsDashboard lessonData={lessonData}></MyLessonsDashboard>
