@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 export default function MyLessonsDashboard({lessonData}) {
 
   const [lessons, setLessons] = useState(lessonData);
-  // console.log(lessons);
+
 
   const [isPremiumUser] = useState(true); 
 
@@ -46,7 +46,7 @@ export default function MyLessonsDashboard({lessonData}) {
       <UpdateLessonModal
         isOpen={isUpdateModalOpen}
         onClose={() => setIsUpdateModalOpen(false)}
-        lessonData={selectedLessonForUpdate}
+        lessonData={lessons}
         isPremiumUser={isPremiumUser}
         onUpdateSuccess={handleUpdateSuccess}
       />

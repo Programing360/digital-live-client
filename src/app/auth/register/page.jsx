@@ -2,13 +2,20 @@
 
 import React, { useState } from "react";
 import { Button, Input, Link } from "@heroui/react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import Swal from "sweetalert2";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Image,
+  Lock,
+  ShieldCheck,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
-// Flat Google Icon
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
     <path
@@ -37,10 +44,30 @@ export default function RegisterPage() {
     photoUrl: "",
     password: "",
   });
-
-  // Toggling state variable to drive show/hide input visibility type switching
   const [isVisible, setIsVisible] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+
+  // Mouse Parallax Engine for 3D Isometric Effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [-300, 300], [15, -15]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-15, 15]);
+
+  function handleMouseMove(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseXVal = event.clientX - rect.left - width / 2;
+    const mouseYVal = event.clientY - rect.top - height / 2;
+    mouseX.set(mouseXVal);
+    mouseY.set(mouseYVal);
+  }
+
+  function handleMouseLeave() {
+    mouseX.set(0);
+    mouseY.set(0);
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -48,123 +75,89 @@ export default function RegisterPage() {
 
   const validateForm = () => {
     const { name, email, password } = formData;
-
     if (!name || !email || !password) {
       Swal.fire({
         icon: "error",
-        title: "Required Fields Missing",
-        text: "Please populate all necessary user profile validation inputs.",
-        confirmButtonColor: "#5850EC",
+        title: "Missing Fields",
+        text: "Please populate all necessary inputs.",
+        confirmButtonColor: "#6366f1",
       });
       return false;
     }
-
-    if (password.length < 6) {
+    if (
+      password.length < 6 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password)
+    ) {
       Swal.fire({
         icon: "warning",
-        title: "Weak Password Strength",
-        text: "Your account credentials length must contain at least 6 characters.",
-        confirmButtonColor: "#5850EC",
+        title: "Invalid Password",
+        text: "Must be 6+ chars with mixed case.",
+        confirmButtonColor: "#6366f1",
       });
       return false;
     }
-    if (!/[A-Z]/.test(password)) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing Upper Case Character",
-        text: "Your structural password syntax must feature at least one uppercase character.",
-        confirmButtonColor: "#5850EC",
-      });
-      return false;
-    }
-    if (!/[a-z]/.test(password)) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing Lower Case Character",
-        text: "Your structural password syntax must feature at least one lowercase character.",
-        confirmButtonColor: "#5850EC",
-      });
-      return false;
-    }
-
     return true;
   };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    const formData = new FormData(e.currentTarget);
-    const user = Object.fromEntries(formData.entries());
+
     const { data, error } = await authClient.signUp.email({
-      name: user?.name, // required
-      email: user?.email, // required
-      password: user?.password, // required
-      image: user?.photoUrl,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      image: formData.photoUrl,
       callbackURL: "/",
     });
 
     if (data?.user) {
       Swal.fire({
         icon: "success",
-        title: "Registration Success!",
-        text: `Welcome aboard, ${formData.name}! Your public lesson workspace is prepared.`,
-        timer: 3500,
+        title: "Success!",
+        text: `Welcome aboard, ${formData.name}!`,
+        timer: 2500,
         showConfirmButton: false,
       });
-      router.push('/auth/login')
-    } 
-    
-    if(error) {
+      router.push("/auth/login");
+    }
+    if (error) {
       Swal.fire({
         icon: "error",
-        title: "Registration failed!",
-        text: `${error.message}`,
+        title: "Failed!",
+        text: error.message,
         timer: 3500,
         showConfirmButton: false,
       });
     }
-
-
   };
 
   const handleGoogleLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
-    if (data?.user) {
-      Swal.fire({
-        title: "Connecting Account",
-        text: "Securing authentication connection to Google cloud nodes...",
-        timer: 1500,
-        didOpen: () => Swal.showLoading(),
-      }).then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Google Authentication Verified",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      });
-      router.push('/')
-    }
+    const data = await authClient.signIn.social({ provider: "google" });
+    if (data?.user) router.push("/");
   };
 
   return (
-    <main className="w-full min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 select-none font-sans">
-      <div className="w-full max-w-5xl bg-white border border-slate-100/80 rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.03)] grid grid-cols-1 lg:grid-cols-12 overflow-hidden min-h-[620px]">
-        {/* ================= LEFT SECTION: ENTRANCE SIGN UP FORM ================= */}
+    <main className="w-full min-h-screen bg-slate-50 dark:bg-[#080214] transition-colors duration-500 flex items-center justify-center p-4 sm:p-6 lg:p-8 select-none font-sans relative overflow-hidden">
+      {/* Dynamic Ambient Background Lights */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-5xl bg-white/90 dark:bg-[#0e0422]/60 border border-slate-200/80 dark:border-purple-500/10 rounded-[32px] shadow-2xl backdrop-blur-xl grid grid-cols-1 lg:grid-cols-12 overflow-hidden min-h-[640px]">
+        {/* ================= LEFT SECTION: FORM ELEMENT ================= */}
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1.0] }}
-          className="lg:col-span-6 p-8 sm:p-12 flex flex-col justify-center"
+          transition={{ duration: 0.5 }}
+          className="lg:col-span-6 p-8 sm:p-12 flex flex-col justify-center bg-transparent"
         >
           <div className="mb-6">
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Create an Account
             </h1>
-            <p className="text-xs font-semibold text-slate-400 mt-1">
-              Start documenting and organizing your life journeys today.
+            <p className="text-xs font-semibold text-slate-400 dark:text-purple-300/30 mt-1.5">
+              Start documenting and organizing your cloud journeys today.
             </p>
           </div>
 
@@ -178,7 +171,8 @@ export default function RegisterPage() {
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium"
+              className="font-medium text-slate-900 dark:text-white"
+              startContent={<User size={16} className="text-slate-400 mr-1" />}
               value={formData.name}
               onChange={handleInputChange}
             />
@@ -188,10 +182,12 @@ export default function RegisterPage() {
               label="Email Address"
               name="email"
               placeholder="name@example.com"
+              labelPlacement="outside"
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium"
+              className="font-medium text-slate-900 dark:text-white"
+              startContent={<Mail size={16} className="text-slate-400 mr-1" />}
               value={formData.email}
               onChange={handleInputChange}
             />
@@ -201,100 +197,165 @@ export default function RegisterPage() {
               label="Photo URL (Optional)"
               name="photoUrl"
               placeholder="https://example.com/avatar.jpg"
+              labelPlacement="outside"
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium"
+              className="font-medium text-slate-900 dark:text-white"
+              startContent={<Image size={16} className="text-slate-400 mr-1" />}
               value={formData.photoUrl}
               onChange={handleInputChange}
             />
 
-            {/* Password Input Field featuring Show and Hide Visibility System */}
-            <Input
-              type={isVisible ? "text" : "password"}
-              label="Account Password"
-              name="password"
-              placeholder="••••••••"
-              variant="bordered"
-              radius="xl"
-              size="lg"
-              className="font-medium"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-
+            <div className="flex w-full relative">
+              <Input
+                type={isVisible ? "text" : "password"}
+                label="Account Password"
+                name="password"
+                placeholder="••••••••"
+                labelPlacement="outside"
+                variant="bordered"
+                radius="xl"
+                size="lg"
+                className="font-medium text-slate-900 dark:text-white w-full"
+                startContent={
+                  <Lock size={16} className="text-slate-400 mr-1" />
+                }
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+              <Button
+                className="focus:outline-none transition-transform active:scale-90 text-slate-400 hover:text-indigo-500 bg-indigo-400 dark:text-white absolute right-0"
+                type="button"
+                onClick={() => setIsVisible(!isVisible)}
+              >
+                {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+              </Button>
+            </div>
             <Button
               type="submit"
               size="lg"
-              className="bg-slate-900 text-white font-bold tracking-wide mt-3 hover:bg-slate-800 transition-colors active:scale-98 shadow-sm w-full"
-              radius="xl"
+              className="bg-slate-900 dark:bg-indigo-600 text-white font-bold tracking-wide mt-3 hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all active:scale-98 shadow-md rounded-2xl h-12 w-full"
             >
               Sign Up
             </Button>
           </form>
 
-          <div className="relative flex py-4 items-center">
-            <div className="flex-grow border-t border-slate-100"></div>
-            <span className="flex-shrink mx-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          {/* Divider Elements */}
+          <div className="relative flex py-5 items-center">
+            <div className="flex-grow border-t border-slate-200/60 dark:border-purple-500/10"></div>
+            <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 dark:text-purple-300/20 uppercase tracking-widest">
               or continue with
             </span>
-            <div className="flex-grow border-t border-slate-100"></div>
+            <div className="flex-grow border-t border-slate-200/60 dark:border-purple-500/10"></div>
           </div>
 
           <Button
             size="lg"
             variant="bordered"
-            className="border-slate-200 bg-white hover:bg-slate-50 font-bold text-slate-700 transition-colors active:scale-98 shadow-sm mx-auto"
-            radius="xl"
+            className="border-slate-200 dark:border-purple-500/10 bg-white dark:bg-purple-950/20 hover:bg-slate-50 dark:hover:bg-purple-950/40 font-bold text-slate-700 dark:text-purple-100 transition-colors rounded-2xl h-12 mx-auto"
             onClick={handleGoogleLogin}
           >
             <GoogleIcon />
             Sign in with Google
           </Button>
 
-          <p className="text-xs font-semibold text-slate-400 text-center mt-6">
+          <p className="text-xs font-semibold text-slate-400 dark:text-purple-300/30 text-center mt-6">
             Already have an active account?{" "}
             <Link
               href="/auth/login"
-              className="text-xs font-extrabold text-indigo-600 hover:underline"
+              className="text-xs font-extrabold text-indigo-600 dark:text-[#00e5b4] hover:underline"
             >
               Log In
             </Link>
           </p>
         </motion.div>
 
-        {/* ================= RIGHT SECTION: DECORATIVE LOTTIE CONTAINER ================= */}
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="lg:col-span-6 bg-gradient-to-tr from-indigo-600 via-[#5850EC] to-purple-600 p-12 hidden lg:flex flex-col items-center justify-center relative overflow-hidden"
+        {/* ================= RIGHT SECTION: ISOMETRIC DATA PIPELINE ART ================= */}
+        <div
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className="lg:col-span-6 bg-gradient-to-tr from-[#050112] via-[#0d0426] to-[#1a003b] p-12 hidden lg:flex flex-col items-center justify-center relative overflow-hidden"
         >
-          <div className="absolute top-[-20%] right-[-20%] w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-[-15%] left-[-15%] w-80 h-80 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+          {/* Tech Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
           <motion.div
-            animate={{ y: ["0px", "-16px", "0px"] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-full max-w-sm aspect-square bg-white/10 backdrop-blur-md rounded-[28px] border border-white/10 shadow-2xl flex flex-col items-center justify-center p-8 text-center z-10"
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            transition={{ type: "spring", stiffness: 70, damping: 22 }}
+            className="w-full flex flex-col items-center justify-center z-10 space-y-12"
           >
-            <div className="w-40 h-40 rounded-full bg-white/10 flex items-center justify-center border border-white/10 mb-6 relative">
-              <span className="text-4xl animate-bounce">✨</span>
-              <div
-                className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-spin"
-                style={{ animationDuration: "20s" }}
-              />
+            {/* Isometric Architecture Representation */}
+            <div className="relative w-80 h-64 flex items-center justify-center perspective-1000">
+              {/* Central Processor Node (Inspired by BISS Gmbh Style) */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-40 h-40 bg-gradient-to-br from-indigo-900/60 to-purple-900/60 border-2 border-indigo-500/40 rounded-[36px] shadow-[0_30px_60px_-15px_rgba(99,102,241,0.3)] flex flex-col items-center justify-center relative z-20 backdrop-blur-md"
+              >
+                <div className="p-4 rounded-2xl bg-gradient-to-tr from-[#00e5b4] to-indigo-500 text-white shadow-lg">
+                  <ShieldCheck size={32} />
+                </div>
+                <div className="mt-3 text-[10px] font-black tracking-widest text-[#00e5b4] uppercase">
+                  BISS / AI.GO
+                </div>
+
+                {/* Embedded Pulse Rings */}
+                <div
+                  className="absolute -inset-2 border border-dashed border-indigo-400/20 rounded-[44px] animate-spin"
+                  style={{ animationDuration: "40s" }}
+                />
+              </motion.div>
+
+              {/* Orbital Data Strands (Bottom Plane Connections) */}
+              <div className="absolute bottom-4 inset-x-0 flex justify-between px-6 opacity-60 z-10">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.4, 1, 0.4] }}
+                    transition={{
+                      duration: 2,
+                      delay: i * 0.4,
+                      repeat: Infinity,
+                    }}
+                    className="w-4 h-4 rounded-md bg-purple-500/20 border border-purple-400/40 shadow-[0_0_10px_#a855f7]"
+                  />
+                ))}
+              </div>
+
+              {/* Data Floating Bits */}
+              <motion.div
+                animate={{ x: [-20, 20, -20], y: [-10, 10, -10] }}
+                transition={{ duration: 6, repeat: Infinity }}
+                className="absolute top-6 left-6 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[#00e5b4] text-[9px] font-black"
+              >
+                DATA SYNCED
+              </motion.div>
+
+              <motion.div
+                animate={{ x: [20, -20, 20], y: [10, -10, 10] }}
+                transition={{ duration: 5, repeat: Infinity }}
+                className="absolute bottom-6 right-6 px-2 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-black"
+              >
+                NODE.ACTIVE
+              </motion.div>
             </div>
 
-            <h3 className="text-white font-extrabold text-lg tracking-tight">
-              Capture Your Reflections
-            </h3>
-            <p className="text-indigo-100/80 text-xs font-medium leading-relaxed mt-2 max-w-[240px]">
-              Join thousands of learners archive wisdom milestones globally
-              daily.
-            </p>
+            <div className="text-center space-y-2 max-w-xs">
+              <h3 className="text-white font-extrabold text-xl tracking-tight">
+                Secure Automated Infra
+              </h3>
+              <p className="text-indigo-200/40 text-xs font-medium leading-relaxed">
+                Experience real-time telemetry pipelines and cross-platform
+                infrastructure encryption natively.
+              </p>
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </main>
   );

@@ -7,12 +7,7 @@ const page = async () => {
   const user = await getUseSession();
 
   // const allLesson = await allLessons();
-    const lessonData = await getLessonById(user?.id);
-    console.log(lessonData);
-
-  
-
-
+  const lessonData = await getLessonById(user?.id);
 
   return (
     <div>

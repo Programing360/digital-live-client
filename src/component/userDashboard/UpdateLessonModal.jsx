@@ -13,7 +13,7 @@ export function UpdateLessonModal({
   isPremiumUser = false, 
   onUpdateSuccess 
 }) {
-// console.log(lessonData);
+
 
   const [formData, setFormData] = useState({
     title: "",

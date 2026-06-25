@@ -81,7 +81,7 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
       setLoading(true);
       const categoryQuery =
         categories.length > 0 ? `&category=${categories.join(",")}` : "";
-      console.log(categoryQuery);
+     
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/lessonsPage?page=${page}&limit=${itemsPerPage}&search=${search}${categoryQuery}`,
       );

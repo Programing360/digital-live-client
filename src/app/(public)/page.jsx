@@ -10,7 +10,7 @@ export default async function Home() {
   const user = await getUseSession();
 
   const allFeatured = await getFeatured()
-  // console.log(allFeatured);
+
 
   return (
     <div className="min-h-screen bg-transparent dark:bg-[#12032e] transition-colors duration-500 overflow-x-hidden flex flex-col gap-y-6 sm:gap-y-12">

@@ -1,9 +1,7 @@
 import React, { Activity } from "react";
 import { Card, Modal, Button, Table } from "@heroui/react";
 import { ArrowUpRight, Calendar } from "lucide-react";
-const DashboardModal = ({chartData}) => {
-
-    console.log(chartData);
+const DashboardModal = ({ chartData }) => {
   return (
     <div>
       <Modal>
@@ -22,7 +20,8 @@ const DashboardModal = ({chartData}) => {
             <Modal.Dialog className="border border-slate-200/60 dark:border-purple-500/10 bg-white/95 dark:bg-[#0f0226]/95 backdrop-blur-2xl rounded-[32px] shadow-2xl text-slate-900 dark:text-white w-full overflow-hidden">
               {/* Optional header close interaction trigger wrapper */}
               <Button
-                slot="close" variant="secondary"
+                slot="close"
+                variant="secondary"
                 className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors text-sm font-bold"
               >
                 ✕
@@ -83,14 +82,21 @@ const DashboardModal = ({chartData}) => {
                             className="border-b border-slate-100 dark:border-purple-500/5 text-xs font-bold text-slate-700 dark:text-purple-200 "
                           >
                             <Table.Cell className="flex items-center gap-2 py-3">
-                              <Calendar size={13} className="text-slate-400 dark:text-white" />
-                              <span className="dark:text-white">{row.fullDate}</span>
+                              <Calendar
+                                size={13}
+                                className="text-slate-400 dark:text-white"
+                              />
+                              <span className="dark:text-white">
+                                {row.fullDate}
+                              </span>
                             </Table.Cell>
                             <Table.Cell className="text-indigo-500 py-3 ">
                               {row.Contributions}
                             </Table.Cell>
                             <Table.Cell className="text-[#00e5b4] py-3">
-                              <span className="dark:text-white">{row.Reflections}</span>
+                              <span className="dark:text-white">
+                                {row.Reflections}
+                              </span>
                             </Table.Cell>
                           </Table.Row>
                         ))}
@@ -105,7 +111,8 @@ const DashboardModal = ({chartData}) => {
                 <Button
                   radius="xl"
                   className="font-bold text-xs bg-slate-100 dark:bg-purple-950/40 text-slate-700 dark:text-purple-200 border border-slate-200/60 dark:border-purple-500/10"
-                  slot="close" variant="secondary"
+                  slot="close"
+                  variant="secondary"
                 >
                   Dismiss Frame
                 </Button>

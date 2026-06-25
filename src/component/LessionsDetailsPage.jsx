@@ -151,8 +151,6 @@ export default function LessonDetails({
         (lesson.category === category || lesson.emotionalTone === emotionalTone)
     )
     .slice(0, 3); 
-
-    // console.log(similarLessons);
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-gradient-to-br dark:from-[#1b073e] dark:to-[#0b0214] text-slate-900 dark:text-purple-50 transition-colors duration-500 pb-24 relative overflow-hidden">
       
@@ -447,7 +445,7 @@ export default function LessonDetails({
                       </h4>
                     </div>
                     <Link
-                      href={`/lessons/${lesson._id}`}
+                      href={`/publicLessons/${lesson._id}`}
                       className="flex items-center justify-between text-xs font-bold text-slate-400 dark:text-purple-300/40 group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors"
                     >
                       <span>Read Narrative</span>
