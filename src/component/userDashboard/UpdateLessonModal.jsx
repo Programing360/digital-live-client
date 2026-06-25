@@ -9,11 +9,10 @@ import { toast } from 'react-toastify';
 export function UpdateLessonModal({ 
   isOpen, 
   onClose, 
-  lessonData, 
+  lessonData, // এটি এখন একটি সিঙ্গেল অবজেক্ট (selectedLesson)
   isPremiumUser = false, 
   onUpdateSuccess 
 }) {
-
 
   const [formData, setFormData] = useState({
     title: "",
@@ -26,8 +25,9 @@ export function UpdateLessonModal({
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // মডাল ওপেন হলে বা অবজেক্ট পরিবর্তন হলে ফর্ম ফিল্ড সেট করা
   useEffect(() => {
-    if (lessonData) {
+    if (isOpen && lessonData) {
       setFormData({
         title: lessonData.title || "",
         category: lessonData.category || "",
@@ -53,6 +53,11 @@ export function UpdateLessonModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!lessonData?._id) {
+      toast.error("Invalid Asset Identifier Matrix.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -60,17 +65,17 @@ export function UpdateLessonModal({
         ...formData,
         image: selectedImage
       };
-      // console.log(lessonData);
-      const updateLessonData = await lessonUpdate( lessonData._id, updateData);
+      
+      // MongoDB পুশ করা হচ্ছে সার্ভার অ্যাকশনের মাধ্যমে
+      const updateResult = await lessonUpdate(lessonData._id, updateData);
 
-      // console.log( updateLessonData);
-
-      if (updateLessonData?.modifiedCount || updateLessonData) {
+      if (updateResult?.modifiedCount || updateResult) {
         toast.success('Lesson Update Successful');
       }
       
+      // প্যারেন্ট স্টেটে সফল আপডেটের মেসেজ পাঠানো হচ্ছে
       if (onUpdateSuccess) {
-        onUpdateSuccess({ ...formData, image: selectedImage });
+        onUpdateSuccess({ ...formData, _id: lessonData._id });
       }
       onClose();
     } catch (error) {
@@ -104,8 +109,8 @@ export function UpdateLessonModal({
               </div>
             </Modal.Header>
 
-            <Modal.Body className="px-6 py-4 max-h-[65vh] overflow-y-auto space-y-4 "> 
-              <Surface variant="default" className="border-0 p-0 shadow-none bg-transparent ">
+            <Modal.Body className="px-6 py-4 max-h-[65vh] overflow-y-auto space-y-4"> 
+              <Surface variant="default" className="border-0 p-0 shadow-none bg-transparent">
                 <form id="update-lesson-form" onSubmit={handleSubmit} className="flex flex-col gap-4 dark:text-white">
                   
                   {/* Read-Only Owner Segment Grid */}
@@ -133,25 +138,25 @@ export function UpdateLessonModal({
                     <Input name="category" value={formData.category} onChange={handleInputChange} placeholder="e.g. Next.js, MERN Stack" className="text-xs h-10 rounded-xl font-medium dark:text-white" required />
                   </TextField>
 
-                  {/* Description / Content Textfield */}
+                  {/* Description */}
                   <TextField className="w-full" name="description" variant="secondary">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs">Lesson Description</Label>
                     <Input name="description" value={formData.description} onChange={handleInputChange} placeholder="Update documentation details..." className="text-xs h-10 rounded-xl font-medium dark:text-white" />
                   </TextField>
 
-                  {/* Access Level Controller (Interactive drop-down logic based on subscription level) */}
+                  {/* Access Level Controller */}
                   <div className="flex flex-col gap-1.5">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs flex items-center gap-1.5">
                       Clearance Target Access
                     </Label>
                     
-                    {lessonData.access === 'Premium' ? (
+                    {lessonData?.access === 'Premium' ? (
                       <div className="relative">
                         <select 
                           name="access"
                           value={formData.access}
                           onChange={handleInputChange}
-                          className="w-full h-10 pl-3 pr-10 rounded-xl border border-default-200 dark:border-zinc-800 bg-default-50 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointe r"
+                          className="w-full h-10 pl-3 pr-10 rounded-xl border border-default-200 dark:border-zinc-800 bg-default-50 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-200 focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer"
                         >
                           <option value="Free">🟢 Free (Public Access Level)</option>
                           <option value="Premium">✨ Premium (Subscription Tier Lock)</option>
@@ -178,7 +183,7 @@ export function UpdateLessonModal({
                     )}
                   </div>
 
-                  {/* Optional Image Upload Dropzone */}
+                  {/* Image Dropzone */}
                   <div className="flex flex-col gap-2 border border-dashed border-default-200 dark:border-zinc-800 rounded-xl p-4 bg-default-50/40">
                     <Label className="text-slate-700 dark:text-zinc-300 font-extrabold text-xs flex items-center gap-1"><Image size={13}/> Cover Image Attachment</Label>
                     <input 
