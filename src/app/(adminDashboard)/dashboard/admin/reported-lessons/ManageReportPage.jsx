@@ -16,6 +16,7 @@ import {
 import { deleteReportById } from "@/lib/api/manageReport";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { reportRecover } from "@/lib/api/report";
 
 // Premium Sample Dataset representing flagged content data structures
 // const initialReportedLessons = [
@@ -78,7 +79,17 @@ export default function ManageReportedPage({ allReport }) {
   const [actionConfirmation, setActionConfirmation] = useState(null); // { type: 'delete' | 'ignore', lesson }
   const router = useRouter();
   // --- MUTATION HANDLERS ---
-  const handleIgnoreReports = (lessonId) => {
+  const handleIgnoreReports = async (lessonId) => {
+    const res = await reportRecover(lessonId);
+    if(res.deletedCount > 0) {
+      toast.success('Recovery Successful')
+      router.refresh()
+    }else{
+      toast.error('something is Wrong!!')
+    }
+
+    // console.log(res);
+
     setReportedLessons((prev) =>
       prev.filter((lesson) => lesson._id !== lessonId),
     );
@@ -88,6 +99,9 @@ export default function ManageReportedPage({ allReport }) {
 
   const handleDeleteLesson = async (lessonId) => {
     const reportDelete = await deleteReportById(lessonId);
+
+    console.log(reportDelete);
+
     if (reportDelete.deletedCount > 0) {
       toast.success("Report Delete Successful");
       setReportedLessons((prev) =>
@@ -124,14 +138,11 @@ export default function ManageReportedPage({ allReport }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <Table isRowHeader className="border border-default-100 dark:border-zinc-900 bg-white dark:bg-zinc-900 shadow-sm rounded-[24px] overflow-hidden">
+          <Table className="border border-default-100 dark:border-zinc-900 bg-white dark:bg-zinc-900 shadow-sm rounded-[24px] overflow-hidden">
             <Table.ScrollContainer>
-              <Table.Content
-                
-                aria-label="Flagged community content table logs"
-              >
+              <Table.Content aria-label="Flagged community content table logs">
                 <Table.Header>
-                  <Table.Column>Lesson Meta & Title</Table.Column>
+                  <Table.Column isRowHeader>Lesson Meta & Title</Table.Column>
                   <Table.Column>Author</Table.Column>
                   <Table.Column>Author Email</Table.Column>
                   <Table.Column>Report Density</Table.Column>
@@ -168,7 +179,7 @@ export default function ManageReportedPage({ allReport }) {
                       </Table.Cell>
                       <Table.Cell>
                         <span className="text-xs font-bold text-slate-600 dark:text-zinc-300">
-                          {lesson.reports?.[0]?.email || "N/A"}
+                          {lesson.author.email || "N/A"}
                         </span>
                       </Table.Cell>
 

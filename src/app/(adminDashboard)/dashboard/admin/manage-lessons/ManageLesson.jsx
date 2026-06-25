@@ -34,58 +34,58 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 // Premium Initial Mock Database for all platform lessons
-const initialLessons = [
-  {
-    id: "les-1",
-    title: "Mastering Cognitive Restructuring",
-    author: "Ried Hessan",
-    category: "Mindset",
-    visibility: "public",
-    flagged: false,
-    featured: true,
-    reviewed: true,
-  },
-  {
-    id: "les-2",
-    title: "Building Million-Dollar Habits",
-    author: "Sarah Connor",
-    category: "Growth",
-    visibility: "public",
-    flagged: true,
-    featured: false,
-    reviewed: false,
-  },
-  {
-    id: "les-3",
-    title: "Draft: Relationship Guardrails Blueprint",
-    author: "Nusrat Jahan",
-    category: "Relationships",
-    visibility: "private",
-    flagged: false,
-    featured: false,
-    reviewed: true,
-  },
-  {
-    id: "les-4",
-    title: "Crypto Systems 101 Guide",
-    author: "Alex Rivera",
-    category: "Finance",
-    visibility: "public",
-    flagged: true,
-    featured: false,
-    reviewed: false,
-  },
-  {
-    id: "les-5",
-    title: "How to Deal with Sibling Rivalry",
-    author: "Nusrat Jahan",
-    category: "Relationships",
-    visibility: "public",
-    flagged: false,
-    featured: false,
-    reviewed: false,
-  },
-];
+// const initialLessons = [
+//   {
+//     id: "les-1",
+//     title: "Mastering Cognitive Restructuring",
+//     author: "Ried Hessan",
+//     category: "Mindset",
+//     visibility: "public",
+//     flagged: false,
+//     featured: true,
+//     reviewed: true,
+//   },
+//   {
+//     id: "les-2",
+//     title: "Building Million-Dollar Habits",
+//     author: "Sarah Connor",
+//     category: "Growth",
+//     visibility: "public",
+//     flagged: true,
+//     featured: false,
+//     reviewed: false,
+//   },
+//   {
+//     id: "les-3",
+//     title: "Draft: Relationship Guardrails Blueprint",
+//     author: "Nusrat Jahan",
+//     category: "Relationships",
+//     visibility: "private",
+//     flagged: false,
+//     featured: false,
+//     reviewed: true,
+//   },
+//   {
+//     id: "les-4",
+//     title: "Crypto Systems 101 Guide",
+//     author: "Alex Rivera",
+//     category: "Finance",
+//     visibility: "public",
+//     flagged: true,
+//     featured: false,
+//     reviewed: false,
+//   },
+//   {
+//     id: "les-5",
+//     title: "How to Deal with Sibling Rivalry",
+//     author: "Nusrat Jahan",
+//     category: "Relationships",
+//     visibility: "public",
+//     flagged: false,
+//     featured: false,
+//     reviewed: false,
+//   },
+// ];
 
 const categoryLesson = [
   { key: "all", label: "All Categories" },
@@ -115,6 +115,9 @@ export default function ManageLessons({ allLesson }) {
       flagged: lessons.filter((l) => l.flagged).length,
     };
   }, [lessons]);
+
+  // console.log(lessons, stats);
+
 
   // --- MUTATION HANDLERS ---
   const toggleFeatured = (id) => {

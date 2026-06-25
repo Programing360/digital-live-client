@@ -10,13 +10,17 @@ const page = async () => {
   const lessonData = await getLessonById(user?.id);
   const favorites = await favoriteDataById(user?.id);
 
+  // console.log(user, allLesson, lessonData, favorites);
+
+
   const myLesson = allLesson.filter(
-    (lesson) => lesson.author.authorId === user?.id,
+    (lesson) => lesson.likes.includes(user?.id)
   );
 
+  console.log(myLesson);
   const totalLikes = myLesson.reduce((sum, num) => sum + num.likesCount, 0);
 
-
+  console.log(totalLikes);
 
   return (
     <div>

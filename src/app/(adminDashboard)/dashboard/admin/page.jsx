@@ -14,7 +14,7 @@ const AdminPage = async () => {
   const allGrowth = await getGrowthData()
 
   return (
-    <div>
+    <div className="bg-[#110c2a]">
       <AdminDashboardHome
         allLesson={allLessonData}
         userCount={userCount}

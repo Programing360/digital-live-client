@@ -5,6 +5,8 @@ import { allLessons } from "@/lib/api/lessons";
 
 const ManageLessonPage = async () => {
   const allLesson = await allLessons();
+
+  
   return (
     <div>
       <ManageLessons allLesson={allLesson} />

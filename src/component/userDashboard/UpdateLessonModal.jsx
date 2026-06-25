@@ -25,7 +25,7 @@ export function UpdateLessonModal({
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   useEffect(() => {
     if (lessonData) {
       setFormData({
@@ -60,9 +60,11 @@ export function UpdateLessonModal({
         ...formData,
         image: selectedImage
       };
-      
-      const updateLessonData = await lessonUpdate(lessonData._id?.$oid || lessonData._id, updateData);
-      
+      console.log(lessonData);
+      const updateLessonData = await lessonUpdate( lessonData._id, updateData);
+
+      console.log( updateLessonData);
+
       if (updateLessonData?.modifiedCount || updateLessonData) {
         toast.success('Lesson Update Successful');
       }

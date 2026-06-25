@@ -14,7 +14,7 @@ const LessonDetailsPage = async ({ params }) => {
   const { id } = await params;
   const user = await getUseSession();
   if (!user) {
-    return redirect("/privateDashboard");
+    return redirect("/auth/login");
   }
   const getUserComment = await getComment(id);
  
@@ -28,6 +28,8 @@ const LessonDetailsPage = async ({ params }) => {
   if (!lessonData) {
     return notFound();
   }
+
+  
 
   if (
     lessonData.visibility === "Private" &&

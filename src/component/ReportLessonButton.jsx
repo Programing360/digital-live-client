@@ -41,6 +41,7 @@ export default function ReportLessonButton({
         lessonId: lessonId,
         title: lessonData.title,
         author: lessonData.author.name,
+        authorEmail: lessonData.author.email,
         category: lessonData.category,
         reportCount: 1,
         reports: [
