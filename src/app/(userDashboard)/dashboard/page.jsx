@@ -16,7 +16,7 @@ const page = async () => {
 
   const totalLikes = myLesson.reduce((sum, num) => sum + num.likesCount, 0);
 
-  
+  // console.log(myLesson);
 
   return (
     <div>

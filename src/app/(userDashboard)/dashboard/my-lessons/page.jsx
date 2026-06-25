@@ -6,8 +6,9 @@ import { getLessonById } from "@/lib/api/lessons";
 const MyLessonPage = async () => {
   const user = await getUseSession();
 
+  
   const lessonData = await getLessonById(user?.id);
-
+  console.log(lessonData);
   return (
     <div>
       <MyLessonsDashboard lessonData={lessonData}></MyLessonsDashboard>

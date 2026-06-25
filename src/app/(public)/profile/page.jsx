@@ -6,18 +6,19 @@ import { allLessons, getLessonById } from "@/lib/api/lessons";
 const page = async () => {
   const user = await getUseSession();
 
-  const allLesson = await allLessons();
-//   const lessonData = await getLessonsDetailsById(id);
+  // const allLesson = await allLessons();
+    const lessonData = await getLessonById(user?.id);
+    console.log(lessonData);
 
-//   const totalLessons = allLesson.filter(
-//     (lesson) => lesson.author.authorId === lessonData.author.authorId,
-//   );
+  
+
+
 
   return (
     <div>
       <AuthorLessonProfile
         user={user}
-        // lessonData={lessonData}
+        lessonData={lessonData}
         // totalLessons={totalLessons}
       ></AuthorLessonProfile>
     </div>

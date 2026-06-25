@@ -194,9 +194,11 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
               {/* Card Footer */}
               <div className="flex items-center justify-between mt-6 pt-3 border-t border-slate-100/60 dark:border-white/[0.04]">
                 <div className="flex items-center gap-2">
-                  <img
+                  <Image
                     src={lesson.author?.image || "https://i.pravatar.cc/150"}
                     alt={lesson.author?.name}
+                    width={400}
+                    height={400}
                     className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-100 dark:ring-white/[0.08]"
                   />
                   <span className="text-xs font-bold text-slate-700 dark:text-purple-200/70">

@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Avatar } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Bookmark, Trophy, Star } from "lucide-react";
+import Image from "next/image";
 
 const contributorsData = [
   { id: 1, rank: 1, name: "Riad Hasan", lessons: 24, glow: "hover:border-amber-500/30", rankColor: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20" },
@@ -111,11 +112,13 @@ export default function AnalyticsDashboardGrid() {
                   {/* Shared Assets Stack */}
                   <div className="hidden sm:flex -space-x-2 overflow-hidden opacity-80 group-hover:opacity-100 transition-opacity">
                     {[1, 2, 3].map((i) => (
-                      <img 
+                      <Image 
                         key={i}
                         className="inline-block h-4 w-4 rounded-full ring-2 ring-white dark:ring-[#12032e] object-cover" 
                         src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80" 
                         alt="Network user" 
+                        width={400}
+                        height={400}
                       />
                     ))}
                   </div>
@@ -170,10 +173,12 @@ export default function AnalyticsDashboardGrid() {
               >
                 <div className="flex items-center gap-3.5">
                   <div className="relative w-14 h-10 rounded-xl overflow-hidden bg-slate-900/10 border border-slate-200/40 dark:border-white/10">
-                    <img 
+                    <Image 
                       src={lesson.img} 
                       alt={lesson.title} 
                       className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                      width={400}
+                      height={40}
                     />
                   </div>
                   

@@ -24,7 +24,7 @@ export default function ThemeToggle() {
       onPress={() =>
         setTheme(theme === "dark" ? "light" : "dark")
       }
-      className="border border-default-200"
+      className="border border-default-200 dark:text-white"
     >
       <motion.div
         key={theme}

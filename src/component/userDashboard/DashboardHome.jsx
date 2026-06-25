@@ -31,7 +31,7 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
       bg: "bg-rose-50 text-rose-600",
     },
   ];
-
+  // console.log(totalLikes);
   // console.log(typeof(totalLikes));
 
   const recents = [
@@ -57,12 +57,12 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
       {/* Dynamic App Welcome Banner */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight dark:text-white">
             Dashboard
           </h2>
           <p className="text-slate-500 font-medium mt-1">
             Welcome back,{" "}
-            <span className="font-bold text-slate-800">{user.name}</span> 👋
+            <span className="font-bold text-slate-800 dark:text-white">{user.name}</span> 👋
             Here whats happening.
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function DashboardHome({ user, setActiveTab, lessonData, favorite
           variant="flat"
           color="default"
           size="sm"
-          className="bg-white border border-slate-200 font-bold"
+          className="bg-white dark:text-slate-800 border border-slate-200 font-bold"
         >
           This Week
         </Button>
