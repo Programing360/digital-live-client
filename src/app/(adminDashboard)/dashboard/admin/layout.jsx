@@ -7,7 +7,7 @@ export default async function DashboardLayout({ children }) {
   if (!user) {
     redirect("/login");
   }
-
+  
   await requiredRole("admin");
 
   return (

@@ -95,8 +95,7 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
   };
   const isAdmin = user?.role === "admin";
   const menuItems = navItems[user?.role] || userItem;
-  const clientItem = navItems[user?.role === 'admin' && 'user'] || userItem;
-
+  const clientItem = navItems[user?.role === "admin" && "user"] || userItem;
 
   return (
     <aside
@@ -134,19 +133,20 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
                 const isActive = pathname === item.href;
 
                 return (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
-            ${
-              isActive
-                ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
-                : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
-            }`}
-                  >
-                    {item.icon}
-                    {item.label}
+                  <Link key={item.id} href={item.href}>
+                    <Button
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      variant={isActive ? "default" : ""}
+                      className={`w-full flex items-center justify-start gap-3 px-4 py-6 mb-2 rounded-xl text-sm font-semibold transition-all duration-200
+                   ${
+                     isActive
+                       ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
+                       : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
+                   }`}
+                    >
+                      {item.icon}
+                      {item.label}
+                    </Button>
                   </Link>
                 );
               })}
@@ -161,35 +161,35 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen }) {
           {clientItem.map((item) => {
             const isActive = pathname === item.href;
 
-            // Admin এর জন্য User Menu disabled
             if (isAdmin) {
               return (
-                <button
+                <Button
                   key={item.id}
                   disabled
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 opacity-50 cursor-not-allowed"
+                  className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 opacity-50 cursor-not-allowed bg-[#0F0C24]"
                 >
                   {item.icon}
                   {item.label}
-                </button>
+                </Button>
               );
             }
 
             // Normal User
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
-        ${
-          isActive
-            ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
-            : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
-        }`}
-              >
-                {item.icon}
-                {item.label}
+              <Link key={item.id} href={item.href}>
+                <Button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  variant={isActive ? "default" : ""}
+                  className={`w-full flex items-center justify-start gap-3 px-4 py-6 mb-2 rounded-xl text-sm font-semibold transition-all duration-200
+                   ${
+                     isActive
+                       ? "bg-indigo-600/30 text-white border-l-4 border-indigo-500 shadow-inner"
+                       : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
+                   }`}
+                >
+                  {item.icon}
+                  {item.label}
+                </Button>
               </Link>
             );
           })}

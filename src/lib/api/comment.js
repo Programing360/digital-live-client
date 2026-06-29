@@ -6,6 +6,7 @@ export const userComment = async (userInfo) => {
   return res;
 };
 export const getComment = async (userId) => {
+
   const res = await serverFetchById(`api/comment/${userId}`);
 
   return res;

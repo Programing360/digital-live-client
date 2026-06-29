@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Table, Chip, Button, Tooltip, Avatar, Card } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -18,81 +18,33 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { reportRecover } from "@/lib/api/report";
 
-// Premium Sample Dataset representing flagged content data structures
-// const initialReportedLessons = [
-//   {
-//     id: "les-401",
-//     title: "Unregulated Crypto High-Frequency Sprints",
-//     author: "Alex Rivera",
-//     category: "Finance",
-//     reportCount: 4,
-//     reports: [
-//       {
-//         id: "rep-1",
-//         reporter: "Nusrat Jahan",
-//         email: "nusrat@example.com",
-//         reason:
-//           "Promoting financial scams and unverified trading bot referrals.",
-//       },
-//       {
-//         id: "rep-2",
-//         reporter: "Ried Hessan",
-//         email: "ried@example.com",
-//         reason:
-//           "Misleading high-yield investment claims without any risk disclaimers.",
-//       },
-//       {
-//         id: "rep-3",
-//         reporter: "Sarah C.",
-//         email: "sarah@example.com",
-//         reason: "Spam content links pointing to tracking domains.",
-//       },
-//       {
-//         id: "rep-4",
-//         reporter: "Marcus W.",
-//         email: "marcus@example.com",
-//         reason: "Dangerous advice targeting younger demographic parameters.",
-//       },
-//     ],
-//   },
-//   {
-//     id: "les-402",
-//     title: "Aggressive Workplace Negotiation Sprints",
-//     author: "Sarah Connor",
-//     category: "Career",
-//     reportCount: 1,
-//     reports: [
-//       {
-//         id: "rep-5",
-//         reporter: "Alex Rivera",
-//         email: "alex.r@example.com",
-//         reason:
-//           "Contains overly aggressive language frameworks counter to standard workplace ethics.",
-//       },
-//     ],
-//   },
-// ];
-
 export default function ManageReportedPage({ allReport }) {
   const [reportedLessons, setReportedLessons] = useState(allReport);
   const [activeLessonDetails, setActiveLessonDetails] = useState(null);
   const [actionConfirmation, setActionConfirmation] = useState(null); // { type: 'delete' | 'ignore', lesson }
   const router = useRouter();
+
+  useEffect(() => {
+    setReportedLessons(allReport);
+  }, [allReport]);
+
   // --- MUTATION HANDLERS ---
   const handleIgnoreReports = async (lessonId) => {
     const res = await reportRecover(lessonId);
-    if(res.deletedCount > 0) {
-      toast.success('Recovery Successful')
-      router.refresh()
-    }else{
-      toast.error('something is Wrong!!')
+
+   
+
+    if (res.deletedCount > 0) {
+      toast.success("Recovery Successful");
+      // router.refresh();
+      setReportedLessons((prev) =>
+        prev.filter((lesson) => lesson.lessonId !== lessonId),
+      );
+    } else {
+      toast.error("something is Wrong!!");
     }
 
     // console.log(res);
-
-    setReportedLessons((prev) =>
-      prev.filter((lesson) => lesson._id !== lessonId),
-    );
 
     setActionConfirmation(null);
   };

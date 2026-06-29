@@ -50,14 +50,14 @@ export default function DashboardHome({
   const stats = [
     {
       title: "My Lessons",
-      val: String(lessonData.length),
+      val: `${(lessonData.length)}`,
       icon: <BookOpen size={18} />,
       styles:
         "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20",
     },
     {
       title: "Favorites",
-      val: String(favorites.length),
+      val:`${favorites.length}`,
       icon: <Heart size={18} />,
       styles:
         "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
@@ -71,7 +71,7 @@ export default function DashboardHome({
     },
     {
       title: "Total Likes",
-      val: String(totalLikes),
+      val: `${totalLikes.length}`,
       icon: <Heart size={18} className="fill-current" />,
       styles:
         "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20",

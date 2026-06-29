@@ -40,8 +40,14 @@ export default function Navbar() {
   const isPremiumUser = user?.isPlan === "premium";
   const isFreePlan = !user || user?.isPlan === "free";
 
-  // Dynamic navigation mapping configuration
-  const navItems = [
+  const adminItem = [
+    { name: "Public Lessons", href: "/publicLessons" },
+    { name: "Dashboard", href: "/dashboard/admin" },
+    { name: "Manage User", href: "/dashboard/admin/manage-users" },
+    { name: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
+  ];
+
+  const userItem = [
     { name: "Home", href: "/" },
     ...(user
       ? [
@@ -54,12 +60,18 @@ export default function Navbar() {
     ...(user && isFreePlan ? [{ name: "Upgrade", href: "/upgrade" }] : []),
   ];
 
+  const navItem = {
+    user: userItem,
+    admin: adminItem,
+  };
+
+  const navItems = navItem[user?.role];
+
   const handleSignOut = async () => {
     await authClient.signOut();
   };
 
   return (
-  
     <nav className="sticky top-0 z-50 border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#21094a]/85 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_32px_rgba(18,3,46,0.5)] backdrop-blur-2xl transition-colors duration-500">
       <div className="mx-auto container">
         <div>
@@ -80,14 +92,12 @@ export default function Navbar() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                
                 className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8b5cf6] via-[#31106a] to-[#00e5b4] text-white"
               >
                 <BookOpen size={20} />
               </motion.div>
 
               <div>
-            
                 <h2 className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-base font-black tracking-tight text-transparent dark:from-[#b992ff] dark:via-purple-400 dark:to-[#00e5b4]">
                   Digital Life Lessons
                 </h2>
@@ -113,7 +123,6 @@ export default function Navbar() {
                             : "text-slate-600 dark:text-purple-200/70 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
-                      
                         {isActive && (
                           <motion.div
                             layoutId="active-nav"
@@ -147,27 +156,25 @@ export default function Navbar() {
 
               {user ? (
                 <Dropdown placement="bottom-end">
-                  <Dropdown.Trigger>
-                    <button className="focus:outline-none transition-transform active:scale-95 relative rounded-full p-0.5 border border-default-200 dark:border-white/[0.1]">
-                      <Avatar>
-                        <Avatar.Image
-                          size="sm"
-                          src={user?.image || "https://i.pravatar.cc/150?u=1"}
-                          name={user?.name}
-                          className="cursor-pointer rounded-full"
-                        />
-                        <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
-                          {user.name?.slice(0, 2).toUpperCase()}
-                        </Avatar.Fallback>
-                      </Avatar>
+                  <Dropdown.Trigger className="focus:outline-none transition-transform active:scale-95 relative rounded-full p-0.5 border border-default-200 dark:border-white/[0.1]">
+                    <Avatar>
+                      <Avatar.Image
+                        size="sm"
+                        src={user?.image || "https://i.pravatar.cc/150?u=1"}
+                        name={user?.name}
+                        className="cursor-pointer rounded-full"
+                      />
+                      <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
+                        {user.name?.slice(0, 2).toUpperCase()}
+                      </Avatar.Fallback>
+                    </Avatar>
 
-                      {/* Floating Micro Premium Dot Badge */}
-                      {isPremiumUser && (
-                        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-[#21094a]">
-                          <Crown size={8} className="text-white font-black" />
-                        </span>
-                      )}
-                    </button>
+                    {/* Floating Micro Premium Dot Badge */}
+                    {isPremiumUser && (
+                      <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-500 ring-2 ring-white dark:ring-[#21094a]">
+                        <Crown size={8} className="text-white font-black" />
+                      </span>
+                    )}
                   </Dropdown.Trigger>
                   <Dropdown.Popover>
                     <Dropdown.Menu
@@ -182,10 +189,15 @@ export default function Navbar() {
                         <div className="flex gap-2">
                           <Avatar className="mx-auto">
                             <Avatar.Image
-                              alt="John Doe"
-                              src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                              alt={user?.name}
+                              src={
+                                user?.image ||
+                                "https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                              }
                             />
-                            <Avatar.Fallback>JD</Avatar.Fallback>
+                            <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
+                              {user.name?.slice(0, 2).toUpperCase()}
+                            </Avatar.Fallback>
                           </Avatar>
                           <div>
                             <div className="flex w-full">
@@ -204,8 +216,8 @@ export default function Navbar() {
                               )}
                             </div>
                             <Description className="text-[11px] text-default-400 dark:text-purple-300/50 font-medium block truncate mt-0.5">
-                          {user?.email}
-                        </Description>
+                              {user?.email}
+                            </Description>
                           </div>
                         </div>
                       </Dropdown.Item>
@@ -287,7 +299,6 @@ export default function Navbar() {
                   </Link>
 
                   <Link href="/auth/register">
-                  
                     <Button
                       size="sm"
                       startContent={<Sparkles size={13} />}

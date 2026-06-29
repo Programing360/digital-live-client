@@ -16,15 +16,6 @@ import { userDelete, userRoleUpdate } from "@/lib/api/user";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-// Premium Sample Dataset
-// const initialUsers = [
-//   { id: "u-1", name: "Ried Hessan", email: "ried@example.com", role: "admin", image: "https://i.pravatar.cc/150?u=ried", lessons: 14 },
-//   { id: "u-2", name: "Nusrat Jahan", email: "nusrat@example.com", role: "user", image: "https://i.pravatar.cc/150?u=nusrat", lessons: 8 },
-//   { id: "u-3", name: "Alex Rivera", email: "alex.r@example.com", role: "user", image: "https://i.pravatar.cc/150?u=alex", lessons: 3 },
-//   { id: "u-4", name: "Sarah Connor", email: "sarah@example.com", role: "admin", image: "https://i.pravatar.cc/150?u=sarah", lessons: 22 },
-//   { id: "u-5", name: "Marcus Wright", email: "marcus.w@example.com", role: "user", image: "https://i.pravatar.cc/150?u=marcus", lessons: 0 }
-// ];
-
 export default function ManageUsersPage({ allLessons, allUser }) {
   const [users, setUsers] = useState(allUser);
   const [search, setSearch] = useState("");
@@ -32,7 +23,6 @@ export default function ManageUsersPage({ allLessons, allUser }) {
     column: "name",
     direction: "ascending",
   });
-
   const router = useRouter();
 
   // 1. ACTION: Promote a standard user to an Administrator
@@ -43,7 +33,12 @@ export default function ManageUsersPage({ allLessons, allUser }) {
       userId: userInfo._id,
     };
 
+    if (userInfo.email === "fhlimon@gmail.com") {
+      return toast.warn("Admin role don't change");
+    }
+
     const userRole = await userRoleUpdate(userRoles);
+
     if (userRole.modifiedCount > 0) {
       toast.success("User Role Changed");
       router.refresh();
@@ -51,15 +46,13 @@ export default function ManageUsersPage({ allLessons, allUser }) {
   };
 
   // 2. ACTION: Remove user profile context
-  const handleDelete = async(userId) => {
-    const res = await userDelete(userId)
+  const handleDelete = async (userId) => {
+    const res = await userDelete(userId);
 
-    if(res.deletedCount > 0){
-        toast.success('User Delete Successful')
-        router.refresh()
+    if (res.deletedCount > 0) {
+      toast.success("User Delete Successful");
+      router.refresh();
     }
-
-
   };
 
   // 3. LOGIC: Search filter implementation
@@ -120,7 +113,7 @@ export default function ManageUsersPage({ allLessons, allUser }) {
             value={search}
             onChange={handleSearchField}
             startContent={<Search size={16} className="text-default-400" />}
-            className="w-full sm:max-w-xs bg-default-100/70 hover:bg-default-200/50 dark:bg-zinc-800/50 border-none rounded-xl h-10 text-xs "
+            className="w-full dark:text-white sm:max-w-xs bg-default-100/70 hover:bg-default-200/50 dark:bg-zinc-800/50 border-none rounded-xl h-10 text-xs "
           />
         </div>
 
@@ -174,11 +167,16 @@ export default function ManageUsersPage({ allLessons, allUser }) {
                       {/* USER CELL IDENTITY BLOCK */}
                       <Table.Cell>
                         <div className="flex items-center gap-3 py-1">
-                          <Avatar
-                            src={user.image}
-                            size="sm"
-                            className="ring-2 ring-default-100"
-                          />
+                          <Avatar>
+                            <Avatar.Image
+                              src={user?.image}
+                              size="sm"
+                              className="ring-2 ring-default-100"
+                            />
+                            <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
+                              {user.name?.slice(0, 2).toUpperCase()}
+                            </Avatar.Fallback>
+                          </Avatar>
                           <span className="font-bold text-slate-800 dark:text-zinc-200 text-sm tracking-tight">
                             {user.name}
                           </span>
@@ -187,7 +185,7 @@ export default function ManageUsersPage({ allLessons, allUser }) {
 
                       {/* EMAIL CELL BLOCK */}
                       <Table.Cell>
-                        <span className="text-xs text-default-500 font-medium font-sans">
+                        <span className="text-xs text-default-500 font-medium font-sans dark:text-white">
                           {user.email}
                         </span>
                       </Table.Cell>

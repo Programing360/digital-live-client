@@ -20,18 +20,19 @@ const SectionStarIcon = () => (
 export default function FeaturedLifeLessons({ allFeatured, user }) {
   const router = useRouter();
 
-  
   const [lessons, setLessons] = useState(allFeatured);
-
 
   useEffect(() => {
     setLessons(allFeatured);
   }, [allFeatured]);
 
-
   const fadeInUpVariant = {
     hidden: { opacity: 0, y: 25 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
   };
 
   const gridContainerVariant = {
@@ -41,7 +42,11 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
 
   const cardVariant = {
     hidden: { opacity: 0, y: 35 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 15 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 80, damping: 15 },
+    },
   };
 
   const handleFavorites = async (lessonId) => {
@@ -59,12 +64,16 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
           const hasFav = l.favorites?.includes(userId);
           return {
             ...l,
-            favorites: hasFav ? l.favorites.filter((id) => id !== userId) : [...(l.favorites || []), userId],
-            favoritesCount: hasFav ? Math.max(0, (l.favoritesCount || 1) - 1) : (l.favoritesCount || 0) + 1,
+            favorites: hasFav
+              ? l.favorites.filter((id) => id !== userId)
+              : [...(l.favorites || []), userId],
+            favoritesCount: hasFav
+              ? Math.max(0, (l.favoritesCount || 1) - 1)
+              : (l.favoritesCount || 0) + 1,
           };
         }
         return l;
-      })
+      }),
     );
 
     try {
@@ -75,7 +84,6 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
         router.refresh();
       }
     } catch (error) {
-
       setLessons(previousLessons);
       toast.error("Something went wrong with favorites!");
     }
@@ -89,31 +97,33 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
     const userId = user.id;
     const previousLessons = [...lessons];
 
-  
     setLessons((prev) =>
       prev.map((l) => {
         if (l._id === lessonId) {
           const hasLiked = l.likes?.includes(userId);
           return {
             ...l,
-            likes: hasLiked ? l.likes.filter((id) => id !== userId) : [...(l.likes || []), userId],
-            likesCount: hasLiked ? Math.max(0, (l.likesCount || 1) - 1) : (l.likesCount || 0) + 1,
+            likes: hasLiked
+              ? l.likes.filter((id) => id !== userId)
+              : [...(l.likes || []), userId],
+            likesCount: hasLiked
+              ? Math.max(0, (l.likesCount || 1) - 1)
+              : (l.likesCount || 0) + 1,
           };
         }
         return l;
-      })
+      }),
     );
 
     try {
       const newLikes = { lessonId, userId };
       const likeCount = await lessonLikes(newLikes);
-      
+
       if (likeCount.message) {
         toast.success(`${likeCount.message}`);
       }
       router.refresh();
     } catch (error) {
-
       setLessons(previousLessons);
       toast.error("Failed to update like. Please try again.");
     }
@@ -159,7 +169,6 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
         viewport={{ once: true, margin: "-8px" }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-    
         {lessons.map((lesson) => (
           <motion.div
             key={lesson._id}
@@ -183,74 +192,84 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
             </div>
 
             {/* Content Area */}
-            <div className="flex flex-col flex-1 p-5">
-              <h3 className="text-base font-bold text-slate-900 dark:text-purple-50 leading-snug min-h-[44px] group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors duration-200">
-                {lesson.title}
-              </h3>
-              <p className="text-xs font-medium text-slate-500 dark:text-purple-200/40 leading-relaxed mt-1.5 flex-1 line-clamp-2">
-                {lesson.description}
-              </p>
 
-              {/* Card Footer */}
-              <div className="flex items-center justify-between mt-6 pt-3 border-t border-slate-100/60 dark:border-white/[0.04]">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={lesson.author?.image || "https://i.pravatar.cc/150"}
-                    alt={lesson.author?.name}
-                    width={400}
-                    height={400}
-                    className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-100 dark:ring-white/[0.08]"
-                  />
+            <Link href={`publicLessons/${lesson._id}`}>
+              <div className="flex flex-col flex-1 p-5">
+                <h3 className="text-base font-bold text-slate-900 dark:text-purple-50 leading-snug min-h-[44px] group-hover:text-indigo-600 dark:group-hover:text-[#00e5b4] transition-colors duration-200">
+                  {lesson.title}
+                </h3>
+                <p className="text-xs font-medium text-slate-500 dark:text-purple-200/40 leading-relaxed mt-1.5 flex-1 line-clamp-2">
+                  {lesson.description}
+                </p>
+
+                {/* Card Footer */}
+                <div className="flex items-center justify-between mt-6 pt-3 border-t border-slate-100/60 dark:border-white/[0.04]">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={lesson.author?.image || "https://i.pravatar.cc/150"}
+                      alt={lesson.author?.name}
+                      width={400}
+                      height={400}
+                      className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-100 dark:ring-white/[0.08]"
+                    />
+                  </div>
+
                   <span className="text-xs font-bold text-slate-700 dark:text-purple-200/70">
                     {lesson.author?.name}
                   </span>
-                </div>
 
-                <div className="flex items-center gap-4 font-bold text-[11px]">
-                  <div className="flex items-center gap-3">
-                    
-                    {/* Like Button */}
-                    <button 
-                      onClick={() => handleLikeBtn(lesson._id)}
-                      className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
-                    >
-                      <Heart
-                        size={15}
-                        fill={lesson.likes?.includes(user?.id) ? "currentColor" : "none"}
-                        className={`transition-colors duration-200 ${
-                          lesson.likes?.includes(user?.id)
-                            ? "text-red-500 dark:text-red-400"
-                            : "text-slate-400 dark:text-purple-300/40 hover:text-red-500"
-                        }`}
-                      />
-                      <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
-                        {lesson.likesCount}
-                      </span>
-                    </button>
+                  <div className="flex items-center gap-4 font-bold text-[11px]">
+                    <div className="flex items-center gap-3">
+                      {/* Like Button */}
+                      <button
+                        onClick={() => handleLikeBtn(lesson._id)}
+                        className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                      >
+                        <Heart
+                          size={15}
+                          fill={
+                            lesson.likes?.includes(user?.id)
+                              ? "currentColor"
+                              : "none"
+                          }
+                          className={`transition-colors duration-200 ${
+                            lesson.likes?.includes(user?.id)
+                              ? "text-red-500 dark:text-red-400"
+                              : "text-slate-400 dark:text-purple-300/40 hover:text-red-500"
+                          }`}
+                        />
+                        <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
+                          {lesson.likesCount}
+                        </span>
+                      </button>
 
-                    {/* Bookmark Button */}
-                    <button 
-                      onClick={() => handleFavorites(lesson._id)}
-                      className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
-                    >
-                      <Bookmark
-                        size={15}
-                        fill={lesson.favorites?.includes(user?.id) ? "currentColor" : "none"}
-                        className={`transition-colors duration-200 ${
-                          lesson.favorites?.includes(user?.id)
-                            ? "text-violet-600 dark:text-[#00e5b4]"
-                            : "text-slate-400 dark:text-purple-300/40 hover:text-violet-500 dark:hover:text-[#00e5b4]"
-                        }`}
-                      />
-                      <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
-                        {lesson.favoritesCount}
-                      </span>
-                    </button>
-
+                      {/* Bookmark Button */}
+                      <button
+                        onClick={() => handleFavorites(lesson._id)}
+                        className="flex items-center gap-1 text-default-400 dark:text-purple-300/40 hover:scale-105 active:scale-95 transition-all"
+                      >
+                        <Bookmark
+                          size={15}
+                          fill={
+                            lesson.favorites?.includes(user?.id)
+                              ? "currentColor"
+                              : "none"
+                          }
+                          className={`transition-colors duration-200 ${
+                            lesson.favorites?.includes(user?.id)
+                              ? "text-violet-600 dark:text-[#00e5b4]"
+                              : "text-slate-400 dark:text-purple-300/40 hover:text-violet-500 dark:hover:text-[#00e5b4]"
+                          }`}
+                        />
+                        <span className="font-bold text-[11px] text-slate-600 dark:text-purple-300/50">
+                          {lesson.favoritesCount}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </motion.div>
         ))}
       </motion.div>

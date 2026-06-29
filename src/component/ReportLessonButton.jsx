@@ -54,7 +54,9 @@ export default function ReportLessonButton({
         ],
       };
       const res = await userReport(reportPayload);
-
+      if(res.message){
+        toast.warn(`${res.message}`)
+      }
       if (res.insertedId) {
         toast.success("Report Successful");
       }

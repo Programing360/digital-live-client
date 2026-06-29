@@ -4,6 +4,10 @@ import { allLessons } from "@/lib/api/lessons";
 import { getUseSession } from "@/lib/core/session";
 import { favoriteDataById } from "@/lib/api/favorite";
 
+export const metadata = {
+  title: 'Public-Lessons | Digital Life Lessons'
+}
+
 const page = async () => {
   const user = await getUseSession();
   const lessonsData = await allLessons();

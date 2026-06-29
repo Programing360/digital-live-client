@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Sidebar from '@/component/Dashboard/Sidebar';
 
-// নতুন তৈরি করা সাইডবার কম্পোনেন্টটি ইমপোর্ট করুন
+
 
 
 export default function DashboardLayout({ children }) {
@@ -40,7 +40,6 @@ export default function DashboardLayout({ children }) {
         </Button>
       </div>
 
-      {/* কাস্টম সাইডবার কম্পোনেন্ট ইনজেকশন */}
       <Sidebar
         isMobileMenuOpen={isMobileMenuOpen} 
         setIsMobileMenuOpen={setIsMobileMenuOpen} 

@@ -20,38 +20,6 @@ import GrowthChart from "./GrowthChart";
 // Global Spring Physics Config for Premium Snappy UX
 const premiumSpring = { type: "spring", stiffness: 180, damping: 24 };
 
-// Mock Data for Charts & Active lists
-const mockContributors = [
-  {
-    name: "Ried Hessan",
-    lessons: 24,
-    rank: 1,
-    avatar: "https://i.pravatar.cc/150?u=1",
-    status: "Premium",
-  },
-  {
-    name: "Nusrat Jahan",
-    lessons: 18,
-    rank: 2,
-    avatar: "https://i.pravatar.cc/150?u=2",
-    status: "Premium",
-  },
-  {
-    name: "Meher Afroz",
-    lessons: 16,
-    rank: 3,
-    avatar: "https://i.pravatar.cc/150?u=3",
-    status: "Free",
-  },
-  {
-    name: "Tanvir Rahman",
-    lessons: 12,
-    rank: 4,
-    avatar: "https://i.pravatar.cc/150?u=4",
-    status: "Premium",
-  },
-];
-
 const mockTodayLessons = [
   {
     title: "The Power of Positive Thinking",
@@ -75,14 +43,35 @@ const mockTodayLessons = [
 
 // Modular Reusable Sparkline component with Performance Optimization
 const Sparkline = React.memo(({ points, isDanger }) => (
-  <svg className="w-full h-14 opacity-40 dark:opacity-30 absolute bottom-0 inset-x-0" viewBox="0 0 100 30" preserveAspectRatio="none">
+  <svg
+    className="w-full h-14 opacity-40 dark:opacity-30 absolute bottom-0 inset-x-0"
+    viewBox="0 0 100 30"
+    preserveAspectRatio="none"
+  >
     <defs>
-      <linearGradient id={isDanger ? "grad-rose" : "grad-indigo"} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={isDanger ? "#f43f5e" : "#6366f1"} stopOpacity="0.3"/>
-        <stop offset="100%" stopColor={isDanger ? "#f43f5e" : "#6366f1"} stopOpacity="0"/>
+      <linearGradient
+        id={isDanger ? "grad-rose" : "grad-indigo"}
+        x1="0"
+        y1="0"
+        x2="0"
+        y2="1"
+      >
+        <stop
+          offset="0%"
+          stopColor={isDanger ? "#f43f5e" : "#6366f1"}
+          stopOpacity="0.3"
+        />
+        <stop
+          offset="100%"
+          stopColor={isDanger ? "#f43f5e" : "#6366f1"}
+          stopOpacity="0"
+        />
       </linearGradient>
     </defs>
-    <path d={`M 0 30 L ${points} L 100 30 Z`} fill={isDanger ? "url(#grad-rose)" : "url(#grad-indigo)"} />
+    <path
+      d={`M 0 30 L ${points} L 100 30 Z`}
+      fill={isDanger ? "url(#grad-rose)" : "url(#grad-indigo)"}
+    />
     <motion.polyline
       fill="none"
       stroke={isDanger ? "#f43f5e" : "#6366f1"}
@@ -134,51 +123,56 @@ export default function AdminDashboardHome({
   newLessons = 0,
   allReport = [],
   allGrowth = [],
+  topContributors,
 }) {
-  
-  const publicLessonCount = useMemo(() => 
-    allLesson.filter(lesson => lesson?.visibility?.toLowerCase() === "public"),
-    [allLesson]
+  const publicLessonCount = useMemo(
+    () =>
+      allLesson.filter(
+        (lesson) => lesson?.visibility?.toLowerCase() === "public",
+      ),
+    [allLesson],
   );
 
-  const statCards = useMemo(() => [
-    {
-      title: "Total Users",
-      value: `${userCount?.length ?? 0}`,
-      change: "+12.5%",
-      icon: <Users size={20} className="text-blue-500" />,
-      color: "bg-blue-500/10 border-blue-500/20",
-      points: "0,25 20,20 40,15 60,22 80,10 100,5",
-    },
-    {
-      title: "Public Lessons",
-      value: `${publicLessonCount?.length ?? 0}`,
-      change: "+8.2%",
-      icon: <BookOpen size={20} className="text-violet-500" />,
-      color: "bg-violet-500/10 border-violet-500/20",
-      points: "0,28 20,22 40,25 60,15 80,8 100,2",
-    },
-    {
-      title: "Flagged Lessons",
-      value: `${allReport?.length ?? 0}`,
-      change: "-4.1%",
-      icon: <AlertTriangle size={20} className="text-rose-500" />,
-      color: "bg-rose-500/10 border-rose-500/20",
-      points: "0,5 20,12 40,8 60,18 80,22 100,25",
-    },
-    {
-      title: "Today's Lessons",
-      value: `${newLessons}`,
-      change: "New Today",
-      icon: <Sparkles size={20} className="text-amber-500" />,
-      color: "bg-amber-500/10 border-amber-500/20",
-      points: "0,20 20,18 40,22 60,12 80,5 100,1",
-    },
-  ], [userCount, publicLessonCount, allReport, newLessons]);
+  const statCards = useMemo(
+    () => [
+      {
+        title: "Total Users",
+        value: `${userCount?.length ?? 0}`,
+        change: "+12.5%",
+        icon: <Users size={20} className="text-blue-500" />,
+        color: "bg-blue-500/10 border-blue-500/20",
+        points: "0,25 20,20 40,15 60,22 80,10 100,5",
+      },
+      {
+        title: "Public Lessons",
+        value: `${publicLessonCount?.length ?? 0}`,
+        change: "+8.2%",
+        icon: <BookOpen size={20} className="text-violet-500" />,
+        color: "bg-violet-500/10 border-violet-500/20",
+        points: "0,28 20,22 40,25 60,15 80,8 100,2",
+      },
+      {
+        title: "Flagged Lessons",
+        value: `${allReport?.length ?? 0}`,
+        change: "-4.1%",
+        icon: <AlertTriangle size={20} className="text-rose-500" />,
+        color: "bg-rose-500/10 border-rose-500/20",
+        points: "0,5 20,12 40,8 60,18 80,22 100,25",
+      },
+      {
+        title: "Today's Lessons",
+        value: `${newLessons}`,
+        change: "New Today",
+        icon: <Sparkles size={20} className="text-amber-500" />,
+        color: "bg-amber-500/10 border-amber-500/20",
+        points: "0,20 20,18 40,22 60,12 80,5 100,1",
+      },
+    ],
+    [userCount, publicLessonCount, allReport, newLessons],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-[#070214] p-4 md:p-8 lg:p-12 space-y-8 max-w-[1700px] mx-auto relative transition-colors duration-500">
-      
       <div className="absolute top-[-20%] right-[10%] w-[500px] h-[500px] bg-indigo-500/5 dark:bg-indigo-500/[0.03] rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 dark:bg-purple-500/[0.02] rounded-full blur-[160px] pointer-events-none" />
 
@@ -194,13 +188,21 @@ export default function AdminDashboardHome({
             <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               Admin Overview
             </h1>
-            <Chip size="sm" color="indigo" variant="dot" className="text-xs font-bold border-none text-indigo-500 animate-pulse">Live Insights</Chip>
+            <Chip
+              size="sm"
+              color="indigo"
+              variant="dot"
+              className="text-xs font-bold border-none text-indigo-500 animate-pulse"
+            >
+              Live Insights
+            </Chip>
           </div>
           <p className="text-sm font-medium text-slate-400 dark:text-purple-300/30 mt-1">
-            Core platform telemetry, analytics streams, and ledger security monitoring.
+            Core platform telemetry, analytics streams, and ledger security
+            monitoring.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <Button
             size="md"
@@ -241,18 +243,29 @@ export default function AdminDashboardHome({
                     {stat.value}
                   </h3>
                 </div>
-                <div className={`p-2.5 rounded-2xl border ${stat.color} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                <div
+                  className={`p-2.5 rounded-2xl border ${stat.color} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
+                >
                   {stat.icon}
                 </div>
               </div>
 
-              <Sparkline points={stat.points} isDanger={stat.title === "Flagged Lessons"} />
+              <Sparkline
+                points={stat.points}
+                isDanger={stat.title === "Flagged Lessons"}
+              />
 
               <div className="flex items-center gap-2 z-10">
                 <Chip
                   size="sm"
                   variant="flat"
-                  color={stat.change.startsWith("+") ? "success" : stat.change.startsWith("-") ? "danger" : "warning"}
+                  color={
+                    stat.change.startsWith("+")
+                      ? "success"
+                      : stat.change.startsWith("-")
+                        ? "danger"
+                        : "warning"
+                  }
                   className="font-black text-[10px] rounded-lg h-5 px-1.5"
                 >
                   {stat.change}
@@ -292,21 +305,34 @@ export default function AdminDashboardHome({
                   Growth Operations
                 </h3>
                 <p className="text-xs text-slate-400 dark:text-purple-300/20 font-medium mt-0.5">
-                  Visual mapping of user acquisition velocity against content submission pipelines.
+                  Visual mapping of user acquisition velocity against content
+                  submission pipelines.
                 </p>
               </div>
               <div className="flex gap-1.5 bg-slate-100 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-200/40 dark:border-white/[0.04]">
-                <Button size="sm" variant="light" className="bg-white dark:bg-white/[0.05] shadow-sm text-xs font-bold px-4 text-slate-800 dark:text-white rounded-lg h-7">
+                <Button
+                  size="sm"
+                  variant="light"
+                  className="bg-white dark:bg-white/[0.05] shadow-sm text-xs font-bold px-4 text-slate-800 dark:text-white rounded-lg h-7"
+                >
                   Growth
                 </Button>
-                <Button size="sm" variant="light" className="text-xs text-slate-400 dark:text-purple-300/30 font-bold px-4 rounded-lg h-7">
+                <Button
+                  size="sm"
+                  variant="light"
+                  className="text-xs text-slate-400 dark:text-purple-300/30 font-bold px-4 rounded-lg h-7"
+                >
                   History
                 </Button>
               </div>
             </div>
 
             <div className="relative border-b border-l border-slate-200/60 dark:border-white/[0.05] h-64 w-full mt-4 flex items-end">
-              <svg className="absolute inset-0 w-full h-full p-2 overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <svg
+                className="absolute inset-0 w-full h-full p-2 overflow-visible"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
                 <motion.path
                   d="M 0 90 Q 25 70 50 40 T 100 10"
                   fill="none"
@@ -337,11 +363,15 @@ export default function AdminDashboardHome({
             <div className="flex gap-6 pt-2 justify-center">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">User Growth</span>
+                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">
+                  User Growth
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-500" />
-                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Lesson Submissions</span>
+                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">
+                  Lesson Submissions
+                </span>
               </div>
             </div>
           </GlowCard>
@@ -364,24 +394,45 @@ export default function AdminDashboardHome({
                     Highest publishing frequency metrics this week.
                   </p>
                 </div>
-                <Button size="sm" variant="light" color="secondary" className="font-bold text-xs text-indigo-500 hover:bg-indigo-500/5 rounded-lg">
+                <Button
+                  size="sm"
+                  variant="light"
+                  color="secondary"
+                  className="font-bold text-xs text-indigo-500 hover:bg-indigo-500/5 rounded-lg"
+                >
                   View All
                 </Button>
               </div>
 
-              <div className="space-y-3.5">
-                {mockContributors.map((user) => (
+              <div
+                className="space-y-3.5 max-h-[350px] overflow-y-auto scrollbar-none"
+                data-scrollbar="none"
+              >
+                {topContributors.map((user) => (
                   <div
                     key={user.rank}
-                    className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 dark:border-white/[0.02] bg-slate-50/50 dark:bg-white/[0.01] hover:bg-slate-100/70 dark:hover:bg-white/[0.03] transition-all duration-300"
+                    className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 dark:border-white/[0.02] bg-slate-50/50 dark:bg-white/[0.01] hover:bg-slate-100/70 dark:hover:bg-white/[0.03] transition-all duration-300 "
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-black text-xs text-slate-400 w-4 text-center">{user.rank}</span>
-                      <Avatar src={user.avatar} size="sm" className="w-8 h-8 border border-slate-200 dark:border-white/10" />
+                      <span className="font-black text-xs text-slate-400 w-4 text-center">
+                        {user.rank}
+                      </span>
+                      <Avatar>
+                        <Avatar.Image
+                          src={user.authorImage}
+                          size="sm"
+                          className="object-cover border border-slate-200 dark:border-white/10"
+                        />
+                        <Avatar.Fallback className="bg-indigo-50 dark:bg-[#31106a] font-bold text-xs text-indigo-600 dark:text-purple-200">
+                          {user.authorName?.slice(0, 2).toUpperCase()}
+                        </Avatar.Fallback>
+                      </Avatar>
                       <div>
-                        <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">{user.name}</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">
+                          {user.authorName}
+                        </p>
                         <p className="text-[10px] text-slate-400 dark:text-purple-300/20 font-medium">
-                          {user.lessons} Lessons Published
+                          {user.totalLessons} Lessons Published
                         </p>
                       </div>
                     </div>
@@ -408,7 +459,12 @@ export default function AdminDashboardHome({
                   Data Layer Health
                 </span>
               </div>
-              <Chip size="sm" variant="flat" color="success" className="text-[10px] font-black h-5 rounded-md px-1.5 uppercase">
+              <Chip
+                size="sm"
+                variant="flat"
+                color="success"
+                className="text-[10px] font-black h-5 rounded-md px-1.5 uppercase"
+              >
                 Operational
               </Chip>
             </div>
@@ -434,7 +490,13 @@ export default function AdminDashboardHome({
               </p>
             </div>
             <Chip
-              startContent={<Clock size={12} className="animate-spin text-emerald-500" style={{ animationDuration: '4s' }} />}
+              startContent={
+                <Clock
+                  size={12}
+                  className="animate-spin text-emerald-500"
+                  style={{ animationDuration: "4s" }}
+                />
+              }
               variant="flat"
               color="success"
               className="font-extrabold text-xs rounded-lg h-7 px-3 border border-emerald-500/10"
@@ -474,11 +536,17 @@ export default function AdminDashboardHome({
                         </div>
                       </td>
                       <td className="p-4">
-                        <Chip size="sm" variant="bordered" className="text-[10px] font-extrabold border-slate-200 dark:border-white/10 uppercase tracking-wide h-5 rounded-md px-1.5">
+                        <Chip
+                          size="sm"
+                          variant="bordered"
+                          className="text-[10px] font-extrabold border-slate-200 dark:border-white/10 uppercase tracking-wide h-5 rounded-md px-1.5"
+                        >
                           {lesson.category}
                         </Chip>
                       </td>
-                      <td className="p-4 text-slate-400 dark:text-purple-300/20 font-bold">{lesson.tone}</td>
+                      <td className="p-4 text-slate-400 dark:text-purple-300/20 font-bold">
+                        {lesson.tone}
+                      </td>
                       <td className="p-4 text-right">
                         <div className="flex gap-2 justify-end">
                           <Button

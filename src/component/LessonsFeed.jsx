@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Input,
   Button,
@@ -60,10 +60,9 @@ const itemVariants = {
 export default function LessonsFeed({ userPlan = "Free", favorites }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const urlPage = parseInt(searchParams.get("page")) || 1;
+  const isFirstRender = useRef(true);
 
-  // স্টেটস
   const [tempSearch, setTempSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -79,9 +78,12 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
   const fetchLessons = async (page, search, categories) => {
     try {
       setLoading(true);
+      const toneId = [...selectedToneKeys][0];
+      console.log(toneId);
+
       const categoryQuery =
         categories.length > 0 ? `&category=${categories.join(",")}` : "";
-     
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/lessonsPage?page=${page}&limit=${itemsPerPage}&search=${search}${categoryQuery}`,
       );
@@ -96,12 +98,16 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
   };
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     setCurrentPage(1);
-    router.push(`?page=1`, { scroll: false }); // URL পেজ রিসেট
+    router.push(`?page=1`, { scroll: false });
     fetchLessons(1, searchQuery, selectedCategories);
+    setSearchQuery(tempSearch);
   }, [searchQuery, selectedCategories]);
 
-  // পেজ নাম্বার কুয়েরি চেঞ্জ হ্যান্ডল করা
   useEffect(() => {
     fetchLessons(urlPage, searchQuery, selectedCategories);
     setCurrentPage(urlPage);
@@ -128,12 +134,27 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
         : [...prev, category],
     );
   };
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+
     router.push(`?page=${pageNumber}`, { scroll: false });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  //   useEffect(() => {
+  //   const toneId = [...selectedToneKeys][0];
+
+  //   const fetchLessons = async () => {
+  //     const res = await fetch(
+  //       `http://localhost:5000/api/lessons?tone=${toneId}`
+  //     );
+
+  //     const data = await res.json();
+  //     console.log(data);
+  //   };
+
+  //   fetchLessons();
+  // }, [selectedToneKeys]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-default-50/30 dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#12032e] min-h-screen transition-colors duration-500">
@@ -290,6 +311,7 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
             {/* Emotional Tone Filter — Updated to HeroUI v3.1.0 Custom Subcomponents */}
             <div>
               <Select
+                aria-label="Emotional Tone"
                 selectedKeys={selectedToneKeys}
                 onSelectionChange={setSelectedToneKeys}
               >
@@ -318,12 +340,13 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
 
                     {/* ListBox.Section Implementation */}
                     <ListBox.Section className="pt-1">
-                      {tonesList.map((tone) => (
+                      {lessons.map((tone) => (
                         <ListBox.Item
-                          key={tone}
+                          key={tone._id}
+                          textValue={tone.emotionalTone}
                           className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer text-slate-700 dark:text-purple-200"
                         >
-                          <Label className="dark:text-white">{tone}</Label>
+                          <Label className="dark:text-white">{tone.emotionalTone}</Label>
                         </ListBox.Item>
                       ))}
                     </ListBox.Section>

@@ -69,8 +69,6 @@ export default function MyLessons({
       return;
     }
 
-    // console.log(id);
-
     const lesson = lessons.find((l) => l._id === id);
 
     const newAccess = lesson.access === "Premium" ? "Free" : "Premium";
@@ -91,7 +89,7 @@ export default function MyLessons({
   const handleDelete = async (id) => {
     const res = await deleteLesson(id);
 
-    if (res.deletedCount) {
+    if (res.deletedCount > 0) {
       toast.success("Lesson Delete Success");
       router.refresh();
     }

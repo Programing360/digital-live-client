@@ -2,7 +2,9 @@ import React from "react";
 import ProfileView from "./ProfileView";
 import { getUseSession } from "@/lib/core/session";
 import { allLessons, getLessonById } from "@/lib/api/lessons";
-
+export const metadata = {
+  title: 'My-Profile | Digital Life Lessons'
+}
 const ProfilePage = async () => {
   const user = await getUseSession();
   const userPublishLesson = await getLessonById(user.id);

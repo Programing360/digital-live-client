@@ -10,7 +10,7 @@ import { createFavoritesLesson } from "@/lib/action/favorites";
 import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
 import { lessonLikes } from "@/lib/api/lessons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // UI/UX থিম অনুযায়ী কালার ডাইনামিক্স ম্যাপিং (ইমেজের ভাইব্রেন্ট স্টাইল অনুসরণ করে)
 const toneColorMap = {
@@ -42,12 +42,11 @@ export default function LessonCard({ lesson }) {
   const { data: session } = authClient.useSession();
   const user = session?.user;
   const router = useRouter();
-
   const isLike = likes?.includes(user?.id);
   const isFavorites = favorites?.includes(user?.id);
 
   const handleFavorites = async (e) => {
-    e.preventDefault(); // প্যারেন্ট কার্ড নেভিগেশন প্রটেক্ট করতে
+    e.preventDefault();
     if (!user) return toast.warn("Please login to save favorites!");
 
     const newFavorites = {

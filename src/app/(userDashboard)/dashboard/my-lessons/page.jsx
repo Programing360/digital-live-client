@@ -2,7 +2,9 @@ import React from "react";
 import MyLessonsDashboard from "./MyLesspnDashboard";
 import { getUseSession } from "@/lib/core/session";
 import { getLessonById } from "@/lib/api/lessons";
-
+export const metadata = {
+  title: 'My-Lessons | Digital Life Lessons'
+}
 const MyLessonPage = async () => {
   const user = await getUseSession();
 

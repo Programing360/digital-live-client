@@ -16,7 +16,6 @@ import {
   ArrowRight,
   Sparkles,
   ShieldCheck,
-  Share2,
 } from "lucide-react";
 import { Button, Avatar, Card, TextArea } from "@heroui/react";
 import { toast } from "react-toastify";
@@ -55,7 +54,6 @@ export default function LessonDetails({
   const readingTime = Math.ceil((description?.split(" ").length || 0) / 200);
   const router = useRouter();
 
-  // লোকাল স্টেটস (অপ্টিমিস্টিক আপডেটের জন্য)
   const [commentValue, setCommentValue] = useState("");
   const [localLikes, setLocalLikes] = useState(likes);
   const [localLikesCount, setLocalLikesCount] = useState(likesCount);

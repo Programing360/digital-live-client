@@ -53,6 +53,7 @@ export const serverMutation = async (apiUrl, data) => {
 };
 
 export const serverUpdate = async (apiUrl, UpdateData) => {
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${apiUrl}`, {
     method: "PATCH",
     headers: {
@@ -61,6 +62,7 @@ export const serverUpdate = async (apiUrl, UpdateData) => {
     },
     body: JSON.stringify(UpdateData),
   });
+  
   return handleProtectedStatus(res);
 };
 

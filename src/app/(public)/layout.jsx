@@ -3,6 +3,8 @@ import Navbar from "@/component/Navbar";
 import React from "react";
 
 const layoutPage = ({ children }) => {
+
+  
   return (
     <div>
       <header className="sticky top-0 z-50">

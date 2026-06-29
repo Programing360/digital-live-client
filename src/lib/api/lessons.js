@@ -39,7 +39,9 @@ export const newLesson = async () => {
 };
 
 export const inappropriateLessonDelete = async (id) => {
+
   const res = await serverDelete(`api/inappropriateLessonDelete/${id}`);
+
   return res;
 };
 export const inappropriateLessonVerified = async (id, updateDoc) => {

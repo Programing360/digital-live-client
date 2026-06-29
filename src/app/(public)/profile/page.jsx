@@ -1,8 +1,10 @@
 import React from "react";
 import AuthorLessonProfile from "./AuthorLessonProfile";
 import { getUseSession } from "@/lib/core/session";
-import { allLessons, getLessonById } from "@/lib/api/lessons";
-
+import { getLessonById } from "@/lib/api/lessons";
+export const metadata = {
+  title: 'User-Profile | Digital Life Lessons'
+}
 const page = async () => {
   const user = await getUseSession();
 

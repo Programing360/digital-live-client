@@ -179,7 +179,7 @@ export default function HeroSection() {
                   Start Sharing
                 </Button>
                 <Link href='/publicLessons'>
-                  <Button variant="bordered" className="border-slate-200 dark:border-purple-500/20 bg-white dark:bg-purple-950/20 text-slate-700 dark:text-purple-100 hover:bg-slate-50 dark:hover:bg-purple-900/40 font-bold px-8 shadow-sm transition-all" radius="xl">
+                  <Button variant="bordered" className="border-slate-200 dark:border-purple-500/20 bg-white dark:bg-purple-950/20 text-slate-700 dark:text-purple-100 hover:bg-slate-50 dark:hover:bg-purple-900/40 font-bold md:px-8 shadow-sm transition-all" radius="xl">
                     Explore Lessons
                   </Button>
                 </Link>

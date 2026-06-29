@@ -1,7 +1,9 @@
 import React from "react";
 import AuthorDashboardPage from "./AuthorDashboard";
 import { allLessons, getLessonsDetailsById } from "@/lib/api/lessons";
-
+export const metadata = {
+  title: 'Lessons | Digital Life Lessons'
+}
 const AuthorPage = async ({ params }) => {
   const { id } = await params;
   const allLesson = await allLessons();

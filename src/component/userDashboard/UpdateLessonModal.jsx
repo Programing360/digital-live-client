@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 export function UpdateLessonModal({ 
   isOpen, 
   onClose, 
-  lessonData, // এটি এখন একটি সিঙ্গেল অবজেক্ট (selectedLesson)
+  lessonData, 
   isPremiumUser = false, 
   onUpdateSuccess 
 }) {
@@ -25,7 +25,7 @@ export function UpdateLessonModal({
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // মডাল ওপেন হলে বা অবজেক্ট পরিবর্তন হলে ফর্ম ফিল্ড সেট করা
+ 
   useEffect(() => {
     if (isOpen && lessonData) {
       setFormData({
@@ -66,14 +66,12 @@ export function UpdateLessonModal({
         image: selectedImage
       };
       
-      // MongoDB পুশ করা হচ্ছে সার্ভার অ্যাকশনের মাধ্যমে
       const updateResult = await lessonUpdate(lessonData._id, updateData);
 
       if (updateResult?.modifiedCount || updateResult) {
         toast.success('Lesson Update Successful');
       }
       
-      // প্যারেন্ট স্টেটে সফল আপডেটের মেসেজ পাঠানো হচ্ছে
       if (onUpdateSuccess) {
         onUpdateSuccess({ ...formData, _id: lessonData._id });
       }

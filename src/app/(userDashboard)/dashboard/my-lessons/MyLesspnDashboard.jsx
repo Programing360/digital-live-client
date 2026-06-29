@@ -15,11 +15,11 @@ export default function MyLessonsDashboard({ lessonData, user }) {
     setIsUpdateModalOpen(true);
   };
 
-  // মডালে আপডেট সফল হলে এই ফাংশনটি প্যারেন্ট স্টেট আপডেট করবে
+
   const handleUpdateSuccess = (updatedData) => {
     setLessons(prevLessons => 
       prevLessons.map(lesson => 
-        // MongoDB _id অথবা id উভয় ক্ষেত্রই হ্যান্ডেল করার জন্য ট্র্যাকিং
+        
         (lesson._id === selectedLesson._id || lesson.id === selectedLesson._id) 
           ? { ...lesson, ...updatedData } 
           : lesson
@@ -42,7 +42,7 @@ export default function MyLessonsDashboard({ lessonData, user }) {
           setIsUpdateModalOpen(false);
           setSelectedLesson(null);
         }}
-        // এখানে lessons অ্যারে না পাঠিয়ে নির্বাচিত Object-টি পাঠানো হলো
+       
         lessonData={selectedLesson}
         isPremiumUser={isPremiumUser}
         onUpdateSuccess={handleUpdateSuccess}

@@ -110,7 +110,7 @@ export default function LoginPage() {
       });
       return;
     }
-
+    
     const { data, error } = await authClient.signIn.email({
       email,
       password,
@@ -127,6 +127,7 @@ export default function LoginPage() {
         showConfirmButton: false,
       });
     }
+    console.log(error);
     if (error) {
       Swal.fire({
         icon: "error",
