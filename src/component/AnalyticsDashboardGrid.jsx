@@ -106,7 +106,7 @@ export default function AnalyticsDashboardGrid({
           >
             {topContributors.map((user, i) => (
               <motion.div
-                key={user.id}
+                key={i}
                 variants={itemVariants}
                 whileHover={{ x: 6, y: -2 }}
                 className={`flex items-center justify-between p-3.5 bg-white dark:bg-[#1f0c41]/20 border border-slate-200/80 dark:border-white/[0.05] rounded-[22px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] dark:shadow-none transition-all duration-300 group cursor-pointer ${user.glow || ""}`}
@@ -205,9 +205,9 @@ export default function AnalyticsDashboardGrid({
             className="flex flex-col gap-3 max-h-[400px] overflow-y-auto scrollbar-none"
             data-scrollbar="none"
           >
-            {mostSavedFeature.map((lesson) => (
+            {mostSavedFeature.map((lesson, i) => (
               <motion.div
-                key={lesson._id}
+                key={i}
                 variants={itemVariants}
                 whileHover={{ x: 6, y: -2 }}
                 className="flex items-center justify-between p-2.5 bg-white dark:bg-[#1f0c41]/20 border border-slate-200/80 dark:border-white/[0.05] rounded-[22px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] dark:shadow-none hover:border-indigo-500/30 dark:hover:border-[#00e5b4]/20 transition-all duration-300 group cursor-pointer"

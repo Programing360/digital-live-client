@@ -110,7 +110,7 @@ export default function LoginPage() {
       });
       return;
     }
-    
+
     const { data, error } = await authClient.signIn.email({
       email,
       password,
@@ -200,16 +200,16 @@ export default function LoginPage() {
                 variant="bordered"
                 radius="xl"
                 size="lg"
-                className="font-medium text-slate-900 dark:text-white"
+                className="font-medium text-slate-900 dark:text-white "
                 value={formData.password}
                 onChange={handleInputChange}
               />
               <Button
-                className="focus:outline-none transition-transform active:scale-90 text-slate-400 hover:text-indigo-500 bg-indigo-400 dark:text-white   absolute right-0"
+                className="focus:outline-none  transition-transform active:scale-90 text-slate-400 hover:text-indigo-500 bg-white dark:bg-[#232543] dark:text-white  absolute right-0"
                 type="button"
                 onClick={() => setIsVisible(!isVisible)}
               >
-                {isVisible ? <EyeSlashFilledIcon  /> : <EyeFilledIcon />}
+                {isVisible ? <EyeSlashFilledIcon /> : <EyeFilledIcon />}
               </Button>
               <div className="flex justify-end mt-1.5 px-1">
                 <Link
@@ -224,7 +224,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               size="lg"
-              className="bg-slate-900 dark:bg-indigo-600 text-white font-bold tracking-wide mt-2 hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all active:scale-98 shadow-lg shadow-indigo-600/10 w-full rounded-2xl h-12"
+              className="bg-slate-900 dark:bg-[#2b1860] text-white font-bold tracking-wide mt-2 hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all active:scale-98 shadow-lg shadow-indigo-600/10 w-full rounded-2xl h-12"
             >
               Sign In
             </Button>

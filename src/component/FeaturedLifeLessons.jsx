@@ -130,7 +130,7 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
   };
 
   return (
-    <section className="w-full max-w-7xl mx-auto py-14 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#1a093c]/90 overflow-hidden select-none transition-colors duration-500 rounded-b-2xl">
+    <section className="w-full max-w-7xl mx-auto py-14 px-4 sm:px-6 lg:px-8 bg-linear-to-t from-[#b6a8f8] to-amber-400 dark:bg-gradient-to-b dark:from-[#12032e] dark:to-[#1a093c]/90 overflow-hidden select-none transition-colors duration-500 rounded-2xl">
       {/* Header Section */}
       <motion.div
         variants={fadeInUpVariant}
@@ -174,7 +174,7 @@ export default function FeaturedLifeLessons({ allFeatured, user }) {
             key={lesson._id}
             variants={cardVariant}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="flex flex-col bg-white dark:bg-[#1a093c]/60 border border-slate-100 dark:border-white/[0.06] backdrop-blur-md rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl dark:hover:shadow-purple-950/10 transition-all duration-300 group cursor-pointer"
+            className="flex flex-col bg-white dark:bg-[#1a093c]/60 dark:border-white/[0.06] backdrop-blur-md rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl dark:hover:shadow-purple-950/10 transition-all duration-300 group cursor-pointer"
           >
             {/* Image Wrap */}
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-50 dark:bg-[#12032e]">

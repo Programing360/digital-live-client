@@ -13,6 +13,12 @@ export const getUserToken = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+
+  if (!session) {
+    return redirect("/auth/login");
+  }
+
+  console.log(session);
   return session.session.token;
 };
 

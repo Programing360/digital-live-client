@@ -152,6 +152,11 @@ export default function RegisterPage() {
           transition={{ duration: 0.5 }}
           className="lg:col-span-6 p-8 sm:p-12 flex flex-col justify-center bg-transparent"
         >
+          <div className="md:mb-10">
+            <Link className="dark:text-white" href="/">
+              Home
+            </Link>
+          </div>
           <div className="mb-6">
             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Create an Account
@@ -171,8 +176,8 @@ export default function RegisterPage() {
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium text-slate-900 dark:text-white"
-              startContent={<User size={16} className="text-slate-400 mr-1" />}
+              className="font-medium dark:bg-[#232543] text-white"
+              
               value={formData.name}
               onChange={handleInputChange}
             />
@@ -186,7 +191,7 @@ export default function RegisterPage() {
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium text-slate-900 dark:text-white"
+              className="font-medium dark:bg-[#232543] text-white"
               startContent={<Mail size={16} className="text-slate-400 mr-1" />}
               value={formData.email}
               onChange={handleInputChange}
@@ -201,8 +206,8 @@ export default function RegisterPage() {
               variant="bordered"
               radius="xl"
               size="lg"
-              className="font-medium text-slate-900 dark:text-white"
-              startContent={<Image size={16} className="text-slate-400 mr-1" />}
+              className="font-medium dark:bg-[#232543] text-white"
+              // startContent={<Image size={16} alt="" className="text-slate-400 mr-1" />}
               value={formData.photoUrl}
               onChange={handleInputChange}
             />
@@ -217,7 +222,7 @@ export default function RegisterPage() {
                 variant="bordered"
                 radius="xl"
                 size="lg"
-                className="font-medium text-slate-900 dark:text-white w-full"
+                className="font-medium dark:bg-[#232543] text-white w-full"
                 startContent={
                   <Lock size={16} className="text-slate-400 mr-1" />
                 }
@@ -225,7 +230,7 @@ export default function RegisterPage() {
                 onChange={handleInputChange}
               />
               <Button
-                className="focus:outline-none transition-transform active:scale-90 text-slate-400 hover:text-indigo-500 bg-indigo-400 dark:text-white absolute right-0"
+                className="focus:outline-none transition-transform active:scale-90 text-slate-400 hover:text-indigo-500 bg-white dark:bg-[#2b1860] dark:text-white absolute right-0"
                 type="button"
                 onClick={() => setIsVisible(!isVisible)}
               >
@@ -235,7 +240,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               size="lg"
-              className="bg-slate-900 dark:bg-indigo-600 text-white font-bold tracking-wide mt-3 hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all active:scale-98 shadow-md rounded-2xl h-12 w-full"
+              className="bg-slate-900 dark:bg-[#2b1860] text-white font-bold tracking-wide mt-3 hover:bg-slate-800 dark:hover:bg-[#221449] transition-all active:scale-98 shadow-lg rounded-2xl h-12 w-full"
             >
               Sign Up
             </Button>

@@ -21,10 +21,8 @@ export default function ThemeToggle() {
       isIconOnly
       variant="light"
       radius="full"
-      onPress={() =>
-        setTheme(theme === "dark" ? "light" : "dark")
-      }
-      className="border border-default-200 dark:text-white"
+      onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className=" dark:text-white text-black"
     >
       <motion.div
         key={theme}
@@ -32,11 +30,7 @@ export default function ThemeToggle() {
         animate={{ rotate: 0, scale: 1 }}
         transition={{ duration: 0.35 }}
       >
-        {theme === "dark" ? (
-          <Sun size={18} />
-        ) : (
-          <Moon size={18} />
-        )}
+        {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
       </motion.div>
     </Button>
   );

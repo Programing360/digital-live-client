@@ -11,20 +11,20 @@ import { notFound, redirect } from "next/navigation";
 import React from "react";
 export async function generateMetadata({ params, searchParams }, parent) {
   // read route params
-  const { id } = await params
- 
+  const { id } = await params;
+
   // fetch data
-  const product = await getLessonsDetailsById(id)
- 
+  const product = await getLessonsDetailsById(id);
+
   // optionally access and extend (rather than replace) parent metadata
-//   const previousImages = (await parent).openGraph?.images || []
- 
+  //   const previousImages = (await parent).openGraph?.images || []
+
   return {
     title: product.title,
     // openGraph: {
     //   images: ['/some-specific-page-image.jpg', ...previousImages],
     // },
-  }
+  };
 }
 const LessonDetailsPage = async ({ params }) => {
   const { id } = await params;
@@ -33,11 +33,10 @@ const LessonDetailsPage = async ({ params }) => {
   const lessonData = await getLessonsDetailsById(id);
   const getUserComment = await getComment(id);
 
-
+  console.log(user, id);
   if (!user) {
     return redirect("/auth/login");
   }
- 
 
   const totalLessons = allLesson.filter(
     (lesson) => lesson.author.authorId === lessonData.author.authorId,
@@ -54,7 +53,13 @@ const LessonDetailsPage = async ({ params }) => {
     return <OwnerGuard ownerId={user?.id} user={user?.id}></OwnerGuard>;
   }
   return (
-    <LessonDetails lessonData={lessonData} user={user} total={totalLessons} allLessons={allLesson} getUserComment={getUserComment} />
+    <LessonDetails
+      lessonData={lessonData}
+      user={user}
+      total={totalLessons}
+      allLessons={allLesson}
+      getUserComment={getUserComment}
+    />
   );
 };
 

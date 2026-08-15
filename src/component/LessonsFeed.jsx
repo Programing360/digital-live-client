@@ -183,27 +183,10 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
             placeholder="Search lessons..."
             value={tempSearch}
             onChange={(e) => setTempSearch(e.target.value)}
-            startContent={
-              <SearchIcon
-                className="text-default-400 dark:text-purple-300/40"
-                size={18}
-              />
-            }
             radius="lg"
             variant="bordered"
             className="w-full dark:text-white"
-            isClearable
-            onClear={() => {
-              setTempSearch("");
-              setSearchQuery("");
-              setCurrentPage(1);
-              router.push(`?page=1`, { scroll: false });
-            }}
-            classNames={{
-              inputWrapper:
-                "dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-purple-500/50 focus-within:!border-purple-500 h-11",
-              input: "dark:text-purple-100 placeholder:dark:text-purple-300/30",
-            }}
+            
           />
 
           <Button
@@ -346,7 +329,9 @@ export default function LessonsFeed({ userPlan = "Free", favorites }) {
                           textValue={tone.emotionalTone}
                           className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer text-slate-700 dark:text-purple-200"
                         >
-                          <Label className="dark:text-white">{tone.emotionalTone}</Label>
+                          <Label className="dark:text-white">
+                            {tone.emotionalTone}
+                          </Label>
                         </ListBox.Item>
                       ))}
                     </ListBox.Section>
